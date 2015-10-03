@@ -16,3 +16,10 @@ platforms/android/CordovaLib/local.properties
 
 # res
 resources/signing
+
+#The general good stuff
+*.tmp
+*.bak
+*.swp
+*.class
+*.jar
