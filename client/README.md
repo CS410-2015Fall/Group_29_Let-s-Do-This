@@ -15,6 +15,7 @@ Since we restructured a bit of work is necessary to get things back in working o
 
 ##Running on a device
 Feelin' dangerous? Run this bad boy on your phone!
+
 1. Make sure 'adb' is in your bash profile.
   * Not sure? Type run 'adb' and see what happens
 2. Enable "Android Debugging" from the "Developer options" menu of your phone
