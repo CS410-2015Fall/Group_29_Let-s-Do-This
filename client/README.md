@@ -13,6 +13,12 @@ Since we restructured a bit of work is necessary to get things back in working o
 4. Run 'cordova platform add android'
 5. Run 'cordova build'
 
+##Running Locally
+You will need a local web server to run this without errors.
+* Simple method in OSX?
+  * Run 'python -m SimpleHTTPServer'
+  * Open a browser to 'localhost:8000' and navigate to the client/www folder
+
 ##Running on a device
 Feelin' dangerous? Run this bad boy on your phone!
 
