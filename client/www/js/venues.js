@@ -1,8 +1,12 @@
 $(document).ready(function() {
+  console.log("Venue script loaded");
   $.getScript("js/yelpCalls.js");
-  $("#yelpCall").click(function(){
-    console.log("Calling yelp api");
-    callYelp();
-    console.log("Finished calling yelp api");
+  $("#yelpSearchForm").submit(function() {
+    console.log("Form sumbitted");
+    var term = $('#searchTerm').val();
+    var city = $('#city').val();
+
+    // //  searchYelp(city, distance, term, sortBy)
+    searchYelp(city, null, term, null);
   });
 });
