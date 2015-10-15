@@ -21,16 +21,16 @@ function searchYelp(city, distance, term, sortBy){
   }else{
     query = query.concat("&location=vancouver"); //Temporary default to Vancouver
   }
-  // if(distance!="" && (typeof distance=='number')){ //Check if the user specified the distance/and ensure it is a string
-  //   query = query.concat("&radius_filter=" + distance);
-  // }
-  // if(term!="" && (typeof term=='string')){ //Check if the user specified the name/and ensure it is a string
-  //   query = query.concat("&term=" + term.replace(' ', '+')); //Must replace spaces with a +
-  // }
-  // if(sortBy!="" && (typeof sortBy=='number')){ //Check if the user specified a sort order
-  //   // 0=Best matched (default), 1=Distance, 2=Highest Rated
-  //   query = query.concat("&sort=" + sortBy);
-  // }
+  if(distance!="" && (typeof distance=='number')){ //Check if the user specified the distance/and ensure it is a string
+    query = query.concat("&radius_filter=" + distance);
+  }
+  if(term!="" && (typeof term=='string')){ //Check if the user specified the name/and ensure it is a string
+    query = query.concat("&term=" + term.replace(' ', '+')); //Must replace spaces with a +
+  }
+  if(sortBy!="" && (typeof sortBy=='number')){ //Check if the user specified a sort order
+    // 0=Best matched (default), 1=Distance, 2=Highest Rated
+    query = query.concat("&sort=" + sortBy);
+  }
 
   //Finally, make the call to yelp
   console.log("Query: " + query);
