@@ -8,7 +8,35 @@ $(document).ready(function() {
   console.log('OAuth scripts loaded');
 });
 
-function callYelp (){
+function searchYelp(city, distance, term, sortBy){
+  var query = ""; //The running query
+  console.log("City: " + city + ", Term: " + term);
+
+  var limit = 10; //Number of businesses to return
+  query = query.concat("limit=" + limit);
+  //After this you should include an & at the start of your concat
+  if(city!=null && (typeof city=='string')){ //Check if the user specified the city/and ensure it is a string
+    console.log("Adding " + city.replace(' ', '+') + " to query");
+    query = query.concat("&location=" + city.replace(' ', '+')); //Must replace spaces with a +
+
+  }
+  // if(distance!=null && (typeof distance=='number')){ //Check if the user specified the distance/and ensure it is a string
+  //   query = query.concat("&radius_filter=" + distance);
+  // }
+  // if(term!=null && (typeof term=='string')){ //Check if the user specified the name/and ensure it is a string
+  //   query = query.concat("&term=" + term.replace(' ', '+')); //Must replace spaces with a +
+  // }
+  // if(sortBy!=null && (typeof sortBy=='number')){ //Check if the user specified a sort order
+  //   // 0=Best matched (default), 1=Distance, 2=Highest Rated
+  //   query = query.concat("&sort=" + sortBy);
+  // }
+
+  //Finally, make the call to yelp
+  console.log("Query: " + query);
+  makeCall(query);
+}
+
+function makeCall (query){
   var auth = {
     consumerKey : "fWy0OS47UomZ6u0tukwu8Q",
     consumerSecret : "tOtfhQ0iM4qxWCDt575AKVvbEbo",
@@ -33,8 +61,12 @@ function callYelp (){
   parameters.push(['oauth_consumer_secret', auth.consumerSecret]);
   parameters.push(['oauth_token', auth.accessToken]);
   parameters.push(['oauth_signature_method', 'HMAC-SHA1']);
+  //Constuct the search url
+  var root = 'http://api.yelp.com/v2/search?';
+  var finalQuery = root.concat(query);
+
   var message = {
-    'action' : 'http://api.yelp.com/v2/business/bay-to-breakers-12k-san-francisco',
+    'action' : finalQuery.valueOf(),
     'method' : 'GET',
     'parameters' : parameters
   };
@@ -42,7 +74,7 @@ function callYelp (){
   OAuth.SignatureMethod.sign(message, accessor);
   var parameterMap = OAuth.getParameterMap(message.parameters);
   parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature)
-  console.log(parameterMap);
+  // console.log(parameterMap);
   $.ajax({
     'url' : message.action,
     'data' : parameterMap,
@@ -51,8 +83,6 @@ function callYelp (){
     'jsonpCallback' : 'cb',
     'success' : function(data, textStats, XMLHttpRequest) {
       console.log(data);
-      var output = prettyPrint(data);
-      $("body").append(output);
     }
   });
 }
