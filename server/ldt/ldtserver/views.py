@@ -10,19 +10,15 @@ http -a user:pword DELETE http://.../api/events/123
 :TODO:
 - test below with httpie
 - Support queries (see also models.py):
-    - Post/Put users by pk to Event
-    - Post Event should set current user as host
     - Get all Events where LdtUser is Host/Invitee/Accept/Decline
-    - Put user to Event's Host/Invitee/Accept/Decline
     - Add/Rm user's friends without rewriting entire list
     - Add/Rm event's host/invitee/accept/decline without rewriting entire list
 
 - Authentication tokens (see also models.py): http://www.django-rest-framework.org/api-guide/authentication/
 - Adjust permissions.py (linked at settings.py)
 - hash/don't return User passwords (here or in serializers.py)
+- different timezones? leave to client side to convert from UTC
 """
-import copy
-
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -35,12 +31,28 @@ from serializers import EventSerializer, UserSerializer, LdtUserSerializer
 USER_FIELDS = ["username", "password"]
 OPTIONAL_PROFILE_FIELDS = ["email", "phone", "friends"]
 ALL_USER_FIELDS = USER_FIELDS + OPTIONAL_PROFILE_FIELDS
+OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "invites", "accepts", "declines"]
 
 
 @api_view(['GET', 'POST'])
 def event_list(request):
     """
     List all events, or create a new event.
+
+    POST request data must be formatted as follows. Only display_name mandatory:
+    {
+        "display_name": "best event ever",
+        "start_date": "2015-01-01T00:00Z",
+        "end_date": "2015-12-31T23:59Z",
+        "budget": 12345678.90,
+        "location": "21 jump street",
+        "hosts": [1],
+        "invites": [86, 90],
+        "accepts": [90],
+        "declines": [86]
+    }
+
+    Note: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
     """
     if request.method == 'GET':
         events = Event.objects.all()
@@ -48,11 +60,7 @@ def event_list(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        # res = {"user_pk": request.user.id}    # this does give requesting user's pk
-
-        # New - !!! Post with host and invitees
-
-        # Original
+        # example = request.user.id    # to give requesting user's pk
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -66,7 +74,21 @@ def event_list(request):
 def event_detail(request, pk):
     """
     Get, update, or delete a specific event
-    See event_list for format of accept fields for PUT
+
+    PUT request data must be formatted as follows. No fields mandatory:
+    {
+        "display_name": "best event ever",
+        "start_date": "2015-01-01T00:00Z",
+        "end_date": "2015-12-31T23:59Z",
+        "budget": 12345678.90,
+        "location": "21 jump street",
+        "hosts": [1],
+        "invites": [86, 90],
+        "accepts": [90],
+        "declines": [86]
+    }
+
+    Note: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
     """
     try:
         event = Event.objects.get(pk=pk)
@@ -78,6 +100,8 @@ def event_detail(request, pk):
         return Response(serializer.data)
 
     elif request.method == 'PUT':
+        if "display_name" not in request.data:
+            request.data.update({"display_name": event.display_name})
         serializer = EventSerializer(event, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -282,3 +306,51 @@ def user_detail(request, pk):
     elif request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def user_hosting(request, pk):
+    """
+    Get all events where specific user is host
+    """
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response("test")
+
+
+@api_view(['GET'])
+def user_invited(request, pk):
+    """
+    Get all events where specific user is invited
+    """
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response("test")
+
+
+@api_view(['GET'])
+def user_attending(request, pk):
+    """
+    Get all events where specific user is attending
+    """
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response("test")
+
+
+@api_view(['GET'])
+def user_declined(request, pk):
+    """
+    Get all events where specific user is declined
+    """
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response("test")

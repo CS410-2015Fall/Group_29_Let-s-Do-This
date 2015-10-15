@@ -5,10 +5,9 @@ This is for remote CRUD requests. Most app logic will be in front-end client.
 
 :TODO:
 - Support queries (see also views.py):
-    - Post/Put users by pk to Event
-    - Post Event should set current user as host
     - Get all Events where LdtUser is Host/Invitee/Accept/Decline
-    - Put user to Event's Host/Invitee/Accept/Decline
+    - Add/Rm user's friends without rewriting entire list
+    - Add/Rm event's host/invitee/accept/decline without rewriting entire list
 
 - Authentication tokens (see also views.py): http://www.django-rest-framework.org/api-guide/authentication/
 - ShoppingListItem class: fields for 'display_name', 'assigned_to', 'cost', 'ready'
@@ -62,10 +61,10 @@ class Event(models.Model):
     # Optional
     start_date = models.DateTimeField('start date', blank=True, null=True)
     end_date = models.DateTimeField('end date', blank=True, null=True)
-    budget = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    budget = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     location = models.CharField('location', max_length=100, blank=True)
     hosts = models.ManyToManyField(User, related_name="hosts", blank=True)
-    invitees = models.ManyToManyField(User, related_name="invitees", blank=True)
+    invites = models.ManyToManyField(User, related_name="invitees", blank=True)
     accepts = models.ManyToManyField(User, related_name="accepts", blank=True)
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
 
