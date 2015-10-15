@@ -1,7 +1,7 @@
 $(document).ready(function() {
   console.log('Profile ready to Go');
-  $("#logoutButton").click(function(){
-    console.log('Logging out');
-    $("#mainContent").load("login.html");
+  $("#yelpPage").click(function(){ //Remove when yelp page set up
+    console.log('Going to Yelp Page');
+    $("#mainContent").load("venues.html");
   });
 });
