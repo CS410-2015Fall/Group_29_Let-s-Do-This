@@ -29,8 +29,8 @@ class PhoneValidator(RegexValidator):
     """
     Validate phone numbers as 15 number digits (no dashes or letters)
     """
-    regex = r'^\+?1?\d{9,15}$'
-    message = "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+    regex = r'^\+?1?\d{7,15}$'
+    message = "Phone number must be entered as string in format '999999999' (7-15 digits), with optional '+1' at start."
 
 
 class LdtUser(models.Model):
