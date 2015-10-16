@@ -1,7 +1,8 @@
 $(document).ready(function() {
   console.log("Venue script loading");
-  $.getScript("js/yelpCalls.js");
-  $("#yelpSearchForm").submit(function() {
+  $.getScript("js/yelpScripts/yelpCalls.js");
+  $("#yelpSearchForm").submit(function(event) {
+    event.preventDefault(); //Prevent the sumbit button from redirecting us back to the home page
     console.log("Form sumbitted");
     var term = $('#searchTerm').val();
     var city = $('#city').val();

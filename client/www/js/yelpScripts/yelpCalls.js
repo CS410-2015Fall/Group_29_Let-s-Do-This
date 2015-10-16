@@ -1,10 +1,10 @@
 //Big thanks to levbrie for this one
 //https://github.com/levbrie/mighty_marks/blob/master/yelp-business-sample.html
-// var OAuthScript = "oauth.js"
 $(document).ready(function() {
   console.log('Yelp Script Loading');
-  $.getScript("js/oauth.js"); //OAuth Help
-  $.getScript("js/sha1.js"); //Hash Algo help
+  $.getScript("js/yelpScripts/oauth.js"); //OAuth Help
+  $.getScript("js/yelpScripts/sha1.js"); //Hash Algo help
+  $.getScript("js/yelpScripts/prettyprint.js"); //Script to display results
 });
 
 function searchYelp(city, distance, term, sortBy){
@@ -72,7 +72,7 @@ function makeCall (query){
   OAuth.SignatureMethod.sign(message, accessor);
   var parameterMap = OAuth.getParameterMap(message.parameters);
   parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature)
-  // console.log(parameterMap);
+
   $.ajax({
     'url' : message.action,
     'data' : parameterMap,
@@ -81,6 +81,8 @@ function makeCall (query){
     'jsonpCallback' : 'cb',
     'success' : function(data, textStats, XMLHttpRequest) {
       console.log(data);
+      var output = prettyPrint(data);
+					$("#mainContent").append(output);
     }
   });
 }
