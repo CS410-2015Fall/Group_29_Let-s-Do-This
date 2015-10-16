@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  console.log('Navbar ready to go');
   $("#homeButton").click(function(){
     $("#mainContent").load("home.html");
   });
@@ -12,4 +11,5 @@ $(document).ready(function() {
   $("#eventButton").click(function(){
     $("#mainContent").load("events.html");
   });
+  console.log('Navbar ready to go');
 });

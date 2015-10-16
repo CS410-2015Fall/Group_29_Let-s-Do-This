@@ -2,21 +2,18 @@
 //https://github.com/levbrie/mighty_marks/blob/master/yelp-business-sample.html
 // var OAuthScript = "oauth.js"
 $(document).ready(function() {
-  console.log('Yelp Script Loaded');
+  console.log('Yelp Script Loading');
   $.getScript("js/oauth.js"); //OAuth Help
   $.getScript("js/sha1.js"); //Hash Algo help
-  console.log('OAuth scripts loaded');
 });
 
 function searchYelp(city, distance, term, sortBy){
   var query = ""; //The running query
-  console.log("City: " + city + ", Term: " + term);
 
   var limit = 10; //Number of businesses to return
   query = query.concat("limit=" + limit);
   //After this you should include an & at the start of your concat
   if(city!="" && (typeof city=='string')){ //Check if the user specified the city/and ensure it is a string
-    console.log("Adding " + city.replace(' ', '+') + " to query");
     query = query.concat("&location=" + city.replace(' ', '+')); //Must replace spaces with a +
   }else{
     query = query.concat("&location=vancouver"); //Temporary default to Vancouver

@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  console.log("Venue script loaded");
+  console.log("Venue script loading");
   $.getScript("js/yelpCalls.js");
   $("#yelpSearchForm").submit(function() {
     console.log("Form sumbitted");
