@@ -4,10 +4,11 @@ $(document).ready(function() {
   console.log('Yelp Script Loading');
   $.getScript("js/yelpScripts/oauth.js"); //OAuth Help
   $.getScript("js/yelpScripts/sha1.js"); //Hash Algo help
-  $.getScript("js/yelpScripts/prettyprint.js"); //Script to display results
+  $.getScript("js/yelpScripts/prettyprint.js"); //Script to display results during development
+  $.getScript("js/yelpScripts/parseAndPrint.js"); //Script to display results to user
 });
 
-function searchYelp(city, distance, term, sortBy){
+function searchYelp(city, distance, term, sortBy, callbackFunction){
   var query = ""; //The running query
 
   var limit = 10; //Number of businesses to return
@@ -31,10 +32,10 @@ function searchYelp(city, distance, term, sortBy){
 
   //Finally, make the call to yelp
   console.log("Query: " + query);
-  makeCall(query);
+  makeCall(query, callbackFunction);
 }
 
-function makeCall (query){
+function makeCall (query, callbackFunction){
   var auth = {
     consumerKey : "fWy0OS47UomZ6u0tukwu8Q",
     consumerSecret : "tOtfhQ0iM4qxWCDt575AKVvbEbo",
@@ -80,9 +81,8 @@ function makeCall (query){
     'dataType' : 'jsonp',
     'jsonpCallback' : 'cb',
     'success' : function(data, textStats, XMLHttpRequest) {
-      console.log(data);
-      var output = prettyPrint(data);
-					$("#mainContent").append(output);
+      console.log('yelpCalls is returning: ' + data);
+      callbackFunction(data);
     }
   });
 }
