@@ -1,3 +1,25 @@
 <script src="js/venues.js"></script>
 <h1>Venues</h1>
-<input type='button' id="yelpCall" value="Search">
+<form id="yelpSearchForm">
+  <!-- Yelp call currently supports distance, location, a search term, and sortBy (0-2) -->
+  <label for="searchTerm">Search for:</label>
+  <input type="text" id="searchTerm">
+
+  <label for="city">City:</label>
+  <input type="text" id="city"> <!-- It'd be nice if we could fill this in based on the users location -->
+
+  <label for="distance">Radius:</label>
+  <input type="number" id="distance">
+
+  <fieldset data-role="controlgroup">
+    <legend>Sort by:</legend>
+    <label for="bestMatch">Best Match</label>
+    <input type="radio" id="bestMatch" value="0">
+    <label for="distance">Distance</label>
+    <input type="radio" id="distance" value="1">
+    <label for="highestRated">Highest Rated</label>
+    <input type="radio" id="highestRated" value="2">
+  </fieldset>
+
+  <input type="submit" value="Search">
+</form>
