@@ -1,1 +1,51 @@
-<p>Home</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Cordova set up stuff -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+    <link rel="stylesheet" type="text/css" href="css/home.css">
+
+    <!-- jQuery mobile stuff, added by Jonathan -->
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+    <script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
+    <script type="text/javascript" src="js/home.js"></script>
+
+    <title>Main</title>
+</head>
+<body>
+
+    <div data-role="content" id="mainContent">
+    </div><!-- /content -->
+
+    <div data-role="header" id="header">
+        <div align="center" data-role="controlgroup" data-type="horizontal">
+            <a href="" data-role="button" id="notificationsButton">Notifications</a>
+            <a href="" data-role="button" id="eventsButton">Events</a>
+            <a href="" data-role="button" id="calendarButton">Calendar</a>
+        </div>
+    </div><!-- /header -->
+
+    <div id="footer" data-role="footer">
+        <fieldset class="ui-grid-a">
+            <div class="ui-block-a" align="center" data-role="controlgroup" data-type="horizontal">
+                <a href="#" data-role="button" id="profileButton">Profile</a>
+                <a href="#friendsPopup" data-rel="popup" data-role="button" id="friendsButton">Friends</a>
+            </div>
+            <div class="ui-block-b" align="center">
+                <button type="submit" id="createEventButton" data-theme="b">Create Event</button>
+            </div>
+        </fieldset>
+    </div><!-- /footer -->
+
+    <div id="friendsPopup" data-role="popup">
+        <ul id="friendList" data-role="listview" data-inset="true" data-filter="true">
+        </ul>
+    </div>
+
+</body>
+</html>
