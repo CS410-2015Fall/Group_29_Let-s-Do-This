@@ -1,47 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- Cordova set up stuff -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-    <link rel="stylesheet" type="text/css" href="css/home.css">
-    <!-- jQuery mobile stuff, added by Jonathan -->
-    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
-    <script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
-    <script type="text/javascript" src="js/login.js"></script>
+	<!-- Cordova set up stuff -->
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="msapplication-tap-highlight" content="no">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
 
-    <title>Login</title>
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<link rel="stylesheet" type="text/css" href="css/home.css">
+
+	<!-- jQuery mobile stuff, added by Jonathan -->
+	<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+	<script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript" src="js/login.js"></script>
+
+	<title>Login</title>
 </head>
 <body>
-    <div data-role="page">
+	<div data-role="page">
 
-        <div data-role="content" id="mainContent">
-            <div align="center">
-                <h1>Let's Do This</h1>
-            </div>
+		<div data-role="content" id="mainContent">
+			<div align="center">
+				<h1>Let's Do This</h1>
+			</div>
 
-            <div data-role="fieldcontain">
-                <label for="name">email:</label>
-                <input type="text" name="name" id="name" value="" />
-            </div>
-            <div data-role="fieldcontain">
-                <label for="name">password:</label>
-                <input type="text" name="name" id="name" value="" />
-            </div>
-            <fieldset class="ui-grid-a">
-                <div align="left" class="ui-block-a">
-                    <a href="" data-role="button" id="newUserButton" data-inline="true">Create Account</a>
-                </div>
-                <div align="right" class="ui-block-b">
-                <a href="#" data-role="button" id="loginButton" data-inline="true">Login</a>
-                </div>
-            </fieldset>
+			<div data-role="fieldcontain">
+				<label for="name">email:</label>
+				<input type="text" name="name" id="name" value="" />
+			</div>
+			<div data-role="fieldcontain">
+				<label for="name">password:</label>
+				<input type="text" name="name" id="name" value="" />
+			</div>
+			<fieldset class="ui-grid-a">
+				<div align="left" class="ui-block-a">
+					<a href="" data-role="button" id="newUserButton" data-inline="true">Create Account</a>
+				</div>
+				<div align="right" class="ui-block-b">
+					<a href="#" data-role="button" id="loginButton" data-inline="true">Login</a>
+				</div>
+			</fieldset>
 
-        </div><!-- /content -->
+		</div><!-- /content -->
 
-    </div><!-- /page -->
+	</div><!-- /page -->
 </body>
 </html>
