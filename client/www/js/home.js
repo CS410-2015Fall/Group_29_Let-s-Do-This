@@ -40,7 +40,7 @@ $(document).ready(function() {
 
     });
 
-    createContentBoxLinks();
+    handleContentBoxLinks();
 });
 
 function createContentBoxes(boxes) {
@@ -57,7 +57,7 @@ function createContentBoxes(boxes) {
     });
 }
 
-function createContentBoxLinks() {
+function handleContentBoxLinks() {
     $(document).on("click", '#mainContent div', function(e) {
         if ($(this).attr("id") == "box") {
             // generate link from eventId
