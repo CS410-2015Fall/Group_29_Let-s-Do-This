@@ -1,8 +1,25 @@
-<h1>Login</h1>
-<form>
-  Email:<br>
-  <input type='email'><br>
-  Password:<br>
-  <input type='password'><br>
-  <input type='submit' class="ui-btn ui-btn-inline ui-corner-all">
-</form>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Let's Do This - Log In</title>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+        <script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
+        <script src="js/user/login-controller.js"></script>
+        <script src="js/user/session.js"></script>
+        <script type="text/javascript" src="js/login.js"></script>
+        <script type="text/javascript" src="js/home.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="page-login">
+            <h1>Login</h1>
+            <div id="ctn-err"></div>
+            Username:<br>
+            <input type='text' id='username'><br>
+            Password:<br>
+            <input type='password' id='password'><br>
+            <input type='submit' id="btn-submit" value="Login" class="ui-btn ui-btn-inline ui-corner-all">
+        </div>
+    </body>
+</html>
