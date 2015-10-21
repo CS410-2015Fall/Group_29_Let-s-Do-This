@@ -8,14 +8,18 @@ LetsDoThis.Session = (function () {
     function init() {
         
         var sessionIdKey = "letsdothis-session";
+        var eventIdKey = "letsdothis-event";
         
         return {
             // Public methods and variables.
-            set: function (sessionData) {
+            
+            // store data of logged in user
+            // username, email, phone, friends
+            setLoggedInUser: function (sessionData) {
                 window.localStorage.setItem(sessionIdKey, JSON.stringify(sessionData));
             },
             
-            get: function () {
+            getLoggedInUser: function () {
                 var result = null;
                 
                 try {
@@ -23,7 +27,24 @@ LetsDoThis.Session = (function () {
                 } catch(e){}
                 
                 return result;
-            }
+            },
+            
+            // store current event information
+            // display_name, start_date, end_date, budget, location,
+            // hosts, invites, accepts, declines
+            setEvent: function (sessionData) {
+                window.localStorage.setItem(eventIdKey, JSON.stringify(sessionData));
+            },
+            
+            getEvent: function (sessionData) {
+                var result = null;
+                
+                try {
+                    result = JSON.parse(window.localStorage.getItem(eventIdKey));
+                } catch(e){}
+                
+                return result;
+            },
         };
     };
     

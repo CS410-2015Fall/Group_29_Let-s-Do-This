@@ -62,9 +62,9 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
             // TODO: verify that password was correct
             // TODO: determine data to receive from server
             var serverData = jQuery.parseJSON(resp.data);
-            LetsDoThis.Session.getInstance().set({
+            LetsDoThis.Session.getInstance().setLoggedInUser({
                 username: serverData.username
-            })
+            });
             $.mobile.changePage(me.homePageId);
         },
         error: function(e) {

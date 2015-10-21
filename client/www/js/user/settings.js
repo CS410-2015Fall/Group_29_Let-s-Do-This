@@ -1,4 +1,6 @@
 var LetsDoThis = LetsDoThis || {};
 LetsDoThis.Settings = LetsDoThis.Settings || {};
 
-// LetsDoThis.Settings.logInUrl = "http://159.203.12.88/api/users/"
+var LDTSERVER = "http://159.203.12.88/api";
+// LetsDoThis.Settings.logInUrl = LTDSERVER+"/users/"
+// LetsDoThis.Settings.createEventUrl = LTDSERVER+"/events/"
