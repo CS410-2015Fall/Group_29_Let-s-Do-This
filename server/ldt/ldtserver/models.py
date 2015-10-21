@@ -10,10 +10,11 @@ This is for remote CRUD requests. Most app logic will be in front-end client.
     - Add/Rm event's host/invitee/accept/decline without rewriting entire list
 
 - Authentication tokens (see also views.py): http://www.django-rest-framework.org/api-guide/authentication/
-- ShoppingListItem class: fields for 'display_name', 'assigned_to', 'cost', 'ready'
-- ShoppingList class: 1:many with ShoopingListItem, 1:1 with Event
-- Comment class: many:1 with Event
-- EventPoll class ??? FP16-3
+- ShoppingListItem class - fields for 'display_name', 'assigned_to', 'cost', 'ready'
+- ShoppingList class - 1:many with ShoopingListItem, 1:1 with Event
+- Comment class - many:1 with Event
+- BudgetContribution class - ??? 1:1 accepted user within Event
+- EventPoll class (FP16-3) - ??? link ldtpolls app many:1 with Event class
 
 :LATER:
 - login with email instead of username

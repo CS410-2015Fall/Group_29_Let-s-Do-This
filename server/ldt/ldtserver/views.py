@@ -9,8 +9,8 @@ http -a user:pword DELETE http://.../api/events/123
 
 :TODO:
 - test below with httpie
+- unit tests (http://www.django-rest-framework.org/api-guide/testing/)
 - Support queries (see also models.py):
-    - Get all Events where LdtUser is Host/Invitee/Accept/Decline
     - Add/Rm user's friends without rewriting entire list
     - Add/Rm event's host/invitee/accept/decline without rewriting entire list
 
@@ -317,7 +317,15 @@ def user_hosting(request, pk):
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    return Response("test")
+
+    all_events = Event.objects.all()
+    hosting_events = []
+    for event in all_events:
+        if event.hosts.all():
+            for host in event.hosts.all():
+                if host.id == user.id:
+                    hosting_events.append(event.id)
+    return Response(hosting_events, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -329,7 +337,15 @@ def user_invited(request, pk):
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    return Response("test")
+
+    all_events = Event.objects.all()
+    invited_events = []
+    for event in all_events:
+        if event.invites.all():
+            for inv in event.invites.all():
+                if inv.id == user.id:
+                    invited_events.append(event.id)
+    return Response(invited_events, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -341,7 +357,15 @@ def user_attending(request, pk):
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    return Response("test")
+
+    all_events = Event.objects.all()
+    accepted_events = []
+    for event in all_events:
+        if event.accepts.all():
+            for acc in event.accepts.all():
+                if acc.id == user.id:
+                    accepted_events.append(event.id)
+    return Response(accepted_events, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -353,4 +377,12 @@ def user_declined(request, pk):
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    return Response("test")
+
+    all_events = Event.objects.all()
+    decline_events = []
+    for event in all_events:
+        if event.declines.all():
+            for dec in event.declines.all():
+                if dec.id == user.id:
+                    decline_events.append(event.id)
+    return Response(decline_events, status=status.HTTP_200_OK)
