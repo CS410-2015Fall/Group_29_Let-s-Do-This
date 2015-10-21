@@ -3,8 +3,8 @@ All url mappings for ldtserver (within /api subdir)
 e.g. http://.../api/...
 """
 from django.conf.urls import url, include
-from views import event_detail, event_list, user_detail, user_list, user_hosting, user_invited, user_attending,\
-    user_declined
+from views import event_detail, event_list, user_detail, user_list, user_events
+    # user_hosting, user_invited, user_attending, user_declined
 
 # Includes login URLs for the browsable API.
 urlpatterns = [
@@ -13,8 +13,10 @@ urlpatterns = [
     url(r'^events/(?P<pk>[0-9]+)/$', event_detail, name='event_detail'),
     url(r'^users/$', user_list, name='user_list'),
     url(r'^users/(?P<pk>[0-9]+)/$', user_detail, name='user_detail'),
-    url(r'^users/(?P<pk>[0-9]+)/hosting/$', user_hosting, name='user_hosting'),
-    url(r'^users/(?P<pk>[0-9]+)/invited/$', user_invited, name='user_invited'),
-    url(r'^users/(?P<pk>[0-9]+)/attending/$', user_attending, name='user_attending'),
-    url(r'^users/(?P<pk>[0-9]+)/declined/$', user_declined, name='user_declined'),
+    url(r'^users/(?P<pk>[0-9]+)/events/$', user_events, name='user_events'),
+
+    # url(r'^users/(?P<pk>[0-9]+)/hosting/$', user_hosting, name='user_hosting'),
+    # url(r'^users/(?P<pk>[0-9]+)/invited/$', user_invited, name='user_invited'),
+    # url(r'^users/(?P<pk>[0-9]+)/attending/$', user_attending, name='user_attending'),
+    # url(r'^users/(?P<pk>[0-9]+)/declined/$', user_declined, name='user_declined'),
 ]

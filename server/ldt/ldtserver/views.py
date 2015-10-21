@@ -11,9 +11,9 @@ http -a user:pword DELETE http://.../api/events/123
 - test below with httpie
 - unit tests (http://www.django-rest-framework.org/api-guide/testing/)
 - Support queries (see also models.py):
-    - Consider re-routing User-specific Event Gets as a single call and json divided by Host/Invitee/Accept/Decline
-    - Add/Rm user's friends without rewriting entire list
-    - Add/Rm event's host/invitee/accept/decline without rewriting entire list
+    - Put User-specific Event as single call
+    - Add/Rm user's friends without rewriting entire list - ??? responsibility of client
+    - Add/Rm event's host/invitee/accept/decline without rewriting entire list - ??? responsibility of client
 
 - Authentication tokens (see also models.py): http://www.django-rest-framework.org/api-guide/authentication/
 - Adjust permissions.py (linked at settings.py)
@@ -32,7 +32,8 @@ from serializers import EventSerializer, UserSerializer, LdtUserSerializer
 USER_FIELDS = ["username", "password"]
 OPTIONAL_PROFILE_FIELDS = ["email", "phone", "friends"]
 ALL_USER_FIELDS = USER_FIELDS + OPTIONAL_PROFILE_FIELDS
-OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "invites", "accepts", "declines"]
+OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "invites", "accepts", "declines",
+                         "comments", "shopping_list"]
 
 
 @api_view(['GET', 'POST'])
@@ -309,81 +310,140 @@ def user_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET'])
-def user_hosting(request, pk):
+@api_view(['GET', 'PUT'])
+def user_events(request, pk):
     """
-    Get all events where specific user is host
-    """
-    try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    all_events = Event.objects.all()
-    hosting_events = []
-    for event in all_events:
-        if event.hosts.all():
-            for host in event.hosts.all():
-                if host.id == user.id:
-                    hosting_events.append(event.id)
-    return Response(hosting_events, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-def user_invited(request, pk):
-    """
-    Get all events where specific user is invited
+    Get all event IDs associated with given user: all that are hosted/invited/attending/declined
     """
     try:
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    all_events = Event.objects.all()
-    invited_events = []
-    for event in all_events:
-        if event.invites.all():
-            for inv in event.invites.all():
-                if inv.id == user.id:
-                    invited_events.append(event.id)
-    return Response(invited_events, status=status.HTTP_200_OK)
+    if request.method == 'GET':
+        all_events = Event.objects.all()
+
+        hosting_events = []
+        for event in all_events:
+            if event.hosts.all():
+                for host in event.hosts.all():
+                    if host.id == user.id:
+                        hosting_events.append(event.id)
+
+        invited_events = []
+        for event in all_events:
+            if event.invites.all():
+                for inv in event.invites.all():
+                    if inv.id == user.id:
+                        invited_events.append(event.id)
+
+        accepted_events = []
+        for event in all_events:
+            if event.accepts.all():
+                for acc in event.accepts.all():
+                    if acc.id == user.id:
+                        accepted_events.append(event.id)
+
+        decline_events = []
+        for event in all_events:
+            if event.declines.all():
+                for dec in event.declines.all():
+                    if dec.id == user.id:
+                        decline_events.append(event.id)
+
+        user_events = {
+            "hosting": hosting_events,
+            "invited": invited_events,
+            "attending": accepted_events,
+            "declined": decline_events,
+        }
+
+        return Response(user_events, status=status.HTTP_200_OK)
+
+    elif request.method == 'PUT':
+
+        # !!! need to implement
+
+        return Response({"test": "abc123"}, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
-def user_attending(request, pk):
-    """
-    Get all events where specific user is attending
-    """
-    try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    all_events = Event.objects.all()
-    accepted_events = []
-    for event in all_events:
-        if event.accepts.all():
-            for acc in event.accepts.all():
-                if acc.id == user.id:
-                    accepted_events.append(event.id)
-    return Response(accepted_events, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
-def user_declined(request, pk):
-    """
-    Get all events where specific user is declined
-    """
-    try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    all_events = Event.objects.all()
-    decline_events = []
-    for event in all_events:
-        if event.declines.all():
-            for dec in event.declines.all():
-                if dec.id == user.id:
-                    decline_events.append(event.id)
-    return Response(decline_events, status=status.HTTP_200_OK)
+# @api_view(['GET'])
+# def user_hosting(request, pk):
+#     """
+#     Get all events where specific user is host
+#     """
+#     try:
+#         user = User.objects.get(pk=pk)
+#     except User.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     all_events = Event.objects.all()
+#     hosting_events = []
+#     for event in all_events:
+#         if event.hosts.all():
+#             for host in event.hosts.all():
+#                 if host.id == user.id:
+#                     hosting_events.append(event.id)
+#     return Response(hosting_events, status=status.HTTP_200_OK)
+#
+#
+# @api_view(['GET'])
+# def user_invited(request, pk):
+#     """
+#     Get all events where specific user is invited
+#     """
+#     try:
+#         user = User.objects.get(pk=pk)
+#     except User.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     all_events = Event.objects.all()
+#     invited_events = []
+#     for event in all_events:
+#         if event.invites.all():
+#             for inv in event.invites.all():
+#                 if inv.id == user.id:
+#                     invited_events.append(event.id)
+#     return Response(invited_events, status=status.HTTP_200_OK)
+#
+#
+# @api_view(['GET'])
+# def user_attending(request, pk):
+#     """
+#     Get all events where specific user is attending
+#     """
+#     try:
+#         user = User.objects.get(pk=pk)
+#     except User.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     all_events = Event.objects.all()
+#     accepted_events = []
+#     for event in all_events:
+#         if event.accepts.all():
+#             for acc in event.accepts.all():
+#                 if acc.id == user.id:
+#                     accepted_events.append(event.id)
+#     return Response(accepted_events, status=status.HTTP_200_OK)
+#
+#
+# @api_view(['GET'])
+# def user_declined(request, pk):
+#     """
+#     Get all events where specific user is declined
+#     """
+#     try:
+#         user = User.objects.get(pk=pk)
+#     except User.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     all_events = Event.objects.all()
+#     decline_events = []
+#     for event in all_events:
+#         if event.declines.all():
+#             for dec in event.declines.all():
+#                 if dec.id == user.id:
+#                     decline_events.append(event.id)
+#     return Response(decline_events, status=status.HTTP_200_OK)

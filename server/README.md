@@ -10,13 +10,14 @@ server manages the 'Let's Do This' database of Users and Events (*in progress*).
 
 At this time, all actions require authentication with an existing account's username and password - *to change*.
 
-| Action   | Url                                  | Url keys   | JSON keys                                     |
-| -------- | ------------------------------------ | ---------- | --------------------------------------------- |
-| GET all  | http://159.203.12.88/api/users/      |            |                                               |
-| POST     | http://159.203.12.88/api/users/      |            | username, password, email, phone, friends     |
-| GET      | http://159.203.12.88/api/users/2/    | User id    |                                               |
-| PUT      | http://159.203.12.88/api/users/2/    | User id    | username, password, email, phone, friends     |
-| DELETE   | http://159.203.12.88/api/users/2/    | User id    |                                               |
+| Action       | Url                                  | Url keys   | JSON keys                                     |
+| ------------ | ------------------------------------ | ---------- | --------------------------------------------- |
+| POST (login) | http://159.203.12.88/api/users/login |            | username, password                            |
+| GET all      | http://159.203.12.88/api/users/      |            |                                               |
+| POST         | http://159.203.12.88/api/users/      |            | username, password, email, phone, friends     |
+| GET          | http://159.203.12.88/api/users/2/    | User id    |                                               |
+| PUT          | http://159.203.12.88/api/users/2/    | User id    | username, password, email, phone, friends     |
+| DELETE       | http://159.203.12.88/api/users/2/    | User id    |                                               |
 
 friends = list/array of other User IDs
 
@@ -34,7 +35,9 @@ At this time, all actions require authentication with an existing account's user
 | DELETE   | http://159.203.12.88/api/events/2/    | Event id    |                                               |
 
 start_date, end_date = UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
+
 budget = decimal amount, e.g. 12345678.90
+
 hosts, invites, accepts, declines = list/array of User IDs
 
 
@@ -42,14 +45,11 @@ hosts, invites, accepts, declines = list/array of User IDs
 
 At this time, all actions require authentication with an existing account's username and password - *to change*.
 
-!!! Might change this to a single call
 
-| Action   | Url                                        | Url keys   | JSON keys  |
-| -------- | ------------------------------------------ | ---------- | ---------- |
-| GET      | http://159.203.12.88/api/users/2/hosting   | User id    |            |
-| GET      | http://159.203.12.88/api/users/2/invited   | User id    |            |
-| GET      | http://159.203.12.88/api/users/2/attending | User id    |            |
-| GET      | http://159.203.12.88/api/users/2/declined  | User id    |            |
+| Action   | Url                                        | Url keys   | JSON keys      |
+| -------- | ------------------------------------------ | ---------- | -------------- |
+| GET      | http://159.203.12.88/api/users/2/events/   | User id    |                |
+| PUT      | http://159.203.12.88/api/users/2/events/   | User id    | *to implement* |
 
 
 ## Server Admin

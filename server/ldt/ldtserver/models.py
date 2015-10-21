@@ -5,9 +5,9 @@ This is for remote CRUD requests. Most app logic will be in front-end client.
 
 :TODO:
 - Support queries (see also views.py):
-    - Consider re-routing User-specific Event Gets as a single call and json divided by Host/Invitee/Accept/Decline
-    - Add/Rm user's friends without rewriting entire list
-    - Add/Rm event's host/invitee/accept/decline without rewriting entire list
+    - Put User-specific Event as single call
+    - Add/Rm user's friends without rewriting entire list - ??? responsibility of client
+    - Add/Rm event's host/invitee/accept/decline without rewriting entire list - ??? responsibility of client
 
 - Authentication tokens (see also views.py): http://www.django-rest-framework.org/api-guide/authentication/
 - ShoppingListItem class - fields for 'display_name', 'assigned_to', 'cost', 'ready'
@@ -52,6 +52,39 @@ class LdtUser(models.Model):
         return str(self.id)
 
 
+class Comment(models.Model):
+    """
+    Comment with fields for author (User), post_date, content
+    """
+    # Required
+    author = models.OneToOneField(User, related_name="author")
+    start_date = models.DateTimeField('post date')
+    content = models.CharField(max_length=300)
+
+
+class ShoppingListItem(models.Model):
+    """
+    ShoppingListItem with fields for display_name, quantity, cost, supplier (User)
+
+    Acts as a checklist + what was already bought
+    """
+    # Required
+    display_name = models.CharField(max_length=50)
+    # Optional
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    # For now, if user it Null then there is nobody assigned
+    supplier = models.OneToOneField(User, related_name="supplier", null=True, blank=True)
+
+
+class ShoppingList(models.Model):
+    """
+    ShoppingList of ShoppingListItems
+    """
+    # Optional
+    items = models.ManyToManyField(ShoppingListItem, related_name="items", blank=True)
+
+
 class Event(models.Model):
     """
     Event with fields for display_name, dates, hosts, invitees, accepts, declines.
@@ -68,9 +101,12 @@ class Event(models.Model):
     invites = models.ManyToManyField(User, related_name="invitees", blank=True)
     accepts = models.ManyToManyField(User, related_name="accepts", blank=True)
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
+    comments = models.ManyToManyField(Comment, related_name="comments", blank=True)
+    shopping_list = models.OneToOneField(ShoppingList, related_name="shopping_list", null=True, blank=True)
 
     def __str__(self):
         """
         e.g. Event.objects.all() == display_name
         """
         return self.display_name
+
