@@ -5,7 +5,7 @@ This is for remote CRUD requests. Most app logic will be in front-end client.
 
 :TODO:
 - Support queries (see also views.py):
-    - Get all Events where LdtUser is Host/Invitee/Accept/Decline
+    - Consider re-routing User-specific Event Gets as a single call and json divided by Host/Invitee/Accept/Decline
     - Add/Rm user's friends without rewriting entire list
     - Add/Rm event's host/invitee/accept/decline without rewriting entire list
 

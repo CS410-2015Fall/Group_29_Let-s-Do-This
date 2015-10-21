@@ -8,11 +8,55 @@ server manages the 'Let's Do This' database of Users and Events (*in progress*).
 
 ## Users
 
-*!!! coming soon*
+At this time, all actions require authentication with an existing account's username and password - *to change*.
+
+| Action   | Url                                  | Url keys   | JSON keys                                     |
+| -------- | ------------------------------------ | ---------- | --------------------------------------------- |
+| GET all  | http://159.203.12.88/api/users/      |            |                                               |
+| POST     | http://159.203.12.88/api/users/      |            | username, password, email, phone, friends     |
+| GET      | http://159.203.12.88/api/users/2/    | User id    |                                               |
+| PUT      | http://159.203.12.88/api/users/2/    | User id    | username, password, email, phone, friends     |
+| DELETE   | http://159.203.12.88/api/users/2/    | User id    |                                               |
+
+friends = list/array of other User IDs
+
 
 ## Events
 
-*!!! coming soon*
+At this time, all actions require authentication with an existing account's username and password - *to change*.
+
+| Action   | Url                                   | Url keys    | JSON keys                                     |
+| -------- | ------------------------------------- | ----------- | --------------------------------------------- |
+| GET all  | http://159.203.12.88/api/events/      |             |                                               |
+| POST     | http://159.203.12.88/api/events/      |             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines    |
+| GET      | http://159.203.12.88/api/events/2/    | Event id    |                                               |
+| PUT      | http://159.203.12.88/api/events/2/    | Event id    | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
+| DELETE   | http://159.203.12.88/api/events/2/    | Event id    |                                               |
+
+start_date, end_date = UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
+budget = decimal amount, e.g. 12345678.90
+hosts, invites, accepts, declines = list/array of User IDs
+
+
+## Events associated with Users
+
+At this time, all actions require authentication with an existing account's username and password - *to change*.
+
+!!! Might change this to a single call
+
+| Action   | Url                                        | Url keys   | JSON keys  |
+| -------- | ------------------------------------------ | ---------- | ---------- |
+| GET      | http://159.203.12.88/api/users/2/hosting   | User id    |            |
+| GET      | http://159.203.12.88/api/users/2/invited   | User id    |            |
+| GET      | http://159.203.12.88/api/users/2/attending | User id    |            |
+| GET      | http://159.203.12.88/api/users/2/declined  | User id    |            |
+
+
+## Server Admin
+
+You will need an admin account created for you.
+
+http://159.203.12.88/admin/
 
 
 # Developer Info & Local Setup

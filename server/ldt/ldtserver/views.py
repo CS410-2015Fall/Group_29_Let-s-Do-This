@@ -11,6 +11,7 @@ http -a user:pword DELETE http://.../api/events/123
 - test below with httpie
 - unit tests (http://www.django-rest-framework.org/api-guide/testing/)
 - Support queries (see also models.py):
+    - Consider re-routing User-specific Event Gets as a single call and json divided by Host/Invitee/Accept/Decline
     - Add/Rm user's friends without rewriting entire list
     - Add/Rm event's host/invitee/accept/decline without rewriting entire list
 
