@@ -48,12 +48,10 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
     }
     
     // $.mobile.loading("show");
-    
+    console.log("About to send request");
     $.ajax({
         type: 'POST',
-        // sending to a test server for now
-        url: "http://httpbin.org/post",
-        // url: LetsDoThis.Settings.logInUrl,
+        url: "http://159.203.12.88/login/",
         data: JSON.stringify( { "username": username, "password": password}),
         contentType: 'application/json',
         dataType: 'json',
@@ -61,9 +59,10 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
             // TODO: verify that user exists in the database
             // TODO: verify that password was correct
             // TODO: determine data to receive from server
-            var serverData = jQuery.parseJSON(resp.data);
+            console.log("Request successful!");
+            console.log(resp);
             LetsDoThis.Session.getInstance().setLoggedInUser({
-                username: serverData.username
+                authToken: resp.token
             });
             $.mobile.changePage(me.homePageId);
         },
@@ -71,6 +70,7 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
             console.log(e.message);
             me.$ctnErr.html("<p>Oops! Let's Do This had a problem, and was unable to log you on.");
         }
+        // beforeSend: setHeader
     });
 };
 
