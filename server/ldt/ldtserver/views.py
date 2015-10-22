@@ -208,6 +208,26 @@ def user_list(request):
             return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['POST'])
+def user_search(request):
+    """
+    Return specific User Id matching provided username
+
+    POST request data must be formatted as follows.
+    { "username": "testyuser" }
+    """
+    users = User.objects.all()
+    userid = None
+    for user in users:
+        if user.username == request.data["username"]:
+            userid = user.id
+            break
+    if userid:
+        return Response({"id": userid}, status=status.HTTP_200_OK)
+    else:
+        return Response("No user matching that username", status=status.HTTP_404_NOT_FOUND)
+
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def user_detail(request, pk):
     """

@@ -8,11 +8,12 @@ server manages the 'Let's Do This' database of Users and Events (*in progress*).
 
 ## Users
 
-All actions require an authentication token. This is obtained by successful login with any existing account's username and password.
+All actions (except login) require an authentication token in the request header. This is obtained by successful login with any existing account's username and password.
 
 | Action            | Url                                    | Url keys   | JSON keys                                     |
 | ----------------- | -------------------------------------  | ---------- | --------------------------------------------- |
 | **POST (login)*** | http://159.203.12.88/login/            |            | username, password                            |
+| POST              | http://159.203.12.88/api/users/search  |            | username                                      |
 | GET all           | http://159.203.12.88/api/users/        |            |                                               |
 | POST              | http://159.203.12.88/api/users/        |            | username, password, email, phone, friends     |
 | GET               | http://159.203.12.88/api/users/2/      | User id    |                                               |
@@ -24,7 +25,7 @@ All actions require an authentication token. This is obtained by successful logi
 
 ## Events
 
-All actions require an authentication token. This is obtained by successful login with any existing account's username and password.
+All actions require an authentication token in the request header. This is obtained by successful login with any existing account's username and password.
 
 | Action   | Url                                   | Url keys    | JSON keys                                     |
 | -------- | ------------------------------------- | ----------- | --------------------------------------------- |
@@ -43,8 +44,7 @@ All actions require an authentication token. This is obtained by successful logi
 
 ## Events associated with Users
 
-All actions require an authentication token. This is obtained by successful login with any existing account's username and password.
-
+All actions require an authentication token in the request header. This is obtained by successful login with any existing account's username and password.
 
 | Action   | Url                                        | Url keys   | JSON keys      |
 | -------- | ------------------------------------------ | ---------- | -------------- |
@@ -136,3 +136,8 @@ Once set up, activate the venv and run the server on your local machine as follo
 1. server will be available at 127.0.0.1:8000 (localhost)
 1. Load the browser for all GET/POST/PUT/DELETE requests, provided by Django Rest Framework.
 1. Use httpie or cURL for terminal/command line requests.
+
+
+## Deploying to Droplet/Production Server
+
+Follow this guide: https://www.digitalocean.com/community/tutorials/how-to-use-the-django-one-click-install-image
