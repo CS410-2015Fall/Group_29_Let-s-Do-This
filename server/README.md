@@ -8,23 +8,23 @@ server manages the 'Let's Do This' database of Users and Events (*in progress*).
 
 ## Users
 
-At this time, all actions require authentication with an existing account's username and password - *to change*.
+All actions require an authentication token. This is obtained by successful login with any existing account's username and password.
 
-| Action       | Url                                  | Url keys   | JSON keys                                     |
-| ------------ | ------------------------------------ | ---------- | --------------------------------------------- |
-| POST (login) | http://159.203.12.88/api/users/login |            | username, password                            |
-| GET all      | http://159.203.12.88/api/users/      |            |                                               |
-| POST         | http://159.203.12.88/api/users/      |            | username, password, email, phone, friends     |
-| GET          | http://159.203.12.88/api/users/2/    | User id    |                                               |
-| PUT          | http://159.203.12.88/api/users/2/    | User id    | username, password, email, phone, friends     |
-| DELETE       | http://159.203.12.88/api/users/2/    | User id    |                                               |
+| Action            | Url                                    | Url keys   | JSON keys                                     |
+| ----------------- | -------------------------------------  | ---------- | --------------------------------------------- |
+| **POST (login)*** | http://159.203.12.88/login/            |            | username, password                            |
+| GET all           | http://159.203.12.88/api/users/        |            |                                               |
+| POST              | http://159.203.12.88/api/users/        |            | username, password, email, phone, friends     |
+| GET               | http://159.203.12.88/api/users/2/      | User id    |                                               |
+| PUT               | http://159.203.12.88/api/users/2/      | User id    | username, password, email, phone, friends     |
+| DELETE            | http://159.203.12.88/api/users/2/      | User id    |                                               |
 
-friends = list/array of other User IDs
+**friends** = list/array of other User IDs
 
 
 ## Events
 
-At this time, all actions require authentication with an existing account's username and password - *to change*.
+All actions require an authentication token. This is obtained by successful login with any existing account's username and password.
 
 | Action   | Url                                   | Url keys    | JSON keys                                     |
 | -------- | ------------------------------------- | ----------- | --------------------------------------------- |
@@ -34,16 +34,16 @@ At this time, all actions require authentication with an existing account's user
 | PUT      | http://159.203.12.88/api/events/2/    | Event id    | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
 | DELETE   | http://159.203.12.88/api/events/2/    | Event id    |                                               |
 
-start_date, end_date = UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
+**start_date, end_date** = UTC and in format `YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]`
 
-budget = decimal amount, e.g. 12345678.90
+**budget** = decimal amount, e.g. 12345678.90
 
-hosts, invites, accepts, declines = list/array of User IDs
+**hosts, invites, accepts, declines** = list/array of User IDs
 
 
 ## Events associated with Users
 
-At this time, all actions require authentication with an existing account's username and password - *to change*.
+All actions require an authentication token. This is obtained by successful login with any existing account's username and password.
 
 
 | Action   | Url                                        | Url keys   | JSON keys      |
@@ -75,7 +75,7 @@ Django is quite bulky in terms of all its features + additional frameworks and s
 * pip (https://pip.pypa.io/en/stable/installing/#install-pip)
 * virtualenv (https://virtualenv.pypa.io/en/latest/installation.html)
 * PostgreSQL (http://www.postgresql.org/download/)
-* httpie (https://github.com/jkbrzt/httpie)
+* httpie (https://github.com/jkbrzt/httpie) or cURL (http://curl.haxx.se/)
 
 
 ## Setup
@@ -135,4 +135,4 @@ Once set up, activate the venv and run the server on your local machine as follo
 1. Run by lgt server typing `python manage.py runserver` from server/ldt
 1. server will be available at 127.0.0.1:8000 (localhost)
 1. Load the browser for all GET/POST/PUT/DELETE requests, provided by Django Rest Framework.
-1. Use httpie for terminal/command line requests.
+1. Use httpie or cURL for terminal/command line requests.

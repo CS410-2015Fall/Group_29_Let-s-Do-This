@@ -12,4 +12,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('ldtserver.urls')),
+    url(r'^login/', 'rest_framework_jwt.views.obtain_jwt_token'),
 ]
