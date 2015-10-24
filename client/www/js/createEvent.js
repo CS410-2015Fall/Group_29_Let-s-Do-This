@@ -5,7 +5,6 @@ $(document).ready(function() {
 	//Get scripts for server interaction
 	$.getScript("js/serverInteractions/eventServerInteraction.js"); //Event-Server
 
-
 	$("#backButton").click(function(){
 		window.location="home.html";
 	});
@@ -34,3 +33,4 @@ $(document).ready(function() {
 function formatTime(date, time){
 	return date.concat('T').concat(time);
 }
+

@@ -123,3 +123,4 @@ var tempFakeNotificationData = [
         return tempFakeEventData; //Again, only temporary (see below)
         // return notificationArray;// Do this
       }
+
