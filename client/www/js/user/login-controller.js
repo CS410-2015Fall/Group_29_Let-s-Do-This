@@ -26,6 +26,86 @@ LetsDoThis.LogInController.prototype.resetLogInForm = function() {
     this.$password.val("");
 };
 
+LetsDoThis.LogInController.prototype.getUserInfo = function(id) {
+    
+    var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+    
+    var postData = {
+        "id": id
+    }
+    
+    $.ajax({
+        type: "POST",
+        url: "http://159.203.12.88/api/users/",
+        data: JSON.stringify( postData),
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer " + authToken.authToken)
+        },
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (resp) {
+            console.log("User info retrieved!");
+            LetsDoThis.Session.getInstance().setUserInfo({
+                "username": resp.username,
+                "email": resp.email,
+                "phone": resp.phone
+            });
+            LetsDoThis.Session.getInstance().setUserFriends({
+                "friends":resp.friends
+            });
+            console.log("Woohoo!");
+        },
+        error: function(e) {
+            console.log(e.message);
+        }
+    })
+}
+
+LetsDoThis.LogInController.prototype.getUserId = function(username) {
+    
+    console.log("call to getUserId was successful");
+    
+    var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+    
+    var postData = {
+        "username": username
+    }
+    
+    // First, check if authToken was successfully retrieved
+    if (!authToken){
+        console.log("Token was null - user not authenticated");
+        return
+    }
+    
+    $.ajax({
+        type: 'POST',
+        url: "http://159.203.12.88/api/users/search",
+        data: JSON.stringify( postData),
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer " + authToken.authToken)
+        },
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (resp) {
+            console.log("User ID retrieved!");
+            LetsDoThis.Session.getInstance().setUserId({
+                userId: resp.id
+            });
+            console.log("User ID is "+resp.id);
+            return;
+            // console.log("about to make call to get user info");
+            this.getUserInfo(resp.id);
+            // $.mobile.changePage(me.homePageId);
+            
+        },
+        error: function(e) {
+            console.log(e.message);
+            console.log("User ID was not retrieved");
+            this.$ctnErr.html("<p>Oops! Let's Do This had a problem, and was unable to log you on.</p>");
+        }
+    })
+}
+
 LetsDoThis.LogInController.prototype.onLogInCommand = function() {
     var me = this,
         username = me.$username.val().trim(),
@@ -47,30 +127,32 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
         return;
     }
     
-    // $.mobile.loading("show");
-    console.log("About to send request");
+    var postData = {
+        "username": username,
+        "password": password
+    }
+    
     $.ajax({
         type: 'POST',
         url: "http://159.203.12.88/login/",
-        data: JSON.stringify( { "username": username, "password": password}),
+        data: JSON.stringify( postData),
         contentType: 'application/json',
         dataType: 'json',
         success: function (resp) {
-            // TODO: verify that user exists in the database
-            // TODO: verify that password was correct
-            // TODO: determine data to receive from server
             console.log("Request successful!");
-            console.log(resp);
-            LetsDoThis.Session.getInstance().setLoggedInUser({
+            LetsDoThis.Session.getInstance().setAuthToken({
                 authToken: resp.token
             });
-            $.mobile.changePage(me.homePageId);
+            
+            console.log("auth token returned: "+resp.token);
+            console.log("try to get user ID now");
+            me.getUserId(username);
         },
         error: function(e) {
             console.log(e.message);
-            me.$ctnErr.html("<p>Oops! Let's Do This had a problem, and was unable to log you on.");
+            console.log("user not authenticated");
+            me.$ctnErr.html("<p>Oops! Let's Do This had a problem, and was unable to log you on.</>");
         }
-        // beforeSend: setHeader
     });
 };
 
