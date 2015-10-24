@@ -21,15 +21,16 @@ In this readme:
 
 All actions (except login) require an authentication token in the request header. This is obtained by successful login with any existing account's username and password.
 
-| Action            | Url                                    | Url keys   | JSON keys                                     |
-| ----------------- | -------------------------------------  | ---------- | --------------------------------------------- |
-| **POST (login)*** | http://159.203.12.88/login/            |            | username, password                            |
-| POST              | http://159.203.12.88/api/users/search  |            | username                                      |
-| GET all           | http://159.203.12.88/api/users/        |            |                                               |
-| POST              | http://159.203.12.88/api/users/        |            | username, password, email, phone, friends     |
-| GET               | http://159.203.12.88/api/users/2/      | User id    |                                               |
-| PUT               | http://159.203.12.88/api/users/2/      | User id    | username, password, email, phone, friends     |
-| DELETE            | http://159.203.12.88/api/users/2/      | User id    |                                               |
+| Action            | Url                                               | Url keys   | JSON keys                                     |
+| ----------------- | ------------------------------------------------  | ---------- | --------------------------------------------- |
+| **POST (login)*** | http://159.203.12.88/login/                       |            | username, password                            |
+| POST              | http://159.203.12.88/api/users/search             |            | username                                      |
+| GET all           | http://159.203.12.88/api/users/                   |            |                                               |
+| POST              | http://159.203.12.88/api/users/                   |            | username, password, email, phone, friends     |
+| GET               | http://159.203.12.88/api/users/2/                 | User id    |                                               |
+| PUT               | http://159.203.12.88/api/users/2/                 | User id    | username, password, email, phone, friends     |
+| DELETE            | http://159.203.12.88/api/users/2/                 | User id    |                                               |
+| POST (rm friends) | http://159.203.12.88/api/users/2/friends/remove/  | User id    | friends (to remove)                           |
 
 **friends** = list/array of other User IDs
 
@@ -38,13 +39,14 @@ All actions (except login) require an authentication token in the request header
 
 All actions require an authentication token in the request header. This is obtained by successful login with any existing account's username and password.
 
-| Action   | Url                                   | Url keys    | JSON keys                                     |
-| -------- | ------------------------------------- | ----------- | --------------------------------------------- |
-| GET all  | http://159.203.12.88/api/events/      |             |                                               |
-| POST     | http://159.203.12.88/api/events/      |             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines    |
-| GET      | http://159.203.12.88/api/events/2/    | Event id    |                                               |
-| PUT      | http://159.203.12.88/api/events/2/    | Event id    | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
-| DELETE   | http://159.203.12.88/api/events/2/    | Event id    |                                               |
+| Action   | Url                                             | Url keys    | JSON keys                                     |
+| -------- | ----------------------------------------------- | ----------- | --------------------------------------------- |
+| GET all  | http://159.203.12.88/api/events/                |             |                                               |
+| POST     | http://159.203.12.88/api/events/                |             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines    |
+| GET      | http://159.203.12.88/api/events/2/              | Event id    |                                               |
+| PUT      | http://159.203.12.88/api/events/2/              | Event id    | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
+| DELETE   | http://159.203.12.88/api/events/2/              | Event id    |                                               |
+| POST     | http://159.203.12.88/api/events/2/hosts/remove/ | Event id    | hosts (to remove)                             |
 
 **start_date, end_date** = UTC and in format `YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]`
 

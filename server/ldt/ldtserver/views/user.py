@@ -66,11 +66,6 @@ def user_list(request):
             res.append(userdict.copy())
         return Response(res, status=status.HTTP_200_OK)
 
-        # # Original
-        # users = User.objects.all()
-        # serializer = UserSerializer(users, many=True)
-        # return Response(serializer.data)
-
     elif request.method == 'POST':
         # First create new User object
         # !!! refactor to use USER_FIELDS
@@ -178,10 +173,6 @@ def user_detail(request, pk):
             }
         return Response(res, status=status.HTTP_200_OK)
 
-        # # Original
-        # serializer = UserSerializer(user)
-        # return Response(serializer.data)
-
     elif request.method == 'PUT':
         # First update User object if needed
         data1 = {}
@@ -205,14 +196,16 @@ def user_detail(request, pk):
         data2 = {}
         for key in OPTIONAL_PROFILE_FIELDS:
             if key in request.data:
-
-
-
-                data2.update({key: request.data[key]})
-
-
-
-
+                # Add friend(s) to current list instead of overwriting list
+                if key == "friends":
+                    friends = []
+                    friends.extend(LdtUser.objects.get(pk=user.userlink.id).get_friends())
+                    for f in request.data[key]:
+                        if f not in friends:
+                            friends.append(f)
+                    data2.update({key: friends})
+                else:
+                    data2.update({key: request.data[key]})
         if data2:
             data2.update({"user": user.id})
             ldtuser = LdtUser.objects.get(pk=user.userlink.id)
@@ -241,6 +234,34 @@ def user_detail(request, pk):
     elif request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+def user_friends_remove(request, pk):
+    """
+    Remove friend(s) from a specific user
+
+    POST request data must be formatted as follows:
+    { "friends": [1, 4] }
+    """
+    try:
+        user = User.objects.get(pk=pk)
+        ldtuser = LdtUser.objects.get(pk=user.userlink.id)
+        friends = ldtuser.get_friends()
+    except Exception:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    data = {"user": user.id}
+
+    newfriends = [f for f in friends if f not in request.data["friends"]]
+    data.update({"friends": newfriends})
+
+    serializer = LdtUserSerializer(ldtuser, data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT'])
@@ -295,7 +316,7 @@ def user_events(request, pk):
 
     elif request.method == 'PUT':
 
-        # !!! need to implement
+        # !!! need to implement - do we actually need this function?
 
         return Response({"test": "abc123"}, status=status.HTTP_200_OK)
 

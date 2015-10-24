@@ -47,6 +47,15 @@ class LdtUser(models.Model):
         """
         return str(self.id)
 
+    def get_friends(self):
+        """
+        Return list of IDs of LdtUser's friends
+        """
+        friend_list = []
+        for friend in self.friends.all():
+            friend_list.append(friend.id)
+        return friend_list
+
 
 class Comment(models.Model):
     """
@@ -106,4 +115,13 @@ class Event(models.Model):
         e.g. Event.objects.all() == display_name
         """
         return self.display_name
+
+    def get_hosts(self):
+        """
+        Return list of IDs of Event's hosts
+        """
+        hosts = []
+        for h in self.hosts.all():
+            hosts.append(h.id)
+        return hosts
 

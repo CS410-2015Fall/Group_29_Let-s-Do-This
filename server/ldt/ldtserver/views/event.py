@@ -54,8 +54,7 @@ def event_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -85,19 +84,70 @@ def event_detail(request, pk):
 
     if request.method == 'GET':
         serializer = EventSerializer(event)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
+        data = {}
         if "display_name" not in request.data:
-            request.data.update({"display_name": event.display_name})
-        serializer = EventSerializer(event, data=request.data)
+            data.update({"display_name": event.display_name})
+        else:
+            data.update({"display_name": request.data["display_name"]})
+
+        for key in OPTIONAL_EVENT_FIELDS:
+            if key in request.data:
+                # Add host(s) to current list instead of overwriting list
+                if key == "hosts":
+                    data.update({key: insert_hosts(event=event, newhosts=request.data[key])})
+                else:
+                    data.update({key: request.data[key]})
+
+        serializer = EventSerializer(event, data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+def event_hosts_remove(request, pk):
+    """
+    Remove host(s) from a specific event
+
+    POST request data must be formatted as follows:
+    { "hosts": [1, 4] }
+    """
+    try:
+        event = Event.objects.get(pk=pk)
+        hosts = event.get_hosts()
+    except Event.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    data = {}
+    data.update({"display_name": event.display_name})
+
+    newhosts = [h for h in hosts if h not in request.data["hosts"]]
+    data.update({"hosts": newhosts})
+
+    serializer = EventSerializer(event, data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def insert_hosts(event=None, newhosts=None):
+    """
+    Return list of hosts (User Ids): event's hosts with newhosts inserted
+    """
+    hosts = []
+    hosts.extend(event.get_hosts())
+    for n in newhosts:
+        if n not in hosts:
+            hosts.append(n)
+    return hosts
