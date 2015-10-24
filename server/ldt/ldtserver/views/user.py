@@ -1,120 +1,26 @@
 """
-All views for ldtserver (all for the RESTful API)
-
-Examples using httpie:
-http -a user:pword http://.../api/events/
-http -a user:pword --form POST http://.../api/events/ display_name="test event"
-http -a user:pword --form PUT http://.../api/events/123 display_name="even testier event"
-http -a user:pword DELETE http://.../api/events/123
+All User views for ldtserver (for RESTful API)
 
 :TODO:
-- test below with httpie
-- unit tests (http://www.django-rest-framework.org/api-guide/testing/)
+- test below with cURL/httpie
 - Support queries (see also models.py):
-    - Put User-specific Event as single call
-    - Add/Rm user's friends without rewriting entire list - ??? responsibility of client
-    - Add/Rm event's host/invitee/accept/decline without rewriting entire list - ??? responsibility of client
+    - Add/Rm user's friends without rewriting entire list
 
-- Authentication tokens (see also models.py): http://www.django-rest-framework.org/api-guide/authentication/
-- Adjust permissions.py (linked at settings.py)
+- Adjust permissions.py to require tokens in headers (linked at settings.py)
 - hash/don't return User passwords (here or in serializers.py)
-- different timezones? leave to client side to convert from UTC
 """
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from models import Event, LdtUser
+from ..models import Event, LdtUser
 from django.contrib.auth.models import User
-from serializers import EventSerializer, UserSerializer, LdtUserSerializer
+from ..serializers import UserSerializer, LdtUserSerializer
 
 
 USER_FIELDS = ["username", "password"]
 OPTIONAL_PROFILE_FIELDS = ["email", "phone", "friends"]
 ALL_USER_FIELDS = USER_FIELDS + OPTIONAL_PROFILE_FIELDS
-OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "invites", "accepts", "declines",
-                         "comments", "shopping_list"]
-
-
-@api_view(['GET', 'POST'])
-def event_list(request):
-    """
-    List all events, or create a new event.
-
-    POST request data must be formatted as follows. Only display_name mandatory:
-    {
-        "display_name": "best event ever",
-        "start_date": "2015-01-01T00:00Z",
-        "end_date": "2015-12-31T23:59Z",
-        "budget": 12345678.90,
-        "location": "21 jump street",
-        "hosts": [1],
-        "invites": [86, 90],
-        "accepts": [90],
-        "declines": [86]
-    }
-
-    Note: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
-    """
-    if request.method == 'GET':
-        events = Event.objects.all()
-        serializer = EventSerializer(events, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        # example = request.user.id    # to give requesting user's pk
-        serializer = EventSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def event_detail(request, pk):
-    """
-    Get, update, or delete a specific event
-
-    PUT request data must be formatted as follows. No fields mandatory:
-    {
-        "display_name": "best event ever",
-        "start_date": "2015-01-01T00:00Z",
-        "end_date": "2015-12-31T23:59Z",
-        "budget": 12345678.90,
-        "location": "21 jump street",
-        "hosts": [1],
-        "invites": [86, 90],
-        "accepts": [90],
-        "declines": [86]
-    }
-
-    Note: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
-    """
-    try:
-        event = Event.objects.get(pk=pk)
-    except Event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = EventSerializer(event)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        if "display_name" not in request.data:
-            request.data.update({"display_name": event.display_name})
-        serializer = EventSerializer(event, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        event.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET', 'POST'])
@@ -299,7 +205,14 @@ def user_detail(request, pk):
         data2 = {}
         for key in OPTIONAL_PROFILE_FIELDS:
             if key in request.data:
+
+
+
                 data2.update({key: request.data[key]})
+
+
+
+
         if data2:
             data2.update({"user": user.id})
             ldtuser = LdtUser.objects.get(pk=user.userlink.id)
@@ -387,8 +300,8 @@ def user_events(request, pk):
         return Response({"test": "abc123"}, status=status.HTTP_200_OK)
 
 
-
-
+# # BELOW are four alternative calls to replace user_events
+#
 # @api_view(['GET'])
 # def user_hosting(request, pk):
 #     """
@@ -467,3 +380,4 @@ def user_events(request, pk):
 #                 if dec.id == user.id:
 #                     decline_events.append(event.id)
 #     return Response(decline_events, status=status.HTTP_200_OK)
+

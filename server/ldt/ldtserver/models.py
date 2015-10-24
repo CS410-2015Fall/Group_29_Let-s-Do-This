@@ -9,10 +9,6 @@ This is for remote CRUD requests. Most app logic will be in front-end client.
     - Add/Rm user's friends without rewriting entire list - ??? responsibility of client
     - Add/Rm event's host/invitee/accept/decline without rewriting entire list - ??? responsibility of client
 
-- Authentication tokens (see also views.py): http://www.django-rest-framework.org/api-guide/authentication/
-- ShoppingListItem class - fields for 'display_name', 'assigned_to', 'cost', 'ready'
-- ShoppingList class - 1:many with ShoopingListItem, 1:1 with Event
-- Comment class - many:1 with Event
 - BudgetContribution class - ??? 1:1 accepted user within Event
 - EventPoll class (FP16-3) - ??? link ldtpolls app many:1 with Event class
 
@@ -75,6 +71,7 @@ class ShoppingListItem(models.Model):
     cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     # For now, if user it Null then there is nobody assigned
     supplier = models.OneToOneField(User, related_name="supplier", null=True, blank=True)
+    # !!! ready flag enumeration
 
 
 class ShoppingList(models.Model):

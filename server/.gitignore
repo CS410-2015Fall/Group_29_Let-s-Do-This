@@ -3,6 +3,7 @@
 
 # IDE
 .idea
+__old
 
 # Compiled python
 *.pyc

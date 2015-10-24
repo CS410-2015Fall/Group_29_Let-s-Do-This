@@ -1,8 +1,19 @@
 # About server
 
-This the Let's Do This backend server.  It is a Django application that can be run on your machine's localhost. It is also online on our droplet.
+This the Let's Do This backend server.  It is a Django application running on our remote droplet. The app can also be run on your machine's localhost, i.e. for development.
 
-server manages the 'Let's Do This' database of Users and Events (*in progress*). Accessing database entities requires sending http requests (GET/POST/PUT/DELETE) to the server's API (*in progress*) - see next section. Later this will require a key, SSL, and/or certificate for security (*much later*).
+server manages the 'Let's Do This' database of Users and Events. Accessing database entities requires sending http requests (GET/POST/PUT/DELETE) to the server's API. Later this will require a key, SSL, and/or certificate for security.
+
+In this readme:
+
+1. Using the Remote API
+	* Users
+	* Events
+	* Events associated with Users
+	* Server admin
+1. Developer Info & Local Setup
+	* ...
+
 
 # Using the Remote API
 
@@ -46,10 +57,10 @@ All actions require an authentication token in the request header. This is obtai
 
 All actions require an authentication token in the request header. This is obtained by successful login with any existing account's username and password.
 
-| Action   | Url                                        | Url keys   | JSON keys      |
-| -------- | ------------------------------------------ | ---------- | -------------- |
-| GET      | http://159.203.12.88/api/users/2/events/   | User id    |                |
-| PUT      | http://159.203.12.88/api/users/2/events/   | User id    | *to implement* |
+| Action   | Url                                        | Url keys   | JSON keys             |
+| -------- | ------------------------------------------ | ---------- | --------------------- |
+| GET      | http://159.203.12.88/api/users/2/events/   | User id    |                       |
+| PUT      | http://159.203.12.88/api/users/2/events/   | User id    | *not yet implemented* |
 
 
 ## Server Admin
@@ -132,10 +143,16 @@ Once set up, activate the venv and run the server on your local machine as follo
 
 1. Activate venv (http://docs.python-guide.org/en/latest/dev/virtualenvs/ "see also")
 1. Make sure the database is online, e.g by using pgAdmin III
-1. Run by lgt server typing `python manage.py runserver` from server/ldt
+1. Run lgt server by typing `python manage.py runserver` from /server/ldt
 1. server will be available at 127.0.0.1:8000 (localhost)
 1. Load the browser for all GET/POST/PUT/DELETE requests, provided by Django Rest Framework.
 1. Use httpie or cURL for terminal/command line requests.
+
+
+## Running Django unit tests
+
+1. Activate venv (http://docs.python-guide.org/en/latest/dev/virtualenvs/ "see also")
+1. Run all unit tests by typing `python manage.py test` from /server/ldt
 
 
 ## Deploying to Droplet/Production Server
