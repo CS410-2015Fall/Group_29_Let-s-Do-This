@@ -26,20 +26,17 @@ LetsDoThis.LogInController.prototype.resetLogInForm = function() {
     this.$password.val("");
 };
 
-LetsDoThis.LogInController.prototype.getUserInfo = function(id) {
+var getUserInfo = function(id) {
     
     var authToken = LetsDoThis.Session.getInstance().getAuthToken();
     
-    var postData = {
-        "id": id
-    }
+    var urlWithId = "http://159.203.12.88/api/users/"+id+"/";
     
     $.ajax({
-        type: "POST",
-        url: "http://159.203.12.88/api/users/",
-        data: JSON.stringify( postData),
+        type: "GET",
+        url: urlWithId,
         beforeSend: function(xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + authToken.authToken)
+            xhr.setRequestHeader("Authorization", "JWT " + authToken.authToken)
         },
         contentType: 'application/json',
         dataType: 'json',
@@ -54,6 +51,7 @@ LetsDoThis.LogInController.prototype.getUserInfo = function(id) {
                 "friends":resp.friends
             });
             console.log("Woohoo!");
+            $.mobile.changePage("home.html");
         },
         error: function(e) {
             console.log(e.message);
@@ -61,7 +59,7 @@ LetsDoThis.LogInController.prototype.getUserInfo = function(id) {
     })
 }
 
-LetsDoThis.LogInController.prototype.getUserId = function(username) {
+var getUserId = function(username) {
     
     console.log("call to getUserId was successful");
     
@@ -79,10 +77,10 @@ LetsDoThis.LogInController.prototype.getUserId = function(username) {
     
     $.ajax({
         type: 'POST',
-        url: "http://159.203.12.88/api/users/search",
+        url: "http://159.203.12.88/api/users/search/",
         data: JSON.stringify( postData),
         beforeSend: function(xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + authToken.authToken)
+            xhr.setRequestHeader("Authorization", "JWT " + authToken.authToken)
         },
         contentType: 'application/json',
         dataType: 'json',
@@ -92,9 +90,8 @@ LetsDoThis.LogInController.prototype.getUserId = function(username) {
                 userId: resp.id
             });
             console.log("User ID is "+resp.id);
-            return;
             // console.log("about to make call to get user info");
-            this.getUserInfo(resp.id);
+            getUserInfo(resp.id);
             // $.mobile.changePage(me.homePageId);
             
         },
@@ -132,6 +129,23 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
         "password": password
     }
     
+    //$.post("http://159.203.12.88/login/", postData, function(auth) {
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "http://159.203.12.88/api/users/search/",
+    //        data: JSON.stringify( {"username": username}),
+    //        beforeSend: function(xhr) {
+    //            xhr.setRequestHeader("Authorization", "JWT " + auth.token)
+    //        },
+    //        contentType: 'application/json',
+    //        dataType: 'json',
+    //        success: function(resp){
+    //            console.log("hello " + resp.id);
+    //            console.log("success!");
+    //        }
+    //    })
+    //});
+    
     $.ajax({
         type: 'POST',
         url: "http://159.203.12.88/login/",
@@ -146,7 +160,7 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
             
             console.log("auth token returned: "+resp.token);
             console.log("try to get user ID now");
-            me.getUserId(username);
+            getUserId(username);
         },
         error: function(e) {
             console.log(e.message);
