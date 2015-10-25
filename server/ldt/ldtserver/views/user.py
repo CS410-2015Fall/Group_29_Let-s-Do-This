@@ -3,10 +3,6 @@ All User views for ldtserver (for RESTful API)
 
 :TODO:
 - test below with cURL/httpie
-- Support queries (see also models.py):
-    - Add/Rm user's friends without rewriting entire list
-
-- Adjust permissions.py to require tokens in headers (linked at settings.py)
 - hash/don't return User passwords (here or in serializers.py)
 """
 from rest_framework import status

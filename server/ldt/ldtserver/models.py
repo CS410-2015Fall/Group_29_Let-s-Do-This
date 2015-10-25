@@ -5,9 +5,8 @@ This is for remote CRUD requests. Most app logic will be in front-end client.
 
 :TODO:
 - Support queries (see also views.py):
-    - Put User-specific Event as single call
-    - Add/Rm user's friends without rewriting entire list - ??? responsibility of client
-    - Add/Rm event's host/invitee/accept/decline without rewriting entire list - ??? responsibility of client
+    - Add/Rm event's invitee/accept/decline without rewriting entire list AND user cannot be on all three lists
+    - Put User-specific Event as single call (is this needed?)
 
 - BudgetContribution class - ??? 1:1 accepted user within Event
 - EventPoll class (FP16-3) - ??? link ldtpolls app many:1 with Event class
@@ -19,6 +18,8 @@ This is for remote CRUD requests. Most app logic will be in front-end client.
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+
+EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
 
 
 class PhoneValidator(RegexValidator):
@@ -117,11 +118,17 @@ class Event(models.Model):
         return self.display_name
 
     def get_hosts(self):
-        """
-        Return list of IDs of Event's hosts
-        """
-        hosts = []
-        for h in self.hosts.all():
-            hosts.append(h.id)
-        return hosts
+        """ Return list of User IDs of Event's hosts """
+        return [h.id for h in self.hosts.all()]
 
+    def get_invites(self):
+        """ Return list of IDs of Event's invites """
+        return [i.id for i in self.invites.all()]
+
+    def get_accepts(self):
+        """ Return list of IDs of Event's invites """
+        return [a.id for a in self.accepts.all()]
+
+    def get_declines(self):
+        """ Return list of IDs of Event's invites """
+        return [d.id for d in self.declines.all()]
