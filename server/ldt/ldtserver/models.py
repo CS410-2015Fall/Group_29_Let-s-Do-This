@@ -64,8 +64,14 @@ class Comment(models.Model):
     """
     # Required
     author = models.OneToOneField(User, related_name="author")
-    start_date = models.DateTimeField('post date')
+    post_date = models.DateTimeField('post_date')
     content = models.CharField(max_length=300)
+
+    def __str__(self):
+        """
+        e.g. Comment.objects.all() == id
+        """
+        return str(self.id)
 
 
 class ShoppingListItem(models.Model):
@@ -108,7 +114,7 @@ class Event(models.Model):
     invites = models.ManyToManyField(User, related_name="invitees", blank=True)
     accepts = models.ManyToManyField(User, related_name="accepts", blank=True)
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
-    comments = models.ManyToManyField(Comment, related_name="comments", blank=True)
+    comments = models.ManyToManyField(Comment, related_name="eventlink", blank=True)
     shopping_list = models.OneToOneField(ShoppingList, related_name="shopping_list", null=True, blank=True)
 
     def __str__(self):
@@ -132,3 +138,7 @@ class Event(models.Model):
     def get_declines(self):
         """ Return list of IDs of Event's invites """
         return [d.id for d in self.declines.all()]
+
+    def get_comments(self):
+        """ Return list of Event's Comments """
+        return [c for c in self.comments.all()]

@@ -3,9 +3,6 @@ All Event views for ldtserver (for RESTful API)
 
 :TODO:
 - test below with cURL/httpie
-- Support queries (see also models.py):
-    - Add/Rm event's host/invitee/accept/decline without rewriting entire list
-    - Invited/Accepted/Declined: User can only be on one of these lists
 - different timezones? leave to client side to convert from UTC
 """
 import copy
@@ -13,7 +10,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ..models import Event
+from ..models import Event, Comment
 from ..serializers import EventSerializer
 
 
@@ -171,7 +168,20 @@ def event_detail(request, pk):
 
     if request.method == 'GET':
         serializer = EventSerializer(event)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # Display details of Comments
+        event_data = serializer.data
+        comments_details = []
+        for c in event_data["comments"]:
+            comment = Comment.objects.get(pk=c)
+            comments_details.append(
+                {
+                    "author": comment.author.username,  # !!! display username? or display user_ids?
+                    "post_date": comment.post_date,
+                    "content": comment.content
+                }
+            )
+        event_data.update({"comments": comments_details})
+        return Response(event_data, status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
         data = {}

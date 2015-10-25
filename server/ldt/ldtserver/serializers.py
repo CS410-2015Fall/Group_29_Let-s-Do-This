@@ -7,7 +7,7 @@ This is for remote CRUD requests only. Most app logic will be in front-end clien
 - hash/don't return User passwords (here or in views.py)
 """
 from rest_framework import serializers
-from models import Event, LdtUser
+from models import Event, LdtUser, Comment
 from django.contrib.auth.models import User
 
 
@@ -31,3 +31,12 @@ class LdtUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LdtUser
         fields = ('user', 'phone', 'email', 'friends')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    # authorname = User.username
+
+    class Meta:
+        model = Comment
+        fields = ('author', 'post_date', 'content', 'eventlink')
