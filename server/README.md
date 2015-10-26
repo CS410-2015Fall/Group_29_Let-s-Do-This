@@ -46,6 +46,8 @@ All actions require an authentication token in the request header. This is obtai
 | GET      | http://159.203.12.88/api/events/2/              | Event id    |                                               |
 | PUT      | http://159.203.12.88/api/events/2/              | Event id    | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
 | DELETE   | http://159.203.12.88/api/events/2/              | Event id    |                                               |
+| POST     | http://159.203.12.88/api/events/2/comments/     | Event id    | author (user id), post_date, content          |
+| GET      | http://159.203.12.88/api/events/2/comments/     | Event id    |                                               |
 | POST     | http://159.203.12.88/api/events/2/hosts/remove/ | Event id    | hosts (to remove)                             |
 
 **start_date, end_date** = UTC and in format `YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]`

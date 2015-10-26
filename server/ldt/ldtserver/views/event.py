@@ -168,20 +168,24 @@ def event_detail(request, pk):
 
     if request.method == 'GET':
         serializer = EventSerializer(event)
-        # Display details of Comments
-        event_data = serializer.data
-        comments_details = []
-        for c in event_data["comments"]:
-            comment = Comment.objects.get(pk=c)
-            comments_details.append(
-                {
-                    "author": comment.author.username,  # !!! display username? or display user_ids?
-                    "post_date": comment.post_date,
-                    "content": comment.content
-                }
-            )
-        event_data.update({"comments": comments_details})
-        return Response(event_data, status=status.HTTP_200_OK)
+
+        # # Display details of Comments
+        # # !!! No longer needed with Nested Relationships in EventSerializer, but keep in this commit just in case
+        # event_data = serializer.data
+        # comments_details = []
+        # for c in event_data["comments"]:
+        #     comment = Comment.objects.get(pk=c)
+        #     comments_details.append(
+        #         {
+        #             "author": comment.author.username,  # !!! display username? or display user_ids?
+        #             "post_date": comment.post_date,
+        #             "content": comment.content
+        #         }
+        #     )
+        # event_data.update({"comments": comments_details})
+        # return Response(event_data, status=status.HTTP_200_OK)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)  # original
 
     elif request.method == 'PUT':
         data = {}
@@ -206,6 +210,8 @@ def event_detail(request, pk):
                 replies.update({key: request.data[key]})
         updated_lists = rsvp(event=event, replies=replies)
         data.update(updated_lists)
+
+        # !!! TODO: Prepare data with new comments associated with event
 
         serializer = EventSerializer(event, data=data)
         if serializer.is_valid():

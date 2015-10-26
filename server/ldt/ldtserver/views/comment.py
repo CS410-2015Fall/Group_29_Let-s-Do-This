@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ..models import Event, Comment
+from ..models import Event, Comment, User
 from ..serializers import EventSerializer, CommentSerializer
 
 
@@ -42,93 +42,34 @@ def comment_list(request, pk):
         all_comments = Comment.objects.all()
         event_comments = [ac for ac in all_comments if ac in Event.get_comments(event)]
         serializer = CommentSerializer(event_comments, many=True)
-        # !!! display username? or display user_ids?
-        all_comment_with_names = []
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
-        # !!! accept username? or keep as accepting user_ids?
-        serializer = CommentSerializer(data=request.data)
+        # Automatically add event ID, which is pk provided
+        data_with_event = request.data
+        data_with_event.update({"event": [pk]})
+        # Get author ID to add author after comment serialization
+        author_id = request.data["author"]
+        serializer = CommentSerializer(data=data_with_event)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Hacky because Django REST framework doesn't support writable nested entities
+            new_comment = Comment.objects.get(pk=serializer.data["id"])
+            new_comment.author = User.objects.get(pk=author_id)
+            new_comment.save()
+            # Return flat JSON response of new comment with author user fields
+            # !!! refactor: flexible instead of hardcoded
+            res = {
+                "id": serializer.data["id"],
+                "author": {
+                    "id": new_comment.author.id,
+                    "username": new_comment.author.username
+                },
+                "post_date": serializer.data["post_date"],
+                "content": serializer.data["content"],
+                "event": serializer.data["event"]
+            }
+            return Response(res, status=status.HTTP_201_CREATED)     # new
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)   # original
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['GET', 'PUT', 'DELETE'])
-# def event_detail(request, pk):
-#     """
-#     Get, update, or delete a specific event
-#
-#     PUT request data must be formatted as follows. No fields mandatory:
-#     {
-#         "display_name": "best event ever",
-#         "start_date": "2015-01-01T00:00Z",
-#         "end_date": "2015-12-31T23:59Z",
-#         "budget": 12345678.90,
-#         "location": "21 jump street",
-#         "hosts": [1],
-#         "invites": [86, 90],
-#         "accepts": [90],
-#         "declines": [86]
-#     }
-#
-#     Note: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
-#     """
-#     try:
-#         event = Event.objects.get(pk=pk)
-#     except Event.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     if request.method == 'GET':
-#         serializer = EventSerializer(event)
-#         # Display details of Comments
-#         event_data = serializer.data
-#         comments_details = []
-#         for c in event_data["comments"]:
-#             comment = Comment.objects.get(pk=c)
-#             comments_details.append(
-#                 {
-#                     "author": comment.author.username,
-#                     "post_date": comment.post_date,
-#                     "content": comment.content
-#                 }
-#             )
-#         event_data.update({"comments": comments_details})
-#         return Response(event_data, status=status.HTTP_200_OK)
-#
-#     elif request.method == 'PUT':
-#         data = {}
-#         if "display_name" not in request.data:
-#             data.update({"display_name": event.display_name})
-#         else:
-#             data.update({"display_name": request.data["display_name"]})
-#
-#         # Prepare data with any event fields except those related to rsvp
-#         for key in OPTIONAL_EVENT_FIELDS:
-#             if key in request.data:
-#                 # Add host(s) to current list instead of overwriting list
-#                 if key == "hosts":
-#                     data.update({key: insert_hosts(event=event, newhosts=request.data[key])})
-#                 else:
-#                     data.update({key: request.data[key]})
-#
-#         # Prepare data with updated invites/accepts/declines lists
-#         replies = {}
-#         for key in EVENT_RSVP_FIELDS:
-#             if key in request.data:
-#                 replies.update({key: request.data[key]})
-#         updated_lists = rsvp(event=event, replies=replies)
-#         data.update(updated_lists)
-#
-#         serializer = EventSerializer(event, data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         else:
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#     elif request.method == 'DELETE':
-#         event.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)

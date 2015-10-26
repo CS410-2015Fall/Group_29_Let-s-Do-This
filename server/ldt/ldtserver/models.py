@@ -63,9 +63,11 @@ class Comment(models.Model):
     Comment with fields for author (User), post_date, content
     """
     # Required
-    author = models.OneToOneField(User, related_name="author")
     post_date = models.DateTimeField('post_date')
     content = models.CharField(max_length=300)
+    # "Optional"
+    # Note: one-to-many author:comment but REST framework limited. Create comment first then add author after
+    author = models.ForeignKey(User, related_name="author", null=True, blank=True)
 
     def __str__(self):
         """
@@ -114,7 +116,7 @@ class Event(models.Model):
     invites = models.ManyToManyField(User, related_name="invitees", blank=True)
     accepts = models.ManyToManyField(User, related_name="accepts", blank=True)
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
-    comments = models.ManyToManyField(Comment, related_name="eventlink", blank=True)
+    comments = models.ManyToManyField(Comment, related_name="event", blank=True)
     shopping_list = models.OneToOneField(ShoppingList, related_name="shopping_list", null=True, blank=True)
 
     def __str__(self):
