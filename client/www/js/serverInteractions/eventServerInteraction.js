@@ -78,6 +78,7 @@ function getEvent(eventId, callback){
 			console.log(e);
 		}
 	});
+
 }
 
 
@@ -105,15 +106,15 @@ function rsvpToEvent(eventId, rsvpStatus){
 		beforeSend: function(xhr) {
 				xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
-		data: JSON.stringify(postData), //stringify makes the post data all nice and jsony
+		data: JSON.stringify(postData), 
 		contentType: 'application/json',
 		dataType: 'json',
 		success: function (resp) {
 			console.log("RSVP'd to event");
 		},
 		error: function(e) {
-			console.log("Failed to create event: ");
+			console.log("Failed to RSVP: ");
 			console.log(e);
 		}
-	});
+	})
 }
