@@ -6,7 +6,7 @@ from django.conf.urls import url, include
 from views.event import event_detail, event_list, event_hosts_remove
 from views.user import user_detail, user_list, user_events, user_search, user_friends_remove
     # user_hosting, user_invited, user_attending, user_declined
-from views.comment import comment_list
+from views.comment import comment_list, comment_detail
 
 # Includes login URLs for the browsable API.
 urlpatterns = [
@@ -14,8 +14,8 @@ urlpatterns = [
 
     url(r'^events/$', event_list, name='event_list'),
     url(r'^events/(?P<pk>[0-9]+)/$', event_detail, name='event_detail'),
-
     url(r'^events/(?P<pk>[0-9]+)/comments/$', comment_list, name='comment_list'),
+    url(r'^events/(?P<pk>[0-9]+)/comments/(?P<comment_id>[0-9]+)/$', comment_detail, name='comment_detail'),
 
     url(r'^events/(?P<pk>[0-9]+)/hosts/remove/$', event_hosts_remove, name='event_hosts_remove'),
 

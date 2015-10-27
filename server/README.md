@@ -48,6 +48,9 @@ All actions require an authentication token in the request header. This is obtai
 | DELETE   | http://159.203.12.88/api/events/2/              | Event id    |                                               |
 | POST     | http://159.203.12.88/api/events/2/comments/     | Event id    | author (user id), post_date, content          |
 | GET      | http://159.203.12.88/api/events/2/comments/     | Event id    |                                               |
+| GET      | http://159.203.12.88/api/events/2/comments/5/   | Event id    |                                               |
+| PUT      | http://159.203.12.88/api/events/2/comments/5/   | Event id    | author (user id), post_date, content          |
+| DELETE   | http://159.203.12.88/api/events/2/comments/5/   | Event id    |                                               |
 | POST     | http://159.203.12.88/api/events/2/hosts/remove/ | Event id    | hosts (to remove)                             |
 
 **start_date, end_date** = UTC and in format `YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]`
@@ -141,6 +144,11 @@ The first time you set up your database, you will need to call `python manage.py
 This will not be needed again unless changes have been made to the app server.
 
 
+#### createsuperuser
+
+Before you can access the Django admin panel, be sure to call `python manage.py createsuperuser`. This way you can log in to use Django's built-in admin GUI to create and manage class objects in the browser.
+
+
 ## Using localhost server in development
 
 Once set up, activate the venv and run the server on your local machine as follows:
@@ -149,8 +157,9 @@ Once set up, activate the venv and run the server on your local machine as follo
 1. Make sure the database is online, e.g by using pgAdmin III
 1. Run lgt server by typing `python manage.py runserver` from /server/ldt
 1. server will be available at 127.0.0.1:8000 (localhost)
-1. Load the browser for all GET/POST/PUT/DELETE requests, provided by Django Rest Framework.
-1. Use httpie or cURL for terminal/command line requests.
+1. Create and manage class objects at 127.0.0.1:8000/admin/, using your superuser login.
+1. Load the browser for all GET/POST/PUT/DELETE HTTP requests, provided by Django Rest Framework.
+1. Use httpie or cURL for more direct, terminal/command line HTTP requests.
 
 
 ## Running Django unit tests
@@ -161,4 +170,4 @@ Once set up, activate the venv and run the server on your local machine as follo
 
 ## Deploying to Droplet/Production Server
 
-Follow this guide: https://www.digitalocean.com/community/tutorials/how-to-use-the-django-one-click-install-image
+Follow this guide: https://www.digitalocean.com/community/tutorials/how-to-use-the-django-one-click-install-image. I used a shell client + SFTP to manage the server.
