@@ -39,19 +39,19 @@ All actions (except login) require an authentication token in the request header
 
 All actions require an authentication token in the request header. This is obtained by successful login with any existing account's username and password.
 
-| Action   | Url                                             | Url keys    | JSON keys                                     |
-| -------- | ----------------------------------------------- | ----------- | --------------------------------------------- |
-| GET all  | http://159.203.12.88/api/events/                |             |                                               |
-| POST     | http://159.203.12.88/api/events/                |             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines    |
-| GET      | http://159.203.12.88/api/events/2/              | Event id    |                                               |
-| PUT      | http://159.203.12.88/api/events/2/              | Event id    | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
-| DELETE   | http://159.203.12.88/api/events/2/              | Event id    |                                               |
-| POST     | http://159.203.12.88/api/events/2/comments/     | Event id    | author (user id), post_date, content          |
-| GET      | http://159.203.12.88/api/events/2/comments/     | Event id    |                                               |
-| GET      | http://159.203.12.88/api/events/2/comments/5/   | Event id    |                                               |
-| PUT      | http://159.203.12.88/api/events/2/comments/5/   | Event id    | author (user id), post_date, content          |
-| DELETE   | http://159.203.12.88/api/events/2/comments/5/   | Event id    |                                               |
-| POST     | http://159.203.12.88/api/events/2/hosts/remove/ | Event id    | hosts (to remove)                             |
+| Action   | Url                                             | Url keys             | JSON keys                                     |
+| -------- | ----------------------------------------------- | -------------------- | --------------------------------------------- |
+| GET all  | http://159.203.12.88/api/events/                |                      |                                               |
+| POST     | http://159.203.12.88/api/events/                |                      | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines    |
+| GET      | http://159.203.12.88/api/events/2/              | Event id             |                                               |
+| PUT      | http://159.203.12.88/api/events/2/              | Event id             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
+| DELETE   | http://159.203.12.88/api/events/2/              | Event id             |                                               |
+| POST     | http://159.203.12.88/api/events/2/comments/     | Event id             | author (user id), post_date, content          |
+| GET      | http://159.203.12.88/api/events/2/comments/     | Event id             |                                               |
+| GET      | http://159.203.12.88/api/events/2/comments/5/   | Event id, Comment id |                                               |
+| PUT      | http://159.203.12.88/api/events/2/comments/5/   | Event id, Comment id | author (user id), post_date, content          |
+| DELETE   | http://159.203.12.88/api/events/2/comments/5/   | Event id, Comment id |                                               |
+| POST     | http://159.203.12.88/api/events/2/hosts/remove/ | Event id             | hosts (to remove)                             |
 
 **start_date, end_date** = UTC and in format `YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]`
 
@@ -93,7 +93,7 @@ Django is quite bulky in terms of all its features + additional frameworks and s
 * pip (https://pip.pypa.io/en/stable/installing/#install-pip)
 * virtualenv (https://virtualenv.pypa.io/en/latest/installation.html)
 * PostgreSQL (http://www.postgresql.org/download/)
-* httpie (https://github.com/jkbrzt/httpie) or cURL (http://curl.haxx.se/)
+* cURL (http://curl.haxx.se/) or httpie (https://github.com/jkbrzt/httpie), though I have had trouble with JWT authentication using httpie.
 
 
 ## Setup
@@ -108,7 +108,7 @@ Test that new Python venv works by activating then deactivating it. See (http://
 
 For all steps from now on (setup and development), have venv activated so you work using the venv Python executable and installed libraries.
 
-Install all required packages using `pip install -r requirements.txt`  If there is an issue installing or using psycopg2 and you are using Windows, you may need to install Microsoft Visual C++ Compiler for Python 2.7 and restart the command line. `pip uninstall psycopg2` then install (http://www.stickpeople.com/projects/python/win-psycopg/ "this version of psycopg") using easy_install instead of pip.
+Install all required packages using `pip install -r requirements.txt`  If there is an issue installing or using psycopg2 and you are using Windows, you may need to install Microsoft Visual C++ Compiler for Python 2.7 and restart the command line. `pip uninstall psycopg2` then install [this version of psycopg](http://www.stickpeople.com/projects/python/win-psycopg/) using easy_install instead of pip.
 
 The end product of this section is a project-specific Python executable with the site-packages/libraries needed to run server, which should run on your own computer only.
 
@@ -125,46 +125,46 @@ Similarly, it's not a good idea to move databases between computers, so here you
 
 #### New database
 
-First (http://www.postgresql.org/download/ "install PostgreSQL"), including the pgAdmin III interface.  Open pgAdmin III. You will need to set up the postgres (root) password if this is your first time using it.
+First [install PostgreSQL](http://www.postgresql.org/download/), including the pgAdmin III interface.  Open pgAdmin III. You will need to set up the postgres (root) password if this is your first time using it.
 
-Create a new database on your Postgres server (5432) by right-clicking 'Databases' in the menu hierarchy and selecting 'New database...' Call it 'lgt'.
+Create a new database on your Postgres server (default port 5432) by right-clicking 'Databases' in the menu hierarchy and selecting 'New database...' Call it 'ldt'.
 
 
 #### settings.py
 
-Inside server/ldt/ldt, create a new settings.py file.  Into settings.py, copy and paste all the text located in settings_template.txt in server.
+Inside /server/ldt/ldt of this repo, create a new settings.py file.  Into settings.py, copy and paste all the text located in settings_template.txt in server.
 
-Where is says 'TODO', fill in the database password and a secret key of you choice for the app, as indicated.
+Where is says 'TODO', fill in your local database's password and your choice of secret key for the app, as indicated.
 
 
 #### Migrate database and Activate models
 
-The first time you set up your database, you will need to call `python manage.py migrate` as per the (https://docs.djangoproject.com/en/1.8/intro/tutorial01/ "Django tutorial"). Then, call `python manage.py makemigrations ldtserver` and `python manage.py migrate` once more.
+The first time you set up your database, you will need to call `python manage.py migrate` as per the [Django tutorial](https://docs.djangoproject.com/en/1.8/intro/tutorial01/). Then, call `python manage.py makemigrations ldtserver` and `python manage.py migrate` once more.
 
-This will not be needed again unless changes have been made to the app server.
+Calling `makemigrations` and `migrate` is needed whenever changes are made to the ldtserver's model classes. This updates the columns of the underlying database's tables to match the fields of the class instances.
 
 
 #### createsuperuser
 
-Before you can access the Django admin panel, be sure to call `python manage.py createsuperuser`. This way you can log in to use Django's built-in admin GUI to create and manage class objects in the browser.
+Before you can access the Django admin panel, be sure to call `python manage.py createsuperuser`. This way you can log in to use Django's built-in admin GUI to create and manage class objects in the browser. This is only one way but an easy way to create new model instances; see [Django tutorial](https://docs.djangoproject.com/en/1.8/intro/tutorial01/) for more options.
 
 
 ## Using localhost server in development
 
 Once set up, activate the venv and run the server on your local machine as follows:
 
-1. Activate venv (http://docs.python-guide.org/en/latest/dev/virtualenvs/ "see also")
-1. Make sure the database is online, e.g by using pgAdmin III
-1. Run lgt server by typing `python manage.py runserver` from /server/ldt
+1. Activate venv. [See also](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
+1. Make sure the database is online, e.g by using pgAdmin III if necessary
+1. Run ldtserver by typing `python manage.py runserver` from within /server/ldt
 1. server will be available at 127.0.0.1:8000 (localhost)
 1. Create and manage class objects at 127.0.0.1:8000/admin/, using your superuser login.
 1. Load the browser for all GET/POST/PUT/DELETE HTTP requests, provided by Django Rest Framework.
-1. Use httpie or cURL for more direct, terminal/command line HTTP requests.
+1. Use cURL or httpie for more direct, terminal/command line HTTP requests. This allows easier control of the headers sent with each request.
 
 
 ## Running Django unit tests
 
-1. Activate venv (http://docs.python-guide.org/en/latest/dev/virtualenvs/ "see also")
+1. Activate venv [See also](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
 1. Run all unit tests by typing `python manage.py test` from /server/ldt
 
 
