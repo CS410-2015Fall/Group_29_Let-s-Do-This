@@ -3,6 +3,12 @@ function parseAndPrint(object){
   console.log('pAP sees: ' + object);
   var businesses = object.businesses; //Each individual business object
 
+
+//What happens if there are no results?
+  if(businesses.length==0){
+  return '<p>Sorry there were no results! <a href="venueSearch.html">Return to Search</a></p>';
+  }
+
   //We will initialize the table here, add each td and tr cell in the loop, and close the table at the end of the loop
   var tableHTML = '<table>';
 
