@@ -1,13 +1,13 @@
 var LetsDoThis = LetsDoThis || {};
 
 LetsDoThis.LogInController = function () {
-    
+
     this.$logInPage = null;
     this.$btnSubmit = null;
     this.$username = null;
     this.$password = null;
     this.homePageId = null;
-    
+
 };
 
 LetsDoThis.LogInController.prototype.init = function() {
@@ -26,11 +26,11 @@ LetsDoThis.LogInController.prototype.resetLogInForm = function() {
 };
 
 var getUserInfo = function(id) {
-    
+
     var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-    
+
     var urlWithId = "http://159.203.12.88/api/users/"+id+"/";
-    
+
     $.ajax({
         type: "GET",
         url: urlWithId,
@@ -50,7 +50,7 @@ var getUserInfo = function(id) {
                 "friends":resp.friends
             });
             console.log("Woohoo!");
-            $.mobile.changePage("home.html");
+            window.location="home.html";
         },
         error: function(e) {
             console.log(e.message);
@@ -59,21 +59,21 @@ var getUserInfo = function(id) {
 }
 
 var getUserId = function(username) {
-    
+
     console.log("call to getUserId was successful");
-    
+
     var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-    
+
     var postData = {
         "username": username
     }
-    
+
     // First, check if authToken was successfully retrieved
     if (!authToken){
         console.log("Token was null - user not authenticated");
         return
     }
-    
+
     $.ajax({
         type: 'POST',
         url: "http://159.203.12.88/api/users/search/",
@@ -92,7 +92,7 @@ var getUserId = function(username) {
             // console.log("about to make call to get user info");
             getUserInfo(resp.id);
             // $.mobile.changePage(me.homePageId);
-            
+
         },
         error: function(e) {
             console.log(e.message);
@@ -106,26 +106,26 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
         username = me.$username.val().trim(),
         password = me.$password.val().trim(),
         invalidInput = false;
-        
-    
+
+
     // Flag each invalid field.
     if (username.length === 0){
         invalidInput = true;
     }
     if (password.length === 0) {
         invalidInput = true;
-    }   
-    
+    }
+
     // Make sure that all the required fields have values.
     if (invalidInput) {
                 return;
     }
-    
+
     var postData = {
         "username": username,
         "password": password
     }
-    
+
     //$.post("http://159.203.12.88/login/", postData, function(auth) {
     //    $.ajax({
     //        type: "POST",
@@ -142,7 +142,7 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
     //        }
     //    })
     //});
-    
+
     $.ajax({
         type: 'POST',
         url: "http://159.203.12.88/login/",
@@ -154,7 +154,7 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
             LetsDoThis.Session.getInstance().setAuthToken({
                 authToken: resp.token
             });
-            
+
             console.log("auth token returned: "+resp.token);
             console.log("try to get user ID now");
             getUserId(username);
@@ -162,7 +162,7 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
         error: function(e) {
             console.log(e.message);
             console.log("user not authenticated");
-           
+
         }
     });
 };
