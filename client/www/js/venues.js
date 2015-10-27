@@ -7,7 +7,7 @@ $(document).ready(function() {
     console.log("Form sumbitted");
     var term = $('#searchTerm').val();
     var city = $('#city').val();
-    var distance = $('#distance').val();
+    var radius = $('#radius').val();
     var sort = 0;
 
     if($("#distance").prop("checked")){
@@ -17,13 +17,13 @@ $(document).ready(function() {
     }
 
     // //  searchYelp(city, distance, term, sortBy)
-    searchYelp(city, distance, term, sort, function(results){
+    searchYelp(city, radius, term, sort, function(results){
       //Search yelp runs async so we want to give it the function to run on success
-      // console.log("results = " + results);
+      console.log("results = " + results);
       var formattedResults = parseAndPrint(results);
-      // console.log('formattedResults = ' + formattedResults);
-      $("#mainContent").append(formattedResults);
+      console.log('formattedResults = ' + formattedResults);
+      $("#results").empty();
+      $("#results").append(formattedResults);
     });
-
   });
 });
