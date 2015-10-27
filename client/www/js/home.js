@@ -14,6 +14,10 @@ var tempFakeNotificationData = [
 
 
     $(document).ready(function() {
+      //Get the script to get events
+      $.getScript("js/serverInteractions/eventServerInteraction.js");
+
+      console.log("Loading home page script");
       createContentBoxes(tempFakeNotificationData);
       loadFriends();
 
@@ -21,7 +25,10 @@ var tempFakeNotificationData = [
         createContentBoxes(tempFakeNotificationData);
       });
       $("#eventsButton").click(function(){
-        getEvents();
+        getEvents(function(resp){
+          var formattedEvents = formatEvents(resp); //Format the results for createContentBoxes
+    			createContentBoxes(formattedEvents);
+        });
       });
       $("#calendarButton").click(function(){
         $("#mainContent").html("");
@@ -77,24 +84,6 @@ var tempFakeNotificationData = [
         });
       }
 
-      function getEvents(){
-        // This will get events from the server AND call createContentBoxes. This is because the ajax call runs async, so we need
-        // to create the content boxes after a success
-        $.ajax({
-          type: 'GET',
-          url: "http://159.203.12.88/api/events/",
-          dataType: 'json',
-          success: function (resp) {
-            console.log("Received events");
-            var formattedEvents = formatEvents(resp); //Format the results for createContentBoxes
-            createContentBoxes(formattedEvents);
-          },
-          error: function(e) {
-            console.log(e.message);
-          }
-        });
-      }
-
       function formatEvents(eventArray){
         //This function is responsible for putting the events returned from the server into a form createContentBoxes understands
         var arrayLen = eventArray.length;
@@ -123,4 +112,3 @@ var tempFakeNotificationData = [
         return tempFakeEventData; //Again, only temporary (see below)
         // return notificationArray;// Do this
       }
-

@@ -3,6 +3,9 @@ var attendingGuests = [];
 
 $(document).ready(function() {
 	//Get scripts for server interaction
+	$.getScript("js/user/session.js", function(){
+console.log(LetsDoThis.Session.getInstance().getAuthToken());		
+	});
 	$.getScript("js/serverInteractions/eventServerInteraction.js"); //Event-Server
 
 	$("#backButton").click(function(){
@@ -10,7 +13,7 @@ $(document).ready(function() {
 	});
 
 	$("#findLocationButton").click(function(){
-		document.getElementById('locationField').value='location found !';
+		window.location="venueSearch.html";
 	});
 
 	$("#saveButton").click(function(){
@@ -33,4 +36,3 @@ $(document).ready(function() {
 function formatTime(date, time){
 	return date.concat('T').concat(time);
 }
-
