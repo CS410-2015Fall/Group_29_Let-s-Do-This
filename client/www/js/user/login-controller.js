@@ -1,3 +1,4 @@
+
 var LetsDoThis = LetsDoThis || {};
 
 LetsDoThis.LogInController = function () {
@@ -35,7 +36,7 @@ var getUserInfo = function(id) {
         type: "GET",
         url: urlWithId,
         beforeSend: function(xhr) {
-            xhr.setRequestHeader("Authorization", "JWT " + authToken.authToken)
+            xhr.setRequestHeader("Authorization", "JWT " + authToken)
         },
         contentType: 'application/json',
         dataType: 'json',
@@ -79,7 +80,7 @@ var getUserId = function(username) {
         url: "http://159.203.12.88/api/users/search/",
         data: JSON.stringify( postData),
         beforeSend: function(xhr) {
-            xhr.setRequestHeader("Authorization", "JWT " + authToken.authToken)
+            xhr.setRequestHeader("Authorization", "JWT " + authToken)
         },
         contentType: 'application/json',
         dataType: 'json',
@@ -126,23 +127,6 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
         "password": password
     }
 
-    //$.post("http://159.203.12.88/login/", postData, function(auth) {
-    //    $.ajax({
-    //        type: "POST",
-    //        url: "http://159.203.12.88/api/users/search/",
-    //        data: JSON.stringify( {"username": username}),
-    //        beforeSend: function(xhr) {
-    //            xhr.setRequestHeader("Authorization", "JWT " + auth.token)
-    //        },
-    //        contentType: 'application/json',
-    //        dataType: 'json',
-    //        success: function(resp){
-    //            console.log("hello " + resp.id);
-    //            console.log("success!");
-    //        }
-    //    })
-    //});
-
     $.ajax({
         type: 'POST',
         url: "http://159.203.12.88/login/",
@@ -154,7 +138,6 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
             LetsDoThis.Session.getInstance().setAuthToken({
                 authToken: resp.token
             });
-
             console.log("auth token returned: "+resp.token);
             console.log("try to get user ID now");
             getUserId(username);

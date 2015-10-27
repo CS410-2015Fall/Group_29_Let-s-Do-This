@@ -17,7 +17,7 @@ function sendToServer(name, start, end, budget, location){
 		"location" : location,
 	};
 
-	var authToken = LetsDoThis.Session.getInstance().getAuthToken().authToken;
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	console.log(authToken);
 	$.ajax({
 		type: 'POST',
@@ -39,7 +39,7 @@ function sendToServer(name, start, end, budget, location){
 }
 
 function getEvents(callback){
-	var authToken = LetsDoThis.Session.getInstance().getAuthToken().authToken;
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	// This will get events from the server AND call createContentBoxes. This is because the ajax call runs async, so we need
 	// to create the content boxes after a success
 	$.ajax({
@@ -60,7 +60,7 @@ function getEvents(callback){
 }
 
 function getEvent(eventId, callback){
-	var authToken = LetsDoThis.Session.getInstance().getAuthToken().authToken;
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/";
 	
 	$.ajax({
@@ -89,8 +89,8 @@ function rsvpToEvent(eventId, rsvpStatus){
 	
 	console.log('Prepping to RSVP to event.');
 
-	var authToken = LetsDoThis.Session.getInstance().getAuthToken().authToken;
-	var userId = LetsDoThis.Session.getInstance().getUserId().userId;
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+	var userId = LetsDoThis.Session.getInstance().getUserId();
 	
 	var userList = [userId.toString()]; // has to be a list
 	var postData = {

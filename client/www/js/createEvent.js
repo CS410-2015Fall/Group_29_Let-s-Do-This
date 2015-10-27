@@ -4,7 +4,7 @@ var attendingGuests = [];
 $(document).ready(function() {
 	//Get scripts for server interaction
 	$.getScript("js/user/session.js", function(){
-console.log(LetsDoThis.Session.getInstance().getAuthToken());		
+		console.log(LetsDoThis.Session.getInstance().getAuthToken());		
 	});
 	$.getScript("js/serverInteractions/eventServerInteraction.js"); //Event-Server
 

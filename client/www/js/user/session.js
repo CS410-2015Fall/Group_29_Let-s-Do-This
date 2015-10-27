@@ -9,7 +9,6 @@ LetsDoThis.Session = (function () {
 
         var sessionIdKey = "letsdothis-session";
         var userIdKey = "letsdothis-userID";
-        var eventIdKey = "letsdothis-event";
         var userInfoKey = "letsdothis-userInfo";
         var userFriendsKey = "letsdothis-userFriends";
 
@@ -17,6 +16,7 @@ LetsDoThis.Session = (function () {
             // Public methods and variables.
 
             // authentication token
+            // getAuthToken returns <token>
             setAuthToken: function (sessionData) {
                 window.localStorage.setItem(sessionIdKey, JSON.stringify(sessionData));
             },
@@ -25,14 +25,15 @@ LetsDoThis.Session = (function () {
                 var result = null;
 
                 try {
-                    result = JSON.parse(window.localStorage.getItem(sessionIdKey));
+                    var storedData = JSON.parse(window.localStorage.getItem(sessionIdKey));
+                    result = storedData.authToken;
                 } catch(e){}
 
                 return result;
             },
 
             // user ID
-
+            // getUserId returns <id>
             setUserId: function (sessionData) {
                 window.localStorage.setItem(userIdKey, JSON.stringify(sessionData));
             },
@@ -41,14 +42,15 @@ LetsDoThis.Session = (function () {
                 var result = null;
 
                 try {
-                    result = JSON.parse(window.localStorage.getItem(eventIdKey));
+                    var storedData = JSON.parse(window.localStorage.getItem(userIdKey));
+                    result = storedData.userId;
                 } catch(e){}
 
                 return result;
             },
 
             // user information
-
+            // getUserInfo returns {username:<username>, email:<email>, phone:<phone>}
             setUserInfo: function(sessionData) {
                 window.localStorage.setItem(userInfoKey, JSON.stringify(sessionData));
             },
@@ -64,7 +66,7 @@ LetsDoThis.Session = (function () {
             },
 
             // user friends
-
+            // getUserFriends returns <list of user IDs>
             setUserFriends: function(sessionData) {
                 window.localStorage.setItem(userFriendsKey, JSON.stringify(sessionData));
             },
@@ -73,29 +75,13 @@ LetsDoThis.Session = (function () {
                 var result = null;
 
                 try {
-                    result = JSON.parse(window.localStorage.getItem(userFriendsKey));
+                    var storedData = JSON.parse(window.localStorage.getItem(userFriendsKey));
+                    result = storedData.friends;
                 } catch(e) {}
 
                 return result;
             },
 
-
-            // store current event information
-            // display_name, start_date, end_date, budget, location,
-            // hosts, invites, accepts, declines
-            setEvent: function (sessionData) {
-                window.localStorage.setItem(eventIdKey, JSON.stringify(sessionData));
-            },
-
-            getEvent: function (sessionData) {
-                var result = null;
-
-                try {
-                    result = JSON.parse(window.localStorage.getItem(eventIdKey));
-                } catch(e){}
-
-                return result;
-            },
         };
     };
 
