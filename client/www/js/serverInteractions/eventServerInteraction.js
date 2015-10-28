@@ -23,7 +23,7 @@ function sendToServer(name, start, end, budget, location){
 		type: 'POST',
 		url: "http://159.203.12.88/api/events/",
 		beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "JWT " + authToken);
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
 		data: JSON.stringify(postData), //stringify makes the post data all nice and jsony
 		contentType: 'application/json',
@@ -38,26 +38,52 @@ function sendToServer(name, start, end, budget, location){
 	});
 }
 
-// This will get events from the server AND call some callback function. This is because the ajax call runs async, so we need
+// This will get events (for the current user) from the server AND call some callback function. This is because the ajax call runs async, so we need
 // to create the content boxes after a success
 function getEvents(callback){
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-
+	var userID = LetsDoThis.Session.getInstance().getUserId();
 	$.ajax({
 		type: 'GET',
 		url: "http://159.203.12.88/api/events/",
 		dataType: 'json',
 		beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "JWT " + authToken);
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
 		success: function (resp) {
 			console.log("Received events");
-			callback(resp);
+			sortEvents(resp);
 		},
 		error: function(e) {
 			console.log(e);
 		}
 	});
+
+	//Sort through all the events and return only the ones of interest to the user
+	function sortEvents(events){
+		// console.log(events);
+		// console.log(userID);
+		var releventEvents = []; //The running array events
+
+		for(i=0; i<events.length; i++){
+			if($.inArray(userID, events[i].hosts) > -1){
+				//User is a host of event
+				releventEvents.push(events[i]);
+			} else if($.inArray(userID, events[i].accepts) > -1){
+				//User is going to event
+				releventEvents.push(events[i]);
+			} else if($.inArray(userID, events[i].declines) > -1){
+				//User declined event
+				releventEvents.push(events[i]);
+			} else if($.inArray(userID, events[i].invites) > -1){
+				//User is invited to event
+				releventEvents.push(events[i]);
+			}
+		}
+
+		//Send back to the callback function
+		callback(releventEvents);
+	}
 }
 
 function getEvent(eventId, callback){
@@ -69,7 +95,7 @@ function getEvent(eventId, callback){
 		url: eventUrl,
 		dataType: 'json',
 		beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "JWT " + authToken);
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
 		success: function (resp) {
 			console.log("Received event");
@@ -104,7 +130,7 @@ function rsvpToEvent(eventId, rsvpStatus){
 		type: 'PUT',
 		url: rsvpUrl,
 		beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "JWT " + authToken);
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
 		data: JSON.stringify(postData),
 		contentType: 'application/json',
