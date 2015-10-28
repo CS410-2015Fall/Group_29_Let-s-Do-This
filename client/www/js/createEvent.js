@@ -4,7 +4,7 @@ var attendingGuests = [];
 $(document).ready(function() {
 	//Get scripts for server interaction
 	$.getScript("js/user/session.js", function(){
-		console.log(LetsDoThis.Session.getInstance().getAuthToken());		
+		console.log(LetsDoThis.Session.getInstance().getAuthToken());
 	});
 	$.getScript("js/serverInteractions/eventServerInteraction.js"); //Event-Server
 
@@ -13,7 +13,7 @@ $(document).ready(function() {
 	});
 
 	$("#findLocationButton").click(function(){
-		window.location="venueSearch.html";
+		window.open("venueSearch.html");
 	});
 
 	$("#saveButton").click(function(){
@@ -29,6 +29,13 @@ $(document).ready(function() {
 	});
 });
 
+//This function is used by the location button to call back on
+function setLocation(name, address){
+	if(name==null||address==null){ //Ensure neither is null
+		throw "Name or address was null when setting location";
+	}
+	$("#locationField").val(name + ": " + address); //Set the location box
+}
 //This function assumes a format of:
 // Date: YYYY-MM-DD
 // Time: hh:mm

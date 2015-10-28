@@ -25,9 +25,18 @@ function parseAndPrint(object){
     var addressCode = address + ', ' + city;
     var reviewCode = '<img src=' + ratingImage + '> ' + numReviews + ' Reviews';
 
-    var cells = '<tr><td>' + nameCode + '</td></tr>' +
+    // This is a mess
+    // Basically the structure is having a table with two rows (one empty used for spacing).
+    // In the first row, there are two cells.
+    //   The first cell contains another table which has all the details.
+    //   The second cell contains a button allowing the user to select that location.
+    var cells = '<tr><td>' +
+    '<table><tr><td>' + nameCode + '</td></tr>' +
     '<tr><td>' + reviewCode + '</td></tr>' +
     '<tr><td>' + addressCode + '</td></tr>' +
+    '</td></table><td>' +
+    '<button onclick=\"returnToEventCreation(\'' + name + '\', \'' + address + '\');\">Select ' + name + '!</button>' + //This will allow us to fill the location field in on the event creation page
+    '</td></tr>' +
     '<tr><td><br></td></tr>'; //Empty row to make it a bit nicer
     tableHTML = tableHTML.concat(cells);
   }
