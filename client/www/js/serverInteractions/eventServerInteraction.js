@@ -38,10 +38,11 @@ function sendToServer(name, start, end, budget, location){
 	});
 }
 
+// This will get events from the server AND call some callback function. This is because the ajax call runs async, so we need
+// to create the content boxes after a success
 function getEvents(callback){
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-	// This will get events from the server AND call createContentBoxes. This is because the ajax call runs async, so we need
-	// to create the content boxes after a success
+
 	$.ajax({
 		type: 'GET',
 		url: "http://159.203.12.88/api/events/",
@@ -62,7 +63,7 @@ function getEvents(callback){
 function getEvent(eventId, callback){
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/";
-	
+
 	$.ajax({
 		type: 'GET',
 		url: eventUrl,
@@ -78,7 +79,6 @@ function getEvent(eventId, callback){
 			console.log(e);
 		}
 	});
-
 }
 
 
@@ -87,17 +87,17 @@ function rsvpToEvent(eventId, rsvpStatus){
 	// - "invites"
 	// - "accepts"
 	// - "declines"
-	
+
 	console.log('Prepping to RSVP to event.');
 
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	var userId = LetsDoThis.Session.getInstance().getUserId();
-	
+
 	var userList = [userId.toString()]; // has to be a list
 	var postData = {
 		rsvpStatus: userList
 	};
-	
+
 	var rsvpUrl = "http://159.203.12.88/api/events/"+eventId+"/";
 
 	$.ajax({
@@ -106,7 +106,7 @@ function rsvpToEvent(eventId, rsvpStatus){
 		beforeSend: function(xhr) {
 				xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
-		data: JSON.stringify(postData), 
+		data: JSON.stringify(postData),
 		contentType: 'application/json',
 		dataType: 'json',
 		success: function (resp) {
