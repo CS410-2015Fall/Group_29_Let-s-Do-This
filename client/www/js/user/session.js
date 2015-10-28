@@ -38,7 +38,7 @@ LetsDoThis.Session = (function () {
                 window.localStorage.setItem(userIdKey, JSON.stringify(sessionData));
             },
 
-            getUserId: function (sessionData) {
+            getUserId: function () {
                 var result = null;
 
                 try {
@@ -55,7 +55,7 @@ LetsDoThis.Session = (function () {
                 window.localStorage.setItem(userInfoKey, JSON.stringify(sessionData));
             },
 
-            getUserInfo: function(sessionData) {
+            getUserInfo: function() {
                 var result = null;
 
                 try {
@@ -71,7 +71,7 @@ LetsDoThis.Session = (function () {
                 window.localStorage.setItem(userFriendsKey, JSON.stringify(sessionData));
             },
 
-            getUserFriends: function(sessionData) {
+            getUserFriends: function() {
                 var result = null;
 
                 try {
