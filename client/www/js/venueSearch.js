@@ -32,8 +32,10 @@ $(document).ready(function() {
 });
 
 //This function will return the selected name and address to the createEvent page
-function returnToEventCreation(name, address){
-  console.log("Returning: " + name + ": " + address + "to createEvent");
-  window.opener.setLocation(name, address);
-  window.close();
+function returnToCreateEvent(name, address){
+  console.log("Saving: " + name + ": " + address + "to storage");
+  localStorage.setItem("yelpLocationName", name);
+  localStorage.setItem("yelpLocationAddress", address);
+  localStorage.setItem("arrivingFromYelp", 1);
+  window.location = "createEvent.html";
 }

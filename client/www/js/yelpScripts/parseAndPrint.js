@@ -35,7 +35,7 @@ function parseAndPrint(object){
     '<tr><td>' + reviewCode + '</td></tr>' +
     '<tr><td>' + addressCode + '</td></tr>' +
     '</td></table><td>' +
-    '<button onclick=\"returnToEventCreation(\'' + name + '\', \'' + address + '\');\">Select ' + name + '!</button>' + //This will allow us to fill the location field in on the event creation page
+    '<button onclick=\"returnToCreateEvent(\'' + name + '\', \'' + address + '\');\">Select ' + name + '!</button>' + //This will allow us to fill the location field in on the event creation page
     '</td></tr>' +
     '<tr><td><br></td></tr>'; //Empty row to make it a bit nicer
     tableHTML = tableHTML.concat(cells);

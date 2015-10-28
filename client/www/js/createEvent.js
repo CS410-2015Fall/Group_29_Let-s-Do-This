@@ -2,6 +2,13 @@ var invitedGuests = [];
 var attendingGuests = [];
 
 $(document).ready(function() {
+	//Did we arrive here from venueSearch?
+	if(localStorage.getItem("arrivingFromYelp") == 1){
+		//We just came from the venueSearch, so there may be values we wish to reload
+		reloadValues();
+		localStorage.setItem("arrivingFromYelp", 0);
+	}
+
 	//Get scripts for server interaction
 	$.getScript("js/user/session.js", function(){
 		console.log(LetsDoThis.Session.getInstance().getAuthToken());
@@ -13,7 +20,11 @@ $(document).ready(function() {
 	});
 
 	$("#findLocationButton").click(function(){
-		window.open("venueSearch.html");
+		//We will have to redirect to venueSearch, causing us to lose all our values
+		//Save already filled fields into storage
+		saveValuesToStorage();
+		//And redirect
+		window.location="venueSearch.html";
 	});
 
 	$("#saveButton").click(function(){
@@ -42,4 +53,37 @@ function setLocation(name, address){
 // and outputs YYYY-MM-DDThh:mm
 function formatTime(date, time){
 	return date.concat('T').concat(time);
+}
+
+//Save everything in the textboxes to storage to restore it later
+function saveValuesToStorage(){
+	//Get the current values
+	var name = document.getElementById('nameField').value;
+	var date = document.getElementById('dateField').value;
+	var startTime = document.getElementById('startTimeField').value;
+	var endTime = document.getElementById('endTimeField').value;
+	var location = document.getElementById('locationField').value;
+
+	//Put them in storage
+	localStorage.setItem("currentEventName", name);
+	localStorage.setItem("currentEventDate", date);
+	localStorage.setItem("currentEventStart", startTime);
+	localStorage.setItem("currentEventEnd", endTime);
+	localStorage.setItem("currentEventLocation", location);
+}
+
+//Load previous values back into the textboxes
+function reloadValues(){
+	document.getElementById('nameField').value = localStorage.getItem("currentEventName");
+	document.getElementById('dateField').value = localStorage.getItem("currentEventDate");
+	document.getElementById('startTimeField').value = localStorage.getItem("currentEventStart");
+	document.getElementById('endTimeField').value = localStorage.getItem("currentEventEnd");
+
+	//Do we have a new location due to venueSearch?
+	if(localStorage.getItem("arrivingFromYelp") == 1){
+		//We just came from the venueSearch, so there may be values we wish to reload
+		document.getElementById('locationField').value = localStorage.getItem("yelpLocationName") + ": " + localStorage.getItem("yelpLocationAddress");
+	} else {
+		document.getElementById('locationField').value = localStorage.getItem("currentEventLocation");
+	}
 }
