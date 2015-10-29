@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+<script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
+<script src="js/event.js"></script>
+
+
+<div data-role="header" id="header">
+	<fieldset class="ui-grid-a">
+		<div class="ui-block-a" align="left">
+			<button type="submit" id="backButton" data-theme="a">Back</button>
+		</div>
+		<div class="ui-block-b" align="right">
+			<button type="submit" id="rsvpButton" data-theme="a">RSVP</button>
+			<!-- <button type="submit" id="editButton" data-theme="a">edit</button>
+			if user is an admin, RSVP button is replaced by edit button. -->
+		</div>
+	</fieldset>
+</div><!-- /header -->
+
+<div data-role="mainContent">
+
+	<div id="eventName">
+	</div>
+	<div id="dateTime">
+	</div>
+	<div id="location">
+	</div>
+	<div id="guests">
+		<a href="#friendsPopup" data-rel="popup" data-role="button" id="inviteWindowButton">Invite</a>
+
+	</div>
+
+	<div id="comments">
+	</div>
+
+
+</div>
+
+<div id="friendsPopup" data-role="popup">
+	<div data-role="content">
+		<fieldset data-role="controlgroup">
+			<label for="tom">Tom</label>
+			<input type="checkbox" name="friend" id="tom" value="tom">
+			<label for="dick">Dick</label>
+			<input type="checkbox" name="friend" id="dick" value="dick">
+			<label for="harry">Harry</label>
+			<input type="checkbox" name="friend" id="harry" value="harry">
+			<label for="sally">Sally</label>
+			<input type="checkbox" name="friend" id="sally" value="sally">
+		</fieldset>
+		<button type="submit" id="inviteButton" data-theme="a">Add Guests</button>
+	</div>
+</div>
+
