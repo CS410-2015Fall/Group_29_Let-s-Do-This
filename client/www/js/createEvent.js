@@ -15,7 +15,7 @@ $(document).ready(function() {
 	});
 	$.getScript("js/serverInteractions/eventServerInteraction.js"); //Event-Server
 
-	$("#backButton").click(function(){
+	$("#homeButton").click(function(){
 		window.location="home.html";
 	});
 
@@ -33,12 +33,26 @@ $(document).ready(function() {
 		var startTime = document.getElementById('startTimeField').value;
 		var endTime = document.getElementById('endTimeField').value;
 
-		//Format the times appropriately
-		var startTimeFormatted = formatTime(date, startTime);
-		var endTimeFormatted = formatTime(date, endTime);
-		sendToServer(name, startTimeFormatted, endTimeFormatted);
+		if (name != "" &&
+			date != "" &&
+			startTime != "") {
+			//Format the times appropriately
+
+			var startTimeFormatted = formatTime(date, startTime);
+			var endTimeFormatted = formatTime(date, endTime);
+			sendToServer(name, startTimeFormatted, endTimeFormatted);
+
+			var newEvent = eventBuilder(name, date, startTime, endTime, document.getElementById('locationField').value);
+
+			openEvent(newEvent);
+		}
 	});
 });
+
+function openEvent(destinationEvent) {
+	localStorage.setItem("eventObj", JSON.stringify(destinationEvent));
+	window.location="event.html";
+}
 
 //This function is used by the location button to call back on
 function setLocation(name, address){
@@ -86,4 +100,22 @@ function reloadValues(){
 	} else {
 		document.getElementById('locationField').value = localStorage.getItem("currentEventLocation");
 	}
+}
+
+function eventBuilder(name, date, start, end, location) {
+	var newEvent  = {
+		display_name: name,
+		start_date:{date:date,time:start},
+		end_date:{date:date,time:end},
+		budget:0, // TODO
+		location:location,
+		hosts:["you"],
+		invites:[],
+		accepts:[],
+		declines:[],
+		comments:[{post_date:{date:"2015-12-25",time:"04:01:00"},content:"this is a comment"}]};
+
+							alert(":(");
+
+	return newEvent;
 }
