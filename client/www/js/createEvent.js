@@ -113,7 +113,7 @@ function eventBuilder(name, date, start, end, location) {
 		invites:[],
 		accepts:[],
 		declines:[],
-		comments:[{post_date:{date:"2015-12-25",time:"08:01:00"},content:"this is a comment"}]};
+		comments:[]};
 
 	return newEvent;
 }

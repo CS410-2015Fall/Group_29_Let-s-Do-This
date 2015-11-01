@@ -25,8 +25,8 @@ $(document).ready(function() {
 
 		// update server
 		// update UI
-		var tempDrunkListVariableName = formatComments(list);
-		createContentBoxes(tempDrunkListVariableName,$("#comments"));
+		var uiFormattedComments = formatComments(list);
+		createContentBoxes(uiFormattedComments,$("#comments"));
 
 
 		$('textarea#commentTextArea').val("");
