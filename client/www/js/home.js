@@ -10,7 +10,7 @@ var tempFakeEventData = [
 {head:"Event3",body:"yup, you guessed it",eventId:""},
 {head:"These boxes are cool",body:"because they're generated dynamically from an array of strings",eventId:""}];
 
-var tempFakeFriends = ["the styling","is clearly","not loading","correctly","click the x","in \"Filter Items...\"","Tom","Dick","Harry","Sally","Wolfgang","Emil","Mathias","Magnus","Jonas","William","Oliver","Noah","Adrian","Tobias","Elias","Daniel","Henrik","Sebastian","Lucas","Martin","Andreas","Benjamin","Leon","Sander","Alexander","Liam","Isak","Jakob","Kristian","Aksel","Julian","Fredrik","Sondre","Johannes","Erik","Marius","Jonathan","Filip"];
+// var tempFakeFriends = ["the styling","is clearly","not loading","correctly","click the x","in \"Filter Items...\"","Tom","Dick","Harry","Sally","Wolfgang","Emil","Mathias","Magnus","Jonas","William","Oliver","Noah","Adrian","Tobias","Elias","Daniel","Henrik","Sebastian","Lucas","Martin","Andreas","Benjamin","Leon","Sander","Alexander","Liam","Isak","Jakob","Kristian","Aksel","Julian","Fredrik","Sondre","Johannes","Erik","Marius","Jonathan","Filip"];
 
 
 $(document).ready(function() {
@@ -18,75 +18,59 @@ $(document).ready(function() {
 	$.getScript("js/serverInteractions/eventServerInteraction.js");
 
 	console.log("Loading home page script");
-	createContentBoxes(tempFakeNotificationData);
+	createContentBoxes(tempFakeNotificationData,$("#mainContent"));
 	loadFriends();
 
 	$("#notificationsButton").click(function(){
-		createContentBoxes(tempFakeNotificationData);
+		createContentBoxes(tempFakeNotificationData,$("#mainContent"));
 	});
+
 	$("#eventsButton").click(function(){
 		getEvents(function(resp){
-			var formattedEvents = formatEvents(resp); //Format the results for createContentBoxes
-			createContentBoxes(formattedEvents);
+			var formattedEvents = formatEvents(resp);
+			createContentBoxes(formattedEvents,$("#mainContent"));
 		});
 	});
+
 	$("#calendarButton").click(function(){
 		$("#mainContent").html("");
 		$("#mainContent").append("<strong>TODO</strong>");
 	});
+
 	$("#createEventButton").click(function(){
 		window.location="createEvent.html";
 	});
-	$("#profileButton").click(function(){
 
+	$("#profileButton").click(function(){
 	});
 	$("#friendsButton").click(function(){
-	});
-
-	$("#box").click(function(){
-
 	});
 
 	handleContentBoxLinks();
 });
 
-function createContentBoxes(boxes) {
-	$("#mainContent").html("");
-	$.each( boxes, function( index, value ){
-		$("#mainContent").append(
-			'<div id="box" eventId="'
-			+ value.eventId
-			+'"><p><strong>'
-			+ value.head
-			+ '</strong><br>'
-			+ value.body
-			+ '</p></div>');
-	});
-}
-
 function handleContentBoxLinks() {
 	$(document).on("click", '#mainContent div', function(e) {
 		if ($(this).attr("id") == "box") {
-
 			var destinationEvent;
-	// get the event data from the server using eventId
-	var eventId = $(this).attr("eventId");
-	// for now here's some temp fake data
-	destinationEvent = {
-		display_name:"Temp Fake Event",
-		start_date:{date:"1993-10-05",time:"12:34:56"},
-		end_date:{date:"1995-10-05",time:"12:34:56"},
-		budget:1000000.00,
-		location:"123 sesame st",
-		hosts:[],
-		invites:[],
-		accepts:[],
-		declines:[],
-		comments:[{post_date:{date:"2015-12-25",time:"04:01:00"},content:"this is a comment"}]};
+			// get the event data from the server
+			var eventId = $(this).attr("eventId");
+			// for now here's some temp fake event data
+			destinationEvent = {
+				display_name:"Temp Fake Event",
+				start_date:{date:"1993-10-05",time:"12:34:56"},
+				end_date:{date:"1995-10-05",time:"12:34:56"},
+				budget:1000000.00,
+				location:"123 sesame st",
+				hosts:[],
+				invites:[],
+				accepts:[],
+				declines:[],
+				comments:[{post_date:{date:"2015-12-25",time:"04:01:00"},content:"this is a comment",author:"ganesha"},{post_date:{date:"2015-12-25",time:"04:02:00"},content:"this is another one",author:"sun wukong"}]};
 
-		openEvent(destinationEvent);
-	}
-});
+			openEvent(destinationEvent);
+		}
+	});
 }
 
 function openEvent(destinationEvent) {

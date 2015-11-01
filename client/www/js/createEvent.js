@@ -107,15 +107,13 @@ function eventBuilder(name, date, start, end, location) {
 		display_name: name,
 		start_date:{date:date,time:start},
 		end_date:{date:date,time:end},
-		budget:0, // TODO
+		budget:0,
 		location:location,
 		hosts:["you"],
 		invites:[],
 		accepts:[],
 		declines:[],
-		comments:[{post_date:{date:"2015-12-25",time:"04:01:00"},content:"this is a comment"}]};
-
-							alert(":(");
+		comments:[{post_date:{date:"2015-12-25",time:"08:01:00"},content:"this is a comment"}]};
 
 	return newEvent;
 }

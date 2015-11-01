@@ -2,6 +2,7 @@
 <script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
 <script src="js/event.js"></script>
+<script src="js/global.js"></script>
 
 
 <div data-role="header" id="header">
@@ -19,18 +20,21 @@
 
 <div data-role="content" id="mainContent">
 
-	<div id="eventName"></div>
-	<div id="dateTime"></div>
-	<div id="location"></div>
-	<div id="guests">
-		<a href="#friendsPopup" data-rel="popup" data-role="button" id="inviteWindowButton">Invite</a><br>
-
+	<div class="ui-field-contain" id="eventName"></div>
+	<div class="ui-field-contain" id="dateTime"></div>
+	<div class="ui-field-contain" id="location"></div>
+	<div class="ui-field-contain" id="guests">
+		<a href="#friendsPopup" data-rel="popup" data-role="button" data-inline="true" id="inviteWindowButton">Guests</a><br>
 	</div>
 
 	<div id="comments">
 	</div>
-
-
+	<div class="ui-field-contain" id="newComment">
+		<form id="commentForm">
+		<textarea name="comment" id="commentTextArea"></textarea>
+		<input type="submit" data-inline="true" value="Comment">
+		</form>
+	</div>
 </div>
 
 <div id="friendsPopup" data-role="popup">
@@ -45,7 +49,7 @@
 			<label for="sally">Sally</label>
 			<input type="checkbox" name="friend" id="sally" value="sally">
 		</fieldset>
-		<button type="submit" id="inviteButton" data-theme="a">Add Guests</button>
+		<button type="submit" id="inviteButton" data-theme="a">Okay</button>
 	</div>
 </div>
 

@@ -1,12 +1,9 @@
-
-
 $(document).ready(function() {
 	var eventData = JSON.parse( localStorage.getItem("eventObj") );
 	loadEventData(eventData);
 
 	$("#inviteButton").click(function(){
-		var invited = handleInviteCheckBoxes();
-
+		var invited = getGuestValues();
 		$("#friendsPopup").popup("close");
 	});
 
@@ -14,6 +11,26 @@ $(document).ready(function() {
 		window.location="home.html";
 	});
 
+	$("#commentForm").submit(function(event) {
+		event.preventDefault(); //do not redirect page
+
+		var newComment = {
+			author: "",
+			post_date: {date:"monday",time:"noon"},
+			content: $('textarea#commentTextArea').val()};
+
+		var list = eventData.comments;
+
+		list.push(newComment);
+
+		// update server
+		// update UI
+		var tempDrunkListVariableName = formatComments(list);
+		createContentBoxes(tempDrunkListVariableName,$("#comments"));
+
+
+		$('textarea#commentTextArea').val("");
+	});
 });
 
 function loadEventData(e) {
@@ -28,12 +45,25 @@ function loadEventData(e) {
 	}
 
 	$("#location").html("Location: " + e.location);
-
 //guests
-//comments
+var comments = formatComments(e.comments);
+ createContentBoxes(comments,$("#comments"));
 }
 
-function handleInviteCheckBoxes() {
+function formatComments(comments) {
+	var formattedComments = [];
+	$.each( comments, function( index, comment ){
+		var h = comment.author + " commented at " + comment.post_date.time + " on " + comment.post_date.date;
+
+		var c = {head: h,
+				body:comment.content,
+				eventId:""};
+		formattedComments.push(c);
+	});
+	return formattedComments;
+}
+
+function getGuestValues() {
 	var ancestor = document.getElementById('friendsPopup'),
 	descendents = ancestor.getElementsByTagName('input');
 	var i, e;
