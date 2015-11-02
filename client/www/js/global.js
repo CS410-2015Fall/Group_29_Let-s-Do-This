@@ -16,7 +16,6 @@ function createContentBoxes(boxes,divLocation) {
 	});
 }
 
-
 // server interface
 function newEvent(event) {
 	// push new event to server
@@ -50,45 +49,63 @@ function userToHost(user, event) {
 // pull values from server using object IDs
 function getUser(userId) {
 	// get data from server
-		var u = {user:"",
-			friends:[],
-			email:"",
-			phone:0,
-			user_id: userId};
+	var u = {user:"",
+	friends:[],
+	email:"",
+	phone:0,
+	user_id: userId};
 	return u;
 }
 
 function getEvent(eventId) {
 	// get data from server
-		var e = {display_name:"",
-			start_date:{date:"",time:""},
-			end_date:{date:"",time:""},
-			budget:0,
-			location:"",
-			hosts:[],
-			invites:[],
-			accepts:[],
-			declines:[],
-			comments:[],
-			shopping_list:"",
-			event_id:event_id};
+	var e = {display_name:"",
+	start_date:{date:"",time:""},
+	end_date:{date:"",time:""},
+	budget:0,
+	location:"",
+	hosts:[],
+	invites:[],
+	accepts:[],
+	declines:[],
+	comments:[],
+	shopping_list:"",
+	event_id:event_id};
 	return e;
 }
 
 function getComment(commentId) {
 	// get data from server
 	var c = {post_date:{date:"", time:""},
-			content:"",
-			author:"",
-			comment_id:comment_id};
+	content:"",
+	author:"",
+	comment_id:comment_id};
 	return c;
 }
 
 // conversion
 function convertDate(dateObject) {
-	return "monday";
+	// var now = currentDate();
+	// if (now.getFullYear() != dateObject.getFullYear()) {
+
+	// } else {
+
+	// }
+	return dateObject.toDateString();
 }
 
 function convertTime(dateObject) {
-	return "noon";
+	var hour = dateObject.getHours();
+	var minute = dateObject.getMinutes();
+
+	if (minute == 0) {
+		minute = "o'clock";
+	} else {
+		minute = ":" + minute;
+	}
+	return "" + hour + minute;
+}
+
+function currentDate() {
+	return new Date($.now());
 }

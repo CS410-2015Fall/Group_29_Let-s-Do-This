@@ -11,17 +11,24 @@ $(document).ready(function() {
 		window.location="home.html";
 	});
 
+	$("#rsvpButton").click(function(){
+		var userId = 0; // get your own userId
+		userToAttending(userId,eventData.event_id);
+		$("#rsvpButton").attr('disabled', 'true');
+		$( "#rsvpPopup" ).popup( "open" )
+	});
+
 	$("#commentForm").submit(function(event) {
 		event.preventDefault(); //do not redirect page
+		var currentDateTime = currentDate();
 
 		var newComment = {
 			author: "",
-			post_date: {date:"monday",time:"noon"},
+			post_date: currentDateTime,
 			content: $('textarea#commentTextArea').val()};
 
-			var list = eventData.comments;
-
-			list.push(newComment);
+		var list = eventData.comments;
+		list.push(newComment);
 
 		// update server
 		// TODO

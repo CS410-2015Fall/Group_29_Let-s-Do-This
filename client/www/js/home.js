@@ -58,15 +58,15 @@ function handleContentBoxLinks() {
 			// for now here's some temp fake event data
 			destinationEvent = {
 				display_name:"Temp Fake Event",
-				start_date:{date:"1993-10-05",time:"12:34:56"},
-				end_date:{date:"1995-10-05",time:"12:34:56"},
+				start_date:{date:"1993-10-05T12:34:56Z"},
+				end_date:{date:"1995-10-05T12:34:56Z"},
 				budget:1000000.00,
 				location:"123 sesame st",
 				hosts:[],
 				invites:[],
 				accepts:[],
 				declines:[],
-				comments:[{post_date:{date:"2015-12-25",time:"04:01:00"},content:"this is a comment",author:"ganesha"},{post_date:{date:"2015-12-25",time:"04:02:00"},content:"this is another one",author:"sun wukong"}]};
+				comments:[]};
 
 			openEvent(destinationEvent);
 		}
