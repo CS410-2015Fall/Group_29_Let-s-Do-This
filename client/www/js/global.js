@@ -35,7 +35,7 @@ function getUser(userId) {
 			friends:[],
 			email:"",
 			phone:0,
-			userId: user_id};
+			user_id: userId};
 	return u;
 }
 
@@ -52,7 +52,7 @@ function getEvent(eventId) {
 			declines:[],
 			comments:[],
 			shopping_list:"",
-			eventId:event_id};
+			event_id:event_id};
 	return e;
 }
 
@@ -61,6 +61,6 @@ function getComment(commentId) {
 	var c = {post_date:{date:"", time:""},
 			content:"",
 			author:"",
-			commentId:comment_id};
+			comment_id:comment_id};
 	return c;
 }

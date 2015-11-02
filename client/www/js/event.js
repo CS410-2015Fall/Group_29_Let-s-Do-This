@@ -24,6 +24,8 @@ $(document).ready(function() {
 			list.push(newComment);
 
 		// update server
+		// TODO
+
 		// update UI
 		var uiFormattedComments = formatComments(list);
 		createContentBoxes(uiFormattedComments,$("#comments"));
@@ -77,11 +79,11 @@ function loadGuests(event) {
 	});
 
 	// get user information corresponding to the userIds
-	var hosts = $.map(event.hosts, function(val,key){return getItem(val);});
-	var accepts = $.map(event.accepts, function(val,key){return getItem(val);});
-	var invites = $.map(event.invites, function(val,key){return getItem(val);});
-	var friends = $.map(friendIds, function(val,key){return getItem(val);});
-	var declines = $.map(event.declines, function(val,key){return getItem(val);});
+	var hosts = $.map(event.hosts, function(val,key){return getUser(val);});
+	var accepts = $.map(event.accepts, function(val,key){return getUser(val);});
+	var invites = $.map(event.invites, function(val,key){return getUser(val);});
+	var friends = $.map(friendIds, function(val,key){return getUser(val);});
+	var declines = $.map(event.declines, function(val,key){return getUser(val);});
 
 	// TEMP FAKE DATA
 	hosts = [{user:"ted furgusun",friends:[],email:"",phone:0,user_id: 1234}];
@@ -112,7 +114,7 @@ function updateGuestListUi(hosts,accepts,invites,friends,declines) {
 		s = s.concat('<input type="checkbox" name="friend" id="' + user.user_id + '" value="' + user.user_id + '"><label for="' + user.user_id + '">' + user.user + '</label>');
 	});
 	$.each(declines, function( i, user) {
-		s = s.concat('<input type="checkbox" name="decline" id="' + user.user_id + '" value="' + user.user_id + '" checked="false" disabled="true"><label for="' + user.user_id + '">' + user.user + ' (not attending)</label>');
+		s = s.concat('<input type="checkbox" name="decline" id="' + user.user_id + '" value="' + user.user_id + '" checked="false" disabled="true"><label for="' + user.user_id + '">' + user.user + ' (not attending)</label>	');
 	});
 
 	// write giant string of html to DOM

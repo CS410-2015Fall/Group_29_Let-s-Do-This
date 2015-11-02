@@ -21,7 +21,7 @@ $(document).ready(function() {
 		//Save already filled fields into storage
 		saveValuesToStorage();
 		//And redirect
-		window.open("venueSearch.html");
+		window.location ="venueSearch.html";
 	});
 
 	$("#saveButton").click(function(){
