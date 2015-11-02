@@ -10,8 +10,6 @@ var tempFakeEventData = [
 {head:"Event3",body:"yup, you guessed it",eventId:""},
 {head:"These boxes are cool",body:"because they're generated dynamically from an array of strings",eventId:""}];
 
-// var tempFakeFriends = ["the styling","is clearly","not loading","correctly","click the x","in \"Filter Items...\"","Tom","Dick","Harry","Sally","Wolfgang","Emil","Mathias","Magnus","Jonas","William","Oliver","Noah","Adrian","Tobias","Elias","Daniel","Henrik","Sebastian","Lucas","Martin","Andreas","Benjamin","Leon","Sander","Alexander","Liam","Isak","Jakob","Kristian","Aksel","Julian","Fredrik","Sondre","Johannes","Erik","Marius","Jonathan","Filip"];
-
 
 $(document).ready(function() {
 	//Get the script to get events
@@ -33,8 +31,7 @@ $(document).ready(function() {
 	});
 
 	$("#calendarButton").click(function(){
-		$("#mainContent").html("");
-		$("#mainContent").append("<strong>TODO</strong>");
+		$("#mainContent").html("<strong>TODO</strong>");
 	});
 
 	$("#createEventButton").click(function(){
@@ -52,9 +49,9 @@ $(document).ready(function() {
 function handleContentBoxLinks() {
 	$(document).on("click", '#mainContent div', function(e) {
 		if ($(this).attr("id") == "box") {
-			var destinationEvent;
-			// get the event data from the server
 			var eventId = $(this).attr("eventId");
+			var destinationEvent;
+			// get the event data from the server using eventId
 			// for now here's some temp fake event data
 			destinationEvent = {
 				display_name:"Temp Fake Event",
@@ -63,10 +60,11 @@ function handleContentBoxLinks() {
 				budget:1000000.00,
 				location:"123 sesame st",
 				hosts:[],
-				invites:[],
-				accepts:[],
+				invites:[{user:"oprah!",friends:[],email:"",phone:0,user_id: 5432},{user:"siddhartha",friends:[],email:"",phone:0,user_id: 5132}],
+				accepts:[{user:"kali fornia",friends:[],email:"",phone:0,user_id: 1321},{user:"billy lee",friends:[],email:"",phone:0,user_id: 1233}],
 				declines:[],
-				comments:[]};
+				comments:[],
+				event_id: eventId};
 
 			openEvent(destinationEvent);
 		}
