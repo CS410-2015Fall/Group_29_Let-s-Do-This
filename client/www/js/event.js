@@ -28,7 +28,6 @@ $(document).ready(function() {
 		var uiFormattedComments = formatComments(list);
 		createContentBoxes(uiFormattedComments,$("#comments"));
 
-
 		$('textarea#commentTextArea').val("");
 	});
 });
@@ -45,11 +44,11 @@ function loadEventData(e) {
 	}
 
 	$("#location").html("Location: " + e.location);
-//guests
-loadGuests(e);
 
-var comments = formatComments(e.comments);
-createContentBoxes(comments,$("#comments"));
+	loadGuests(e);
+
+	var comments = formatComments(e.comments);
+	createContentBoxes(comments,$("#comments"));
 }
 
 function loadGuests(event) {
@@ -87,12 +86,12 @@ function loadGuests(event) {
 	// TEMP FAKE DATA
 	hosts = [{user:"ted furgusun",friends:[],email:"",phone:0,user_id: 1234}];
 	accepts = [{user:"kali fornia",friends:[],email:"",phone:0,user_id: 1321},
-		{user:"billy lee",friends:[],email:"",phone:0,user_id: 1233}];
+	{user:"billy lee",friends:[],email:"",phone:0,user_id: 1233}];
 	invites = [{user:"oprah!",friends:[],email:"",phone:0,user_id: 5432},
-		{user:"siddhartha",friends:[],email:"",phone:0,user_id: 5132}];
+	{user:"siddhartha",friends:[],email:"",phone:0,user_id: 5132}];
 	friends = [{user:"mario",friends:[],email:"",phone:0,user_id: 6354},
-		{user:"luigi",friends:[],email:"",phone:0,user_id: 9448},
-		{user:"toad",friends:[],email:"",phone:0,user_id: 0987}];
+	{user:"luigi",friends:[],email:"",phone:0,user_id: 9448},
+	{user:"toad",friends:[],email:"",phone:0,user_id: 0987}];
 	declines = [{user:"bowser",friends:[],email:"",phone:0,user_id: 1233}];
 	updateGuestListUi(hosts,accepts,invites,friends,declines);
 }
@@ -101,19 +100,19 @@ function updateGuestListUi(hosts,accepts,invites,friends,declines) {
 	//create html for list of users associated with event
 	var s = "";
 	$.each(hosts, function( i, user) {
-		s = s.concat('<label for="' + user.user_id + '">' + user.user + ' (host)</label><input type="checkbox" name="host" checked="true" disabled="true" id="' + user.user_id + '" value="' + user.user_id + '">');
+		s = s.concat('<input type="checkbox" name="host" checked="true" disabled="true" id="' + user.user_id + '" value="' + user.user_id + '"><label for="' + user.user_id + '">' + user.user + ' (host)</label>');
 	});
 	$.each(accepts, function( i, user) {
-		s = s.concat('<label for="' + user.user_id + '">' + user.user + ' (attending)</label><input type="checkbox" name="accept" id="' + user.user_id + '" value="' + user.user_id + '" checked="true" disabled="true">');
+		s = s.concat('<input type="checkbox" name="accept" id="' + user.user_id + '" value="' + user.user_id + '" checked="true" disabled="true"><label for="' + user.user_id + '">' + user.user + ' (attending)</label>');
 	});
 	$.each(invites, function( i, user) {
-		s = s.concat('<label for="' + user.user_id + '">' + user.user + ' (invited)</label><input type="checkbox" name="invite" id="' + user.user_id + '" value="' + user.user_id + '" checked="true">');
+		s = s.concat('<input type="checkbox" name="invite" id="' + user.user_id + '" value="' + user.user_id + '" checked="true"><label for="' + user.user_id + '">' + user.user + ' (invited)</label>');
 	});
 	$.each(friends, function( i, user) {
-		s = s.concat('<label for="' + user.user_id + '">' + user.user + '</label><input type="checkbox" name="friend" id="' + user.user_id + '" value="' + user.user_id + '">');
+		s = s.concat('<input type="checkbox" name="friend" id="' + user.user_id + '" value="' + user.user_id + '"><label for="' + user.user_id + '">' + user.user + '</label>');
 	});
 	$.each(declines, function( i, user) {
-		s = s.concat('<label for="' + user.user_id + '">' + user.user + ' (not attending)</label><input type="checkbox" name="decline" id="' + user.user_id + '" value="' + user.user_id + '" checked="false" disabled="true">');
+		s = s.concat('<input type="checkbox" name="decline" id="' + user.user_id + '" value="' + user.user_id + '" checked="false" disabled="true"><label for="' + user.user_id + '">' + user.user + ' (not attending)</label>');
 	});
 
 	// write giant string of html to DOM
