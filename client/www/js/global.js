@@ -18,20 +18,39 @@ function createContentBoxes(boxes,divLocation) {
 
 
 // server interface
-// newEvent(event)
-// userAddToEvent(user,event)
-// userRemoveFromEvent(user,event)
+function newEvent(event) {
+	// push new event to server
+}
 
-// userToAttending(user, event)
-// userToDeclining(user, event)
-// userToHost(user, event)
-// userToInvited(user, event)
+function addUserToEvent(user,event) {
+	addUserToEvent(user,event,0);
+}
+function addUserToEvent(user,event,x) {
+	// push user to event.invited on server
+}
+function removeUserFromEvent(user,event) {
+	// whether user is invited, attending, declining, or host
+}
+
+function userToInvited(user, event) {
+
+}
+function userToAttending(user, event) {
+
+}
+function userToDeclining(user, event) {
+
+}
+function userToHost(user, event) {
+
+}
 
 // commentAddToEvent(comment,event)
 
+// pull values from server using object IDs
 function getUser(userId) {
-	// get user from server
-	var u = {user:"",
+	// get data from server
+		var u = {user:"",
 			friends:[],
 			email:"",
 			phone:0,
@@ -40,8 +59,8 @@ function getUser(userId) {
 }
 
 function getEvent(eventId) {
-	// hit server up
-	var e = {display_name:"",
+	// get data from server
+		var e = {display_name:"",
 			start_date:{date:"",time:""},
 			end_date:{date:"",time:""},
 			budget:0,
@@ -57,10 +76,19 @@ function getEvent(eventId) {
 }
 
 function getComment(commentId) {
-	// hit server up
+	// get data from server
 	var c = {post_date:{date:"", time:""},
 			content:"",
 			author:"",
 			comment_id:comment_id};
 	return c;
+}
+
+// conversion
+function convertDate(dateObject) {
+	return "monday";
+}
+
+function convertTime(dateObject) {
+	return "noon";
 }

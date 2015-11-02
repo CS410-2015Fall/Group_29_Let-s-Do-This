@@ -124,7 +124,7 @@ function updateGuestListUi(hosts,accepts,invites,friends,declines) {
 function formatComments(comments) {
 	var formattedComments = [];
 	$.each( comments, function( index, comment ){
-		var h = comment.author + " commented at " + comment.post_date.time + " on " + comment.post_date.date;
+		var h = comment.author + " commented at " + convertTime(comment.post_date) + " on " + convertDate(comment.post_date);
 
 		var c = {head: h,
 			body:comment.content,
@@ -147,5 +147,4 @@ function getGuestCheckboxValues() {
 	}
 	return invited;
 	// TODO ideally we want this function to have some more complicated logic.
-	// if guests are already invited, they should already be checked appropriately, if they have already accepted that should be visible and it should not be possible to uncheck (uninvite) them. if there is some kind of userId we should probably use that for the input id field.
 }
