@@ -1,6 +1,3 @@
-var invitedGuests = [];
-var attendingGuests = [];
-
 $(document).ready(function() {
 	//Did we arrive here from venueSearch?
 	if(localStorage.getItem("arrivingFromYelp") == 1){

@@ -1,8 +1,10 @@
 <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
 <script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
-<script src="js/event.js"></script>
-<script src="js/global.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/home.css">
+<script type="text/javascript" src="js/event.js"></script>
+<script type="text/javascript" src="js/global.js"></script>
 
 
 <div data-role="header" id="header">
@@ -39,16 +41,20 @@
 
 <div id="friendsPopup" data-role="popup">
 	<div data-role="content">
-		<fieldset data-role="controlgroup">
-			<label for="tom">Tom</label>
-			<input type="checkbox" name="friend" id="tom" value="tom">
+		<fieldset id="friendsPopup" data-role="controlgroup">
+		<label for="undefined">terd furgusun (host)</label>
+<input type="checkbox" name="friend" checked="true" disabled="true" id="undefined" value="undefined">
+<label for="undefined">billy lee (host)</label>
+<input type="checkbox" name="friend" checked="true" disabled="true" id="undefined" value="undefined">
+<!-- 			<label for="tom">Tom</label>
+			<input type="checkbox" checked="true" name="friend" id="tom" value="tom">
 			<label for="dick">Dick</label>
-			<input type="checkbox" name="friend" id="dick" value="dick">
+			<input type="checkbox" name="friend" checked="true" disabled="true" id="dick" value="dick">
 			<label for="harry">Harry</label>
 			<input type="checkbox" name="friend" id="harry" value="harry">
 			<label for="sally">Sally</label>
 			<input type="checkbox" name="friend" id="sally" value="sally">
-		</fieldset>
+ -->		</fieldset>
 		<button type="submit" id="inviteButton" data-theme="a">Okay</button>
 	</div>
 </div>
