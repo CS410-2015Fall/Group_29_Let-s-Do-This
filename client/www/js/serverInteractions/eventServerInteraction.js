@@ -45,7 +45,6 @@ function sendToServer(name, start, end, budget, location, callback){
 // to create the content boxes after a success
 function getEvents(callback){
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-	var userID = LetsDoThis.Session.getInstance().getUserId();
 	$.ajax({
 		type: 'GET',
 		url: "http://159.203.12.88/api/events/",
@@ -55,7 +54,7 @@ function getEvents(callback){
 		},
 		success: function (resp) {
 			console.log("Received events");
-			sortEvents(resp);
+			callback(sortEvents(resp));
 		},
 		error: function(e) {
 			console.log(e);
@@ -65,7 +64,7 @@ function getEvents(callback){
 
 //Sort through all the events and return only the ones of interest to the user
 function sortEvents(events){
-	// console.log(events);
+	var userID = LetsDoThis.Session.getInstance().getUserId();
 	// console.log(userID);
 	var releventEvents = []; //The running array events
 
@@ -86,7 +85,7 @@ function sortEvents(events){
 	}
 
 	//Send back to the callback function
-	callback(releventEvents);
+	return releventEvents;
 }
 
 
