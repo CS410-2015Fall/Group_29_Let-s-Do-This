@@ -1,10 +1,12 @@
 // These functions require the following formats
 // start: YYYY-MM-DDThh:mm
 // end: YYYY-MM-DDThh:mm
-
+$(document).ready(function() {
+	// console.log('eventServerInt loaded');
+});
 // TODO: add list of invited users to create event request (sendToServer)
 //       (or create separate function?)
-function sendToServer(name, start, end, budget, location){
+function sendToServer(name, start, end, budget, location, callback){
 	console.log('Prepping to create event on server.');
 
 	var host = ['1']; //Hosts has to be a list
@@ -18,7 +20,7 @@ function sendToServer(name, start, end, budget, location){
 	};
 
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-	console.log(authToken);
+	// console.log('Auth tok' + authToken);
 	$.ajax({
 		type: 'POST',
 		url: "http://159.203.12.88/api/events/",
@@ -30,6 +32,7 @@ function sendToServer(name, start, end, budget, location){
 		dataType: 'json',
 		success: function (resp) {
 			console.log("Created event");
+			callback();
 		},
 		error: function(e) {
 			console.log("Failed to create event: ");
@@ -58,33 +61,34 @@ function getEvents(callback){
 			console.log(e);
 		}
 	});
-
-	//Sort through all the events and return only the ones of interest to the user
-	function sortEvents(events){
-		// console.log(events);
-		// console.log(userID);
-		var releventEvents = []; //The running array events
-
-		for(i=0; i<events.length; i++){
-			if($.inArray(userID, events[i].hosts) > -1){
-				//User is a host of event
-				releventEvents.push(events[i]);
-			} else if($.inArray(userID, events[i].accepts) > -1){
-				//User is going to event
-				releventEvents.push(events[i]);
-			} else if($.inArray(userID, events[i].declines) > -1){
-				//User declined event
-				releventEvents.push(events[i]);
-			} else if($.inArray(userID, events[i].invites) > -1){
-				//User is invited to event
-				releventEvents.push(events[i]);
-			}
-		}
-
-		//Send back to the callback function
-		callback(releventEvents);
-	}
 }
+
+//Sort through all the events and return only the ones of interest to the user
+function sortEvents(events){
+	// console.log(events);
+	// console.log(userID);
+	var releventEvents = []; //The running array events
+
+	for(i=0; i<events.length; i++){
+		if($.inArray(userID, events[i].hosts) > -1){
+			//User is a host of event
+			releventEvents.push(events[i]);
+		} else if($.inArray(userID, events[i].accepts) > -1){
+			//User is going to event
+			releventEvents.push(events[i]);
+		} else if($.inArray(userID, events[i].declines) > -1){
+			//User declined event
+			releventEvents.push(events[i]);
+		} else if($.inArray(userID, events[i].invites) > -1){
+			//User is invited to event
+			releventEvents.push(events[i]);
+		}
+	}
+
+	//Send back to the callback function
+	callback(releventEvents);
+}
+
 
 function getEvent(eventId, callback){
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
@@ -142,5 +146,5 @@ function rsvpToEvent(eventId, rsvpStatus){
 			console.log("Failed to RSVP: ");
 			console.log(e);
 		}
-	})
+	});
 }

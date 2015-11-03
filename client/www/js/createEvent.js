@@ -11,7 +11,6 @@ $(document).ready(function() {
 		console.log(LetsDoThis.Session.getInstance().getAuthToken());
 	});
 	$.getScript("js/serverInteractions/eventServerInteraction.js"); //Event-Server
-
 	$("#homeButton").click(function(){
 		window.location="home.html";
 	});
@@ -29,19 +28,18 @@ $(document).ready(function() {
 		var date = document.getElementById('dateField').value;
 		var startTime = document.getElementById('startTimeField').value;
 		var endTime = document.getElementById('endTimeField').value;
+		var location = document.getElementById('locationField').value;
 
 		if (name != "" &&
-			date != "" &&
-			startTime != "") {
+		date != "" &&
+		startTime != "") {
 			//Format the times appropriately
-
 			var startTimeFormatted = formatTime(date, startTime);
 			var endTimeFormatted = formatTime(date, endTime);
-			sendToServer(name, startTimeFormatted, endTimeFormatted);
-
-			var newEvent = eventBuilder(name, date, startTime, endTime, document.getElementById('locationField').value);
-
-			openEvent(newEvent);
+			sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(){
+				var newEvent = eventBuilder(name, date, startTime, endTime, document.getElementById('locationField').value);
+			 	openEvent(newEvent);
+			});
 		}
 	});
 });
@@ -112,5 +110,5 @@ function eventBuilder(name, date, start, end, location) {
 		declines:[],
 		comments:[]};
 
-	return newEvent;
-}
+		return newEvent;
+	}
