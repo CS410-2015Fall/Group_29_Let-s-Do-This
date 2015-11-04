@@ -1,24 +1,25 @@
-$(document).ready(function() {
-    var eventData = JSON.parse( localStorage.getItem("eventObj") );
-    loadEventData(eventData);
+$.getScript("js/global.js", function() {
+    $(document).ready(function() {
+        var eventData = JSON.parse( localStorage.getItem("eventObj") );
+        loadEventData(eventData);
 
-    $("#inviteButton").click(function(){
-        var invited = getGuestCheckboxValues();
-        $("#friendsPopup").popup("close");
-    });
+        $("#inviteButton").click(function(){
+            var invited = getGuestCheckboxValues();
+            $("#friendsPopup").popup("close");
+        });
 
-    $("#homeButton").click(function(){
-        window.location="home.html";
-    });
+        $("#homeButton").click(function(){
+            window.location="home.html";
+        });
 
-    $("#rsvpButton").click(function(){
+        $("#rsvpButton").click(function(){
         var userId = 0; // get users's own userId
         // TODO change rsvp status for user in event on server
         $("#rsvpButton").attr('disabled', 'true');
         $("#rsvpPopup").popup( "open" )
     });
 
-    $("#commentForm").submit(function(event) {
+        $("#commentForm").submit(function(event) {
         event.preventDefault(); //do not redirect page
         var currentDateTime = currentDate();
         var author = LetsDoThis.Session.getInstance().getUserInfo();
@@ -29,6 +30,7 @@ $(document).ready(function() {
         };
         postComment(eventData,newComment);
     });
+    });
 });
 
 function loadEventData(e) {
@@ -36,10 +38,10 @@ function loadEventData(e) {
 
     var dateString = convertDate(e.start_date);//,e.end_date);
 
-    $("#dateTime").html(dateString);
-    $("#location").html("Location: " + e.location);
+$("#dateTime").html(dateString);
+$("#location").html("Location: " + e.location);
 
-    loadGuests(e);
+loadGuests(e);
 
     // TODO
     // if (you yourself are already marked as attending) {
@@ -63,43 +65,53 @@ function loadGuests(event) {
         });
         return l1;
     }
-    var all = [1,2,3,4,5,6];
-    var evens = [2,4,6,8,10];
 
     friendIds = reduceList(friendIds,event.invites);
     friendIds = reduceList(friendIds,event.accepts);
     friendIds = reduceList(friendIds,event.declines);
 
     // get user information corresponding to the userIds
-    var accepts = $.map(event.accepts, function(val,key){return getUser(val);});
-    var invites = $.map(event.invites, function(val,key){return getUser(val);});
-    var friends = $.map(friendIds, function(val,key){return getUser(val);});
-    var declines = $.map(event.declines, function(val,key){return getUser(val);});
+    var accepts = [];
+    jQuery.map(event.accepts, function(val,key){
+        getUser(val, function(resp) {
+            var u = {
+                username:resp.username,
+                userId:val
+            }
+            accepts.push(u);
+        });
+
+    });
+
+    var invites = jQuery.map(event.invites, function(val,key){ return getUserById(val);});
+    var friends = jQuery.map(friendIds, function(val,key){return getUserById(val);});
+    var declines = jQuery.map(event.declines, function(val,key){return getUserById(val);});
 
 // TEMP FAKE DATA
-friends = [{user:"mario",friends:[],email:"",phone:0,user_id: 6354},{user:"luigi",friends:[],email:"",phone:0,user_id: 9448},{user:"toad",friends:[],email:"",phone:0,user_id: 0987}];
-invites = [{user:"oprah!",friends:[],email:"",phone:0,user_id: 5432},{user:"siddhartha",friends:[],email:"",phone:0,user_id: 5132}];
-accepts = [{user:"kali fornia",friends:[],email:"",phone:0,user_id: 1321},{user:"billy lee",friends:[],email:"",phone:0,user_id: 1233}];
-declines = [{user:"bowser",friends:[],email:"",phone:0,user_id: 12533}];
-
+// friends = [{user:"mario",friends:[],email:"",phone:0,user_id: 6354},{user:"luigi",friends:[],email:"",phone:0,user_id: 9448},{user:"toad",friends:[],email:"",phone:0,user_id: 0987}];
+// invites = [{user:"oprah!",friends:[],email:"",phone:0,user_id: 5432},{user:"siddhartha",friends:[],email:"",phone:0,user_id: 5132}];
+// accepts = [{user:"kali fornia",friends:[],email:"",phone:0,user_id: 1321},{user:"billy lee",friends:[],email:"",phone:0,user_id: 1233}];
+// declines = [{user:"bowser",friends:[],email:"",phone:0,user_id: 12533}];
 updateGuestListUi(accepts,invites,friends,declines);
 }
 
 function updateGuestListUi(accepts,invites,friends,declines) {
     //create html for list of users associated with event
+    function write(list, extra) {
+        var str = "";
+        $.each(list, function(i, user) {
+            str += '<input type="checkbox" name="accept" id="' + user.user_id + '" value="' + user.user_id + '" ' + extra + '><label for="' + user.user_id + '">' + user.username + ' (attending)</label>';
+        });
+        return str;
+    }
+
     var s = "";
-    $.each(accepts, function( i, user) {
-        $("fieldset#friendsPopup").append('<input type="checkbox" name="accept" id="' + user.user_id + '" value="' + user.user_id + '" checked="true" disabled="true"><label for="' + user.user_id + '">' + user.user + ' (attending)</label>');
-    });
-    $.each(invites, function( i, user) {
-        $("fieldset#friendsPopup").append('<input type="checkbox" name="invite" id="' + user.user_id + '" value="' + user.user_id + '" checked="true"><label for="' + user.user_id + '">' + user.user + '</label>');
-    });
-    $.each(friends, function( i, user) {
-        $("fieldset#friendsPopup").append('<input type="checkbox" name="friend" id="' + user.user_id + '" value="' + user.user_id + '"><label for="' + user.user_id + '">' + user.user + '</label>');
-    });
-    $.each(declines, function( i, user) {
-        $("fieldset#friendsPopup").append('<input type="checkbox" name="decline" id="' + user.user_id + '" value="' + user.user_id + '" checked="false" disabled="true"><label for="' + user.user_id + '">' + user.user + ' (not attending)</label>');
-    });
+    s += write(accepts, ' checked="true" disabled="true"');
+    s += write(invites, ' checked="true"');
+    s += write(friends, '');
+    s += write(declines, ' disabled="true"');
+    $("fieldset#friendsPopup").html(s);
+    $("#friendsPopup").trigger('create');
 }
 
 function getGuestCheckboxValues() {

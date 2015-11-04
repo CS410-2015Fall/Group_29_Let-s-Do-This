@@ -1,10 +1,11 @@
 $.getScript("js/user/login-controller.js");
 $.getScript("js/user/session.js");
 $.getScript("js/serverInteractions/eventServerInteraction.js");
+$.getScript("js/serverInteractions/commentServerInteraction.js");
+$.getScript("js/serverInteractions/userServerInteraction.js");
 
 //temp fake data
 var tempFakeFriends = ["Tom","Dick","Harry","Sally","Wolfgang","Emil","Mathias","Magnus","Jonas","William","Oliver","Noah","Adrian","Tobias","Elias","Daniel","Henrik","Sebastian","Lucas","Martin","Andreas","Benjamin","Leon","Sander","Alexander","Liam","Isak","Jakob","Kristian","Aksel","Julian","Fredrik","Sondre","Johannes","Erik","Marius","Jonathan","Filip"];
-
 
 //UI
 function createContentBoxes(boxes,divLocation) {
@@ -28,64 +29,63 @@ function openEvent(destinationEvent) {
 }
 
 // server interface
-function newEvent(event) {
-	// push new event to server
-}
+// function newEvent(event) {
+// 	// push new event to server
+// }
 
-function addUserToEvent(user,event) {
-	addUserToEvent(user,event,0);
-}
+// function addUserToEvent(user,event) {
+// 	addUserToEvent(user,event,0);
+// }
 
-function addUserToEvent(user,event,x) {
-	// user is invited
-}
+// function addUserToEvent(user,event,x) {
+// 	// user is invited
+// }
 
-function removeUserFromEvent(user,event) {
-	// can only remove invited user (not accepted, declined)
-}
+// function removeUserFromEvent(user,event) {
+// 	// can only remove invited user (not accepted, declined)
+// }
 
 // pull values from server using object IDs
-function getUser(userId) {
-	// get data from server
-	var u = {
-		user:"",
-		friends:[],
-		email:"",
-		phone:0,
-		user_id: userId
-	};
+function getUserById(userId) {
+	var u = getUser(userId, function(resp) {
+		return {
+			username:resp.username,
+			user_id: userId
+		};
+	});
 	return u;
 }
 
-function getEvent(eventId) {
-	// get data from server
-	var e = {
-		display_name:"",
-		start_date:"",
-		end_date:"",
-		budget:0,
-		location:"",
-		hosts:[],
-		invites:[],
-		accepts:[],
-		declines:[],
-		comments:[],
-		shopping_list:"",
-		event_id:event_id
-	};
-	return e;
-}
+// function getEventById(eventId) {
+// 	getEvent(eventId, function(resp) {
+// 		var e = {
+// 			display_name:resp.display_name,
+// 			start_date:"",
+// 			end_date:"",
+// 			budget:0,
+// 			location:"",
+// 			hosts:[],
+// 			invites:[],
+// 			accepts:[],
+// 			declines:[],
+// 			comments:[],
+// 			shopping_list:"",
+// 			event_id:event_id
+// 		};
+// 		return e;
+// 	});
+// }
 
-function getComment(commentId) {
-	// get data from server
-	var c = {
-		post_date:"",
-		content:"",
-		author:"",
-		comment_id:comment_id
-	};
-	return c;
-}
+// function getComment(commentId) {
+// 	// get data from server
+// 	var c = {
+// 		post_date:"",
+// 		content:"",
+// 		author:"",
+// 		comment_id:comment_id
+// 	};
+// 	return c;
+// }
 
 // conversion
 function convertDate(dateString1,dateString2) {
@@ -127,11 +127,9 @@ function convertTime(dateObject) {
 	var hour = dateObject.getHours();
 	var minute = dateObject.getMinutes();
 	if (minute == 0) {
-		minute = "o'clock";
-	} else {
-		minute = ":" + minute;
+		minute = "00";
 	}
-	return "" + hour + minute;
+	return "" + hour + ":" + minute;
 }
 
 function currentDate() {

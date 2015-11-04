@@ -1,9 +1,8 @@
 var tempFakeNotificationData = [
-{head:"Notification1",body:"Tom's going to your christmas party!",boxId:"1"},
-{head:"Notification2",body:"Dick invited you to trivia night at the cambie!",boxId:"2"},
-{head:"Notification3",body:"Harry's Birthday Party is today!",boxId:"3"},
-{head:"Notification4",body:"Sally commented on your christmas party",boxId:"4"}];
-
+{head:"Christmas Party",body:"Tom is attending",boxId:"1"},
+{head:"Trivia Night at The Biltmore",body:"Dick invited you",boxId:"2"},
+{head:"Harry's Birthday Party",body:"Is today at 19:30",boxId:"3"},
+{head:"Christmas Party",body:"Sally commented",boxId:"4"}];
 
 $(document).ready(function() {
 	//Get the script to get events
@@ -41,8 +40,10 @@ $(document).ready(function() {
 });
 
 function handleContentBoxLinks() {
+	// makes notification and event boxes act as links to their event page
 	$(document).on("click", '#mainContent div', function(e) {
 		if ($(this).attr("id") == "box") {
+
 			var eventId = $(this).attr("boxId");
 			getEvent(eventId, function(resp) {
 				openEvent(resp);
@@ -60,6 +61,7 @@ function loadFriends() {
 			+'</a></li>'
 			);
 	});
+	$("#friendList").listview("refresh");
 }
 
 function formatEvents(eventArray){
