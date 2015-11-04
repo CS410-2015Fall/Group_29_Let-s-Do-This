@@ -11,8 +11,8 @@ function createContentBoxes(boxes,divLocation) {
 	divLocation.html("");
 	$.each( boxes, function( index, value ){
 		divLocation.append(
-			'<div id="box" eventId="'
-			+ value.eventId
+			'<div id="box" boxId="'
+			+ value.boxId
 			+'"><p><strong>'
 			+ value.head
 			+ '</strong><br>'
@@ -88,11 +88,23 @@ function getComment(commentId) {
 }
 
 // conversion
-function convertDateRange(date1,date2) {
+function convertDate(dateString1,dateString2) {
 	//takes two DateTime strings, "YYYY-MM-DDTHH:MM:SSZ"
-}
+	var dateObject1 = new Date(dateString1);
+	var dateObject2 = new Date(dateString2);
 
-function convertDate(dateObject) {
+	if (typeof dateObject2 === 'undefined') {
+		return convertDate(dateString1);
+	}
+
+	if (e.end_date == "") {
+		$("#dateTime").html("On " + convertDate(start) + " at " + convertTime(start));
+	} else if (start.getDate() == end.getDate()) {
+		$("#dateTime").html("On " + convertDate(start) + " from " + convertTime(start) + " until " + convertTime(end));
+	} else {
+		$("#dateTime").html("From " + convertDate(start) + " at " + convertTime(start) + " until " + convertDate(end) + " at " + convertTime(end));
+	}
+
 	// var now = currentDate();
 	// if (now.getFullYear() != dateObject.getFullYear()) {
 
@@ -100,6 +112,14 @@ function convertDate(dateObject) {
 
 	// }
 	return dateObject.toDateString();
+}
+
+function convertDate(dateString) {
+	var dateObject = new Date(dateString);
+
+	var time = convertTime(dateObject)
+	var date = dateObject.toDateString();
+	return time + " on " + date;
 }
 
 function convertTime(dateObject) {

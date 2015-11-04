@@ -1,14 +1,8 @@
 var tempFakeNotificationData = [
-{head:"Notification1",body:"Tom's going to your christmas party!",eventId:"1"},
-{head:"Notification2",body:"Dick invited you to trivia night at the cambie!",eventId:"2"},
-{head:"Notification3",body:"Harry's Birthday Party is today!",eventId:"3"},
-{head:"Notification4",body:"Sally commented on your christmas party",eventId:"4"}];
-
-var tempFakeEventData = [
-{head:"Event1",body:"this is an event on a day",eventId:""},
-{head:"Event2",body:"another event on another day",eventId:""},
-{head:"Event3",body:"yup, you guessed it",eventId:""},
-{head:"These boxes are cool",body:"because they're generated dynamically from an array of strings",eventId:""}];
+{head:"Notification1",body:"Tom's going to your christmas party!",boxId:"1"},
+{head:"Notification2",body:"Dick invited you to trivia night at the cambie!",boxId:"2"},
+{head:"Notification3",body:"Harry's Birthday Party is today!",boxId:"3"},
+{head:"Notification4",body:"Sally commented on your christmas party",boxId:"4"}];
 
 
 $(document).ready(function() {
@@ -49,24 +43,10 @@ $(document).ready(function() {
 function handleContentBoxLinks() {
 	$(document).on("click", '#mainContent div', function(e) {
 		if ($(this).attr("id") == "box") {
-			var eventId = $(this).attr("eventId");
-			var destinationEvent;
-			// get the event data from the server using eventId
-			// for now here's some temp fake event data
-			destinationEvent = {
-				display_name:"Temp Fake Event",
-				start_date:"2015-01-09T16:55:26Z",
-				end_date:"2015-01-09T08:35:56Z",
-				budget:1000000.00,
-				location:"123 sesame st",
-				hosts:[],
-				invites:[{user:"oprah!",friends:[],email:"",phone:0,user_id: 5432},{user:"siddhartha",friends:[],email:"",phone:0,user_id: 5132}],
-				accepts:[{user:"kali fornia",friends:[],email:"",phone:0,user_id: 1321},{user:"billy lee",friends:[],email:"",phone:0,user_id: 1233}],
-				declines:[{user:"bowser",friends:[],email:"",phone:0,user_id: 1233}],
-				comments:[],
-				event_id: eventId};
-
-			openEvent(destinationEvent);
+			var eventId = $(this).attr("boxId");
+			getEvent(eventId, function(resp) {
+				openEvent(resp);
+			});
 		}
 	});
 }
@@ -103,14 +83,11 @@ function formatEvents(eventArray){
 		var object = {
 			'head' : name,
 			'body' : message,
-			'eventID' : id,
+			'boxId' : id,
 		};
 
-		tempFakeEventData.push(object); //This is only temporary (see below)
-		//The below line is what we should actually do
-		// notificationArray.push(object);
+		notificationArray.push(object);
 	}
 
-	return tempFakeEventData; //Again, only temporary (see below)
-	// return notificationArray;// Do this
+	return notificationArray;// Do this
 }

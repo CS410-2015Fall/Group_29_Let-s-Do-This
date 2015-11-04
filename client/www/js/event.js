@@ -21,7 +21,7 @@ $(document).ready(function() {
     $("#commentForm").submit(function(event) {
         event.preventDefault(); //do not redirect page
         var currentDateTime = currentDate();
-        var author = LetsDoThis.Session.getInstance().getUserInfo().username;
+        var author = LetsDoThis.Session.getInstance().getUserInfo();
         var newComment = {
             author: author,
             post_date: currentDateTime,
@@ -34,23 +34,16 @@ $(document).ready(function() {
 function loadEventData(e) {
     $("#eventName").html("<strong>" + e.display_name + "</strong>");
 
-    var start = new Date(e.start_date);
-    var end = new Date(e.end_date);
+    var dateString = convertDate(e.start_date);//,e.end_date);
 
-    if (e.end_date == "") {
-        $("#dateTime").html("On " + convertDate(start) + " at " + convertTime(start));
-    } else if (start.getDate() == end.getDate()) {
-        $("#dateTime").html("On " + convertDate(start) + " from " + convertTime(start) + " until " + convertTime(end));
-    } else {
-        $("#dateTime").html("From " + convertDate(start) + " at " + convertTime(start) + " until " + convertDate(end) + " at " + convertTime(end));
-    }
-
+    $("#dateTime").html(dateString);
     $("#location").html("Location: " + e.location);
 
     loadGuests(e);
 
     // TODO
-    // if (you yourself are already a host or marked as attending) {
+    // if (you yourself are already marked as attending) {
+        // LetsDoThis.Session.getInstance().getUserId();
         // $("#rsvpButton").attr('disabled', 'true');
     // }
 
@@ -84,12 +77,12 @@ function loadGuests(event) {
     var declines = $.map(event.declines, function(val,key){return getUser(val);});
 
 // TEMP FAKE DATA
-    friends = [{user:"mario",friends:[],email:"",phone:0,user_id: 6354},{user:"luigi",friends:[],email:"",phone:0,user_id: 9448},{user:"toad",friends:[],email:"",phone:0,user_id: 0987}];
-    invites = [{user:"oprah!",friends:[],email:"",phone:0,user_id: 5432},{user:"siddhartha",friends:[],email:"",phone:0,user_id: 5132}];
-    accepts = [{user:"kali fornia",friends:[],email:"",phone:0,user_id: 1321},{user:"billy lee",friends:[],email:"",phone:0,user_id: 1233}];
-    declines = [{user:"bowser",friends:[],email:"",phone:0,user_id: 12533}];
+friends = [{user:"mario",friends:[],email:"",phone:0,user_id: 6354},{user:"luigi",friends:[],email:"",phone:0,user_id: 9448},{user:"toad",friends:[],email:"",phone:0,user_id: 0987}];
+invites = [{user:"oprah!",friends:[],email:"",phone:0,user_id: 5432},{user:"siddhartha",friends:[],email:"",phone:0,user_id: 5132}];
+accepts = [{user:"kali fornia",friends:[],email:"",phone:0,user_id: 1321},{user:"billy lee",friends:[],email:"",phone:0,user_id: 1233}];
+declines = [{user:"bowser",friends:[],email:"",phone:0,user_id: 12533}];
 
-    updateGuestListUi(accepts,invites,friends,declines);
+updateGuestListUi(accepts,invites,friends,declines);
 }
 
 function updateGuestListUi(accepts,invites,friends,declines) {
@@ -142,11 +135,11 @@ function postComment(event, comment) {
 function formatComments(comments) {
     var formattedComments = [];
     $.each( comments, function( index, comment ){
-        var h = comment.author + " commented at " + convertTime(comment.post_date) + " on " + convertDate(comment.post_date);
+        var h = comment.author.username + " commented at " + convertDate(comment.post_date);
 
         var c = {head: h,
             body:comment.content,
-            eventId:""};
+            boxId:""};
             formattedComments.push(c);
         });
     return formattedComments;
