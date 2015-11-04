@@ -88,9 +88,9 @@ function convertDate(dateObject) {
 }
 
 function convertTime(dateObject) {
+	// TODO watch out for the dumb time zone conversions that seem to happen sometimes. might have to deal with those.
 	var hour = dateObject.getHours();
 	var minute = dateObject.getMinutes();
-
 	if (minute == 0) {
 		minute = "o'clock";
 	} else {

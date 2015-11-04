@@ -34,20 +34,24 @@ $(document).ready(function() {
 function loadEventData(e) {
     $("#eventName").html("<strong>" + e.display_name + "</strong>");
 
-    if (e.end_date.time == "") {
-        $("#dateTime").html("On " + e.start_date.date + " at " + e.start_date.time);
-    } else if (e.start_date.date == e.end_date.date) {
-        $("#dateTime").html("On " + e.start_date.date + " from " + e.start_date.time + " until " + e.end_date.time);
+    var start = new Date(e.start_date);
+    var end = new Date(e.end_date);
+
+    if (e.end_date == "") {
+        $("#dateTime").html("On " + convertDate(start) + " at " + convertTime(start));
+    } else if (start.getDate() == end.getDate()) {
+        $("#dateTime").html("On " + convertDate(start) + " from " + convertTime(start) + " until " + convertTime(end));
     } else {
-        $("#dateTime").html("From " + e.start_date.date + " at " + e.start_date.time + " until " + e.end_date.date + " at " + e.end_date.time);
+        $("#dateTime").html("From " + convertDate(start) + " at " + convertTime(start) + " until " + convertDate(end) + " at " + convertTime(end));
     }
 
     $("#location").html("Location: " + e.location);
 
     loadGuests(e);
 
+    // TODO
     // if (you yourself are already a host or marked as attending) {
-    // $("#rsvpButton").attr('disabled', 'true');
+        // $("#rsvpButton").attr('disabled', 'true');
     // }
 
     var comments = formatComments(e.comments);
@@ -72,27 +76,6 @@ function loadGuests(event) {
     friendIds = reduceList(friendIds,event.invites);
     friendIds = reduceList(friendIds,event.accepts);
     friendIds = reduceList(friendIds,event.declines);
-
-    // $.each(event.hosts, function(index, val) {
-    //     friendIds = jQuery.grep(friendIds, function(value) {
-    //         return value != val;
-    //     });
-    // });
-    // $.each(event.invites, function(index, val) {
-    //     friendIds = jQuery.grep(friendIds, function(value) {
-    //         return value != val;
-    //     });
-    // });
-    // $.each(event.accepts, function(index, val) {
-    //     friendIds = jQuery.grep(friendIds, function(value) {
-    //         return value != val;
-    //     });
-    // });
-    // $.each(event.declines, function(index, val) {
-    //     friendIds = jQuery.grep(friendIds, function(value) {
-    //         return value != val;
-    //     });
-    // });
 
     // get user information corresponding to the userIds
     var accepts = $.map(event.accepts, function(val,key){return getUser(val);});
