@@ -116,7 +116,7 @@ function convertDate(dateString) {
 
 	var time = convertTime(dateObject)
 	var date = dateObject.toDateString();
-	return time + " on " + date;
+	return date + " at " + time;
 }
 
 function convertTime(dateObject) {

@@ -60,6 +60,11 @@ function loadGuests(event) {
     friendIds = reduceList(friendIds,event.accepts);
     friendIds = reduceList(friendIds,event.declines);
 
+    updateGuestListUi(event.accepts,event.invites,friendIds,event.declines);
+}
+
+function updateGuestListUi(acceptIds,inviteIds,friendIds,declineIds) {
+
     var accepts = [];
     var invites = [];
     var friends = [];
@@ -77,24 +82,11 @@ function loadGuests(event) {
             });
         });
     }
-    mapUsers(event.accepts,accepts);
-    mapUsers(event.invites,invites);
+
+    mapUsers(acceptIds,accepts);
+    mapUsers(inviteIds,invites);
     mapUsers(friendIds,friends);
-    mapUsers(event.declines,declines);
-
-    // var invites = jQuery.map(event.invites, function(val,key){ return getUserById(val);});
-    // var friends = jQuery.map(friendIds, function(val,key){return getUserById(val);});
-    // var declines = jQuery.map(event.declines, function(val,key){return getUserById(val);});
-
-// TEMP FAKE DATA
-// friends = [{user:"mario",friends:[],email:"",phone:0,user_id: 6354},{user:"luigi",friends:[],email:"",phone:0,user_id: 9448},{user:"toad",friends:[],email:"",phone:0,user_id: 0987}];
-// invites = [{user:"oprah!",friends:[],email:"",phone:0,user_id: 5432},{user:"siddhartha",friends:[],email:"",phone:0,user_id: 5132}];
-// accepts = [{user:"kali fornia",friends:[],email:"",phone:0,user_id: 1321},{user:"billy lee",friends:[],email:"",phone:0,user_id: 1233}];
-// declines = [{user:"bowser",friends:[],email:"",phone:0,user_id: 12533}];
-updateGuestListUi(accepts,invites,friends,declines);
-}
-
-function updateGuestListUi(accepts,invites,friends,declines) {
+    mapUsers(declineIds,declines);
     //create html for list of users associated with event
     function write(list, attrs, status) {
         var str = "";
@@ -164,7 +156,17 @@ function formatComments(comments) {
     return formattedComments;
 }
 
-function handleRsvp(userId, e) {
+function handleRsvp(e,userId) {
+    e.invites = jQuery.grep(e.invites, function(value) {
+      return value != userId;
+  });
+        e.declines = jQuery.grep(e.declines, function(value) {
+      return value != userId;
+  });
+
+    e.accepts.push(userId);
+    updateGuestListUi(e.accepts,e.invites,[],e.declines);
+
 
     $("#rsvpButton").attr('disabled', 'true');
     $("#rsvpPopup").popup( "open" )
