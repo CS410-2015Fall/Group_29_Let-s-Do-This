@@ -33,18 +33,19 @@ $(document).ready(function() {
 		var newEvent = eventBuilder(name, date, startTime, endTime, location);
 
 		if (name != "" &&
-			date != "" &&
-			startTime != "") {
+		date != "" &&
+		startTime != "") {
 			//Format the times appropriately
-		var startTimeFormatted = formatTime(date, startTime);
-		var endTimeFormatted = formatTime(date, endTime);
-		// sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(){
+			var startTimeFormatted = formatTime(date, startTime);
+			var endTimeFormatted = formatTime(date, endTime);
 
-		// });
-		openEvent(newEvent);
+			sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(){
+				openEvent(newEvent);
+			});
 
-	}
-});
+
+		}
+	});
 });
 
 //This function is used by the location button to call back on
