@@ -25,6 +25,8 @@ $.getScript("js/global.js", function() {
 });
 
 function loadEventData(e) {
+  // console.log("loading event");
+  // console.log(e);
     $("#eventName").html("<strong>" + e.display_name + "</strong>");
 
     var dateString = convertDate(e.start_date,e.end_date);
@@ -137,7 +139,7 @@ function postComment(event, comment) {
     $('textarea#commentTextArea').val("");
 
     // send comment to server
-    addComment(event.event_id,
+    addComment(event.id,
         LetsDoThis.Session.getInstance().getUserId(),
         date,
         newComment.content);
