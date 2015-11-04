@@ -66,26 +66,26 @@ function getEvents(callback){
 function sortEvents(events){
 	var userID = LetsDoThis.Session.getInstance().getUserId();
 	// console.log(userID);
-	var releventEvents = []; //The running array events
+	var relevantEvents = []; //The running array events
 
 	for(i=0; i<events.length; i++){
 		if($.inArray(userID, events[i].hosts) > -1){
 			//User is a host of event
-			releventEvents.push(events[i]);
+			relevantEvents.push(events[i]);
 		} else if($.inArray(userID, events[i].accepts) > -1){
 			//User is going to event
-			releventEvents.push(events[i]);
+			relevantEvents.push(events[i]);
 		} else if($.inArray(userID, events[i].declines) > -1){
 			//User declined event
-			releventEvents.push(events[i]);
+			relevantEvents.push(events[i]);
 		} else if($.inArray(userID, events[i].invites) > -1){
 			//User is invited to event
-			releventEvents.push(events[i]);
+			relevantEvents.push(events[i]);
 		}
 	}
 
 	//Send back to the callback function
-	return releventEvents;
+	return relevantEvents;
 }
 
 
