@@ -128,12 +128,6 @@ function postComment(event, comment) {
         content: $('textarea#commentTextArea').val()
     };
 
-    // send comment to server
-    // addComment(event.event_id,
-    //     author,
-    //     date,
-    //     newComment.content);
-
     // update UI
     var comments = event.comments; // if we get comments from the server here we will update with any other comments posted since we last reloaded from it
     comments.push(newComment);
@@ -141,6 +135,12 @@ function postComment(event, comment) {
     createContentBoxes(uiFormattedComments,$("#comments"));
 
     $('textarea#commentTextArea').val("");
+
+    // send comment to server
+    addComment(event.event_id,
+        LetsDoThis.Session.getInstance().getUserId(),
+        date,
+        newComment.content);
 }
 
 function formatComments(comments) {
@@ -158,15 +158,14 @@ function formatComments(comments) {
 
 function handleRsvp(e,userId) {
     e.invites = jQuery.grep(e.invites, function(value) {
-      return value != userId;
-  });
-        e.declines = jQuery.grep(e.declines, function(value) {
-      return value != userId;
-  });
+        return value != userId;
+    });
+    e.declines = jQuery.grep(e.declines, function(value) {
+        return value != userId;
+    });
 
     e.accepts.push(userId);
     updateGuestListUi(e.accepts,e.invites,[],e.declines);
-
 
     $("#rsvpButton").attr('disabled', 'true');
     $("#rsvpPopup").popup( "open" )

@@ -45,7 +45,7 @@ function handleContentBoxLinks() {
 		if ($(this).attr("id") == "box") {
 
 			var eventId = $(this).attr("boxId");
-			getEvent(eventId, function(resp) {
+			getEventById(eventId, function(resp) {
 				openEvent(resp);
 			});
 		}

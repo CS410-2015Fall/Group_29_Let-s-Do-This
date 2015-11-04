@@ -55,25 +55,25 @@ function getUserById(userId) {
 	});
 }
 
-// function getEventById(eventId) {
-// 	getEvent(eventId, function(resp) {
-// 		var e = {
-// 			display_name:resp.display_name,
-// 			start_date:"",
-// 			end_date:"",
-// 			budget:0,
-// 			location:"",
-// 			hosts:[],
-// 			invites:[],
-// 			accepts:[],
-// 			declines:[],
-// 			comments:[],
-// 			shopping_list:"",
-// 			event_id:event_id
-// 		};
-// 		return e;
-// 	});
-// }
+function getEventById(eventId, callback) {
+	getEvent(eventId, function(resp) {
+		var e = {
+			display_name:resp.display_name,
+			start_date:resp.start_date,
+			end_date:resp.end_date,
+			budget:resp.budget,
+			location:resp.budget,
+			hosts:resp.hosts,
+			invites:resp.invites,
+			accepts:resp.accepts,
+			declines:resp.declines,
+			comments:resp.comments,
+			shopping_list:resp.shopping_list,
+			event_id:eventId
+		};
+		callback(e);
+	});
+}
 
 // function getComment(commentId) {
 // 	// get data from server
@@ -120,7 +120,6 @@ function convertDate(dateString) {
 }
 
 function convertTime(dateObject) {
-	// TODO watch out for the dumb time zone conversions that seem to happen sometimes. might have to deal with those.
 	var hour = dateObject.getHours();
 	var minute = dateObject.getMinutes();
 	if (minute < 10) {
