@@ -2,7 +2,7 @@
 // start: YYYY-MM-DDThh:mm
 // end: YYYY-MM-DDThh:mm
 $(document).ready(function() {
-	console.log('eventServerInt loaded');
+	// console.log('eventServerInt loaded');
 });
 // TODO: add list of invited users to create event request (sendToServer)
 //       (or create separate function?)

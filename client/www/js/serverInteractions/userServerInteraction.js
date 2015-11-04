@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	console.log('userServerInt loaded');
+	// console.log('userServerInt loaded');
 });
 
 function getUser(userId, callback){
