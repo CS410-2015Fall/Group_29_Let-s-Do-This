@@ -32,7 +32,7 @@ function sendToServer(name, start, end, budget, location, callback){
 		dataType: 'json',
 		success: function (resp) {
 			console.log("Created event");
-			callback();
+			callback(resp);
 		},
 		error: function(e) {
 			console.log("Failed to create event: ");
