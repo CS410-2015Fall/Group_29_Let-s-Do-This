@@ -76,12 +76,8 @@ function formatEvents(eventArray){
 	for(i=0; i<arrayLen; i++){
 		var name = eventArray[i].display_name;
 		var id = eventArray[i].id;
-		var message;
-		if (eventArray[i].end_date == null) {
-			message = "at " + eventArray[i].start_date;
-		} else {
-			message = eventArray[i].start_date + " to " + eventArray[i].end_date; //We can make this meaningful later
-		}
+		var message = convertDate(eventArray[i].start_date,eventArray[i].end_date);
+
 		var object = {
 			'head' : name,
 			'body' : message,

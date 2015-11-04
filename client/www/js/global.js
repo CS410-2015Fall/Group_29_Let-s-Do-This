@@ -88,20 +88,19 @@ function getUserById(userId) {
 
 // conversion
 function convertDate(dateString1,dateString2) {
-	//takes two DateTime strings, "YYYY-MM-DDTHH:MM:SSZ"
-	var dateObject1 = new Date(dateString1);
-	var dateObject2 = new Date(dateString2);
+	// takes two DateTime strings, "YYYY-MM-DDTHH:MM:SSZ"
+	// returns a string which reads more nicely
+	var start = new Date(dateString1);
+	var end = new Date(dateString2);
 
-	if (typeof dateObject2 === 'undefined') {
+	if (typeof end === 'undefined') {
 		return convertDate(dateString1);
 	}
 
-	if (e.end_date == "") {
-		$("#dateTime").html("On " + convertDate(start) + " at " + convertTime(start));
-	} else if (start.getDate() == end.getDate()) {
-		$("#dateTime").html("On " + convertDate(start) + " from " + convertTime(start) + " until " + convertTime(end));
+	if (start.getDate() == end.getDate()) {
+		return "On " + start.toDateString() + " from " + convertTime(start) + " until " + convertTime(end);
 	} else {
-		$("#dateTime").html("From " + convertDate(start) + " at " + convertTime(start) + " until " + convertDate(end) + " at " + convertTime(end));
+		return "From " + start.toDateString() + " at " + convertTime(start) + " until " + end.toDateString() + " at " + convertTime(end);
 	}
 
 	// var now = currentDate();
@@ -110,7 +109,6 @@ function convertDate(dateString1,dateString2) {
 	// } else {
 
 	// }
-	return dateObject.toDateString();
 }
 
 function convertDate(dateString) {
