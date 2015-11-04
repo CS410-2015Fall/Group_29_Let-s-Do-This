@@ -32,11 +32,11 @@ function addComment(eventId, author, post_date, content) {
 	});
 }
 
-function getAllComments(eventId) {
+function getAllComments(eventId, callback) {
    	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 
     var commentUrl = "http://159.203.12.88/api/events/"+eventId+"/comments/";
-    
+
 	$.ajax({
 		type: 'GET',
 		url: commentUrl,

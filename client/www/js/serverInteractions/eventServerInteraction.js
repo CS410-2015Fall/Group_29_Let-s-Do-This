@@ -111,7 +111,7 @@ function getEvent(eventId, callback){
 }
 
 
-function rsvpToEvent(eventId, rsvpStatus){
+function rsvpToEvent(eventId, rsvpStatus, callback){
 	// rsvpStatus is one of:
 	// - "invites"
 	// - "accepts"
@@ -140,6 +140,7 @@ function rsvpToEvent(eventId, rsvpStatus){
 		dataType: 'json',
 		success: function (resp) {
 			console.log("RSVP'd to event");
+			callback();
 		},
 		error: function(e) {
 			console.log("Failed to RSVP: ");

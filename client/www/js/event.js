@@ -5,6 +5,7 @@ $.getScript("js/global.js", function() {
 
         $("#inviteButton").click(function(){
             var invited = getGuestCheckboxValues();
+            // TODO set changed users to invited/uninvited
             $("#friendsPopup").popup("close");
         });
 
@@ -27,22 +28,22 @@ $.getScript("js/global.js", function() {
 function loadEventData(e) {
   // console.log("loading event");
   // console.log(e);
-    $("#eventName").html("<strong>" + e.display_name + "</strong>");
+  $("#eventName").html("<strong>" + e.display_name + "</strong>");
 
-    var dateString = convertDate(e.start_date,e.end_date);
+  var dateString = convertDate(e.start_date,e.end_date);
 
-    $("#dateTime").html(dateString);
-    $("#location").html("Location: " + e.location);
+  $("#dateTime").html(dateString);
+  $("#location").html("Location: " + e.location);
 
-    loadGuests(e);
+  loadGuests(e);
 
-    var userId = LetsDoThis.Session.getInstance().getUserId();
-    if ($.inArray(userId,e.accepts) == 0) {
-        $("#rsvpButton").attr('disabled', 'true');
-    }
+  var userId = LetsDoThis.Session.getInstance().getUserId();
+  if ($.inArray(userId,e.accepts) == 0) {
+    $("#rsvpButton").attr('disabled', 'true');
+}
 
-    var comments = formatComments(e.comments);
-    createContentBoxes(comments,$("#comments"));
+var comments = formatComments(e.comments);
+createContentBoxes(comments,$("#comments"));
 }
 
 function loadGuests(event) {
@@ -131,12 +132,14 @@ function postComment(event, comment) {
     };
 
     // update UI
-    var comments = event.comments; // if we get comments from the server here we will update with any other comments posted since we last reloaded from it
-    comments.push(newComment);
-    var uiFormattedComments = formatComments(comments);
-    createContentBoxes(uiFormattedComments,$("#comments"));
-
-    $('textarea#commentTextArea').val("");
+    getAllComments(event.id, function(resp) {
+        resp.push(newComment);
+        var uiFormattedComments = formatComments(resp);
+        createContentBoxes(uiFormattedComments,$("#comments"));
+        $('textarea#commentTextArea').val("");
+    });
+    // var comments = event.comments; // if we get comments from the server here we will update with any other comments posted since we last reloaded from it
+    // comments.push(newComment);
 
     // send comment to server
     addComment(event.id,
