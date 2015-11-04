@@ -58,21 +58,7 @@ function getUserById(userId) {
 function getEventById(eventId, callback) {
 	//more appropriately named getEventWithId, creates event to include event_id field
 	getEvent(eventId, function(resp) {
-		var e = {
-			display_name:resp.display_name,
-			start_date:resp.start_date,
-			end_date:resp.end_date,
-			budget:resp.budget,
-			location:resp.location,
-			hosts:resp.hosts,
-			invites:resp.invites,
-			accepts:resp.accepts,
-			declines:resp.declines,
-			comments:resp.comments,
-			shopping_list:resp.shopping_list,
-			event_id:eventId
-		};
-		callback(e);
+		callback(resp);
 	});
 }
 
