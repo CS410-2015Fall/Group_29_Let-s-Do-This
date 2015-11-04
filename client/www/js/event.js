@@ -13,23 +13,14 @@ $.getScript("js/global.js", function() {
         });
 
         $("#rsvpButton").click(function(){
-        var userId = 0; // get users's own userId
-        // TODO change rsvp status for user in event on server
-        $("#rsvpButton").attr('disabled', 'true');
-        $("#rsvpPopup").popup( "open" )
-    });
+            var userId = LetsDoThis.Session.getInstance().getUserId();;
+            handleRsvp(eventData,userId);
+        });
 
         $("#commentForm").submit(function(event) {
-        event.preventDefault(); //do not redirect page
-        var currentDateTime = currentDate();
-        var author = LetsDoThis.Session.getInstance().getUserInfo();
-        var newComment = {
-            author: author,
-            post_date: currentDateTime,
-            content: $('textarea#commentTextArea').val()
-        };
-        postComment(eventData,newComment);
-    });
+            event.preventDefault(); // do not redirect
+            postComment(eventData);
+        });
     });
 });
 
@@ -137,15 +128,23 @@ function getGuestCheckboxValues() {
 }
 
 function postComment(event, comment) {
+    var date = currentDate();
+    var author = LetsDoThis.Session.getInstance().getUserInfo();
+    var newComment = {
+        author: author,
+        post_date: date,
+        content: $('textarea#commentTextArea').val()
+    };
+
     // send comment to server
     // addComment(event.event_id,
-    //     comment.author,
-    //     comment.post_date,
-    //     comment.content);
+    //     author,
+    //     date,
+    //     newComment.content);
 
     // update UI
-    var comments = event.comments;
-    comments.push(comment);
+    var comments = event.comments; // if we get comments from the server here we will update with any other comments posted since we last reloaded from it
+    comments.push(newComment);
     var uiFormattedComments = formatComments(comments);
     createContentBoxes(uiFormattedComments,$("#comments"));
 
@@ -165,3 +164,9 @@ function formatComments(comments) {
     return formattedComments;
 }
 
+function handleRsvp(userId, e) {
+
+    $("#rsvpButton").attr('disabled', 'true');
+    $("#rsvpPopup").popup( "open" )
+
+}
