@@ -30,7 +30,7 @@ $(document).ready(function() {
 		var endTime = document.getElementById('endTimeField').value;
 		var location = document.getElementById('locationField').value;
 
-		var newEvent = eventBuilder(name, date, startTime, endTime, location);
+		// var newEvent = eventBuilder(name, date, startTime, endTime, location);
 
 		if (name != "" &&
 		date != "" &&
@@ -39,7 +39,7 @@ $(document).ready(function() {
 			var startTimeFormatted = formatTime(date, startTime);
 			var endTimeFormatted = formatTime(date, endTime);
 
-			sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(){
+			sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(newEvent){
 				openEvent(newEvent);
 			});
 
