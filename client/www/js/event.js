@@ -44,7 +44,7 @@ function loadEventData(e) {
 }
 
 function loadGuests(event) {
-    var friendIds = [];//LetsDoThis.Session.getInstance().getUserFriends();
+    var friendIds = LetsDoThis.Session.getInstance().getUserFriends();
 
     // reduce friendIds so that it contains only those ids which are not already invited, attending or declining the event
     function reduceList(l1,l2) {
@@ -98,7 +98,7 @@ function updateGuestListUi(acceptIds,inviteIds,friendIds,declineIds) {
 
     var s = "";
     s += write(accepts, ' checked="true" disabled="true"', '(attending)');
-    s += write(invites, ' checked="true"', '');
+    s += write(invites, ' checked="true"', '(invited)');
     s += write(friends, '', '');
     s += write(declines, ' disabled="true"', '(not attending)');
     $("fieldset#friendsPopup").html(s);
@@ -163,6 +163,8 @@ function handleRsvp(e,userId) {
     e.declines = jQuery.grep(e.declines, function(value) {
         return value != userId;
     });
+
+    rsvpToEvent(e.event_id,'accepts');
 
     e.accepts.push(userId);
     updateGuestListUi(e.accepts,e.invites,[],e.declines);
