@@ -56,6 +56,7 @@ function getUserById(userId) {
 }
 
 function getEventById(eventId, callback) {
+	//more appropriately named getEventWithId, creates event to include event_id field
 	getEvent(eventId, function(resp) {
 		var e = {
 			display_name:resp.display_name,
