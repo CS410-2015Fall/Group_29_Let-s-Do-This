@@ -63,7 +63,7 @@ function getEventById(eventId, callback) {
 			start_date:resp.start_date,
 			end_date:resp.end_date,
 			budget:resp.budget,
-			location:resp.budget,
+			location:resp.location,
 			hosts:resp.hosts,
 			invites:resp.invites,
 			accepts:resp.accepts,
