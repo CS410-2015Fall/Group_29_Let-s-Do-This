@@ -16,7 +16,7 @@ $(document).ready(function() {
 	});
 
 	$("#findLocationButton").click(function(){
-		//We will have to redirect to venueSearch, causing us to lose all our values
+		//redirecting to venueSearch, will cause us to lose all our values
 		//Save already filled fields into storage
 		saveValuesToStorage();
 		//And redirect
@@ -30,24 +30,22 @@ $(document).ready(function() {
 		var endTime = document.getElementById('endTimeField').value;
 		var location = document.getElementById('locationField').value;
 
-		if (name != "" &&
-		date != "" &&
-		startTime != "") {
-			//Format the times appropriately
-			var startTimeFormatted = formatTime(date, startTime);
-			var endTimeFormatted = formatTime(date, endTime);
-			sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(){
-				var newEvent = eventBuilder(name, date, startTime, endTime, document.getElementById('locationField').value);
-			 	openEvent(newEvent);
-			});
-		}
-	});
-});
+		var newEvent = eventBuilder(name, date, startTime, endTime, location);
 
-function openEvent(destinationEvent) {
-	localStorage.setItem("eventObj", JSON.stringify(destinationEvent));
-	window.location="event.html";
-}
+		if (name != "" &&
+			date != "" &&
+			startTime != "") {
+			//Format the times appropriately
+		var startTimeFormatted = formatTime(date, startTime);
+		var endTimeFormatted = formatTime(date, endTime);
+		sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(){
+
+		});
+		openEvent(newEvent);
+
+	}
+});
+});
 
 //This function is used by the location button to call back on
 function setLocation(name, address){
@@ -100,11 +98,11 @@ function reloadValues(){
 function eventBuilder(name, date, start, end, location) {
 	var newEvent  = {
 		display_name: name,
-		start_date:{date:date,time:start},
-		end_date:{date:date,time:end},
+		start_date:date,
+		end_date:"",
 		budget:0,
 		location:location,
-		hosts:["you"],
+		hosts:[],
 		invites:[],
 		accepts:[],
 		declines:[],

@@ -54,7 +54,7 @@ loadGuests(e);
 }
 
 function loadGuests(event) {
-    var friendIds = []; //TODO get list of friends
+    var friendIds = [];//LetsDoThis.Session.getInstance().getUserFriends();
 
     // reduce friendIds so that it contains only those ids which are not already invited, attending or declining the event
     function reduceList(l1,l2) {
@@ -70,22 +70,31 @@ function loadGuests(event) {
     friendIds = reduceList(friendIds,event.accepts);
     friendIds = reduceList(friendIds,event.declines);
 
-    // get user information corresponding to the userIds
     var accepts = [];
-    jQuery.map(event.accepts, function(val,key){
-        getUser(val, function(resp) {
-            var u = {
-                username:resp.username,
-                userId:val
-            }
-            accepts.push(u);
+    var invites = [];
+    var friends = [];
+    var declines = [];
+
+    // get user information corresponding to the userIds
+    function mapUsers(userIds, users) {
+        jQuery.map(userIds, function(val,key){
+            getUser(val, function(resp) {
+                var u = {
+                    username:resp.username,
+                    user_id:val
+                }
+                users.push(u);
+            });
         });
+    }
+    mapUsers(event.accepts,accepts);
+    mapUsers(event.invites,invites);
+    mapUsers(friendIds,friends);
+    mapUsers(event.declines,declines);
 
-    });
-
-    var invites = jQuery.map(event.invites, function(val,key){ return getUserById(val);});
-    var friends = jQuery.map(friendIds, function(val,key){return getUserById(val);});
-    var declines = jQuery.map(event.declines, function(val,key){return getUserById(val);});
+    // var invites = jQuery.map(event.invites, function(val,key){ return getUserById(val);});
+    // var friends = jQuery.map(friendIds, function(val,key){return getUserById(val);});
+    // var declines = jQuery.map(event.declines, function(val,key){return getUserById(val);});
 
 // TEMP FAKE DATA
 // friends = [{user:"mario",friends:[],email:"",phone:0,user_id: 6354},{user:"luigi",friends:[],email:"",phone:0,user_id: 9448},{user:"toad",friends:[],email:"",phone:0,user_id: 0987}];
@@ -97,19 +106,19 @@ updateGuestListUi(accepts,invites,friends,declines);
 
 function updateGuestListUi(accepts,invites,friends,declines) {
     //create html for list of users associated with event
-    function write(list, extra) {
+    function write(list, attrs, status) {
         var str = "";
         $.each(list, function(i, user) {
-            str += '<input type="checkbox" name="accept" id="' + user.user_id + '" value="' + user.user_id + '" ' + extra + '><label for="' + user.user_id + '">' + user.username + ' (attending)</label>';
+            str += '<input type="checkbox" name="accept" id="' + user.user_id + '" value="' + user.user_id + '" ' + attrs + '><label for="' + user.user_id + '">' + user.username + ' ' + status + '</label>';
         });
         return str;
     }
 
     var s = "";
-    s += write(accepts, ' checked="true" disabled="true"');
-    s += write(invites, ' checked="true"');
-    s += write(friends, '');
-    s += write(declines, ' disabled="true"');
+    s += write(accepts, ' checked="true" disabled="true"', '(attending)');
+    s += write(invites, ' checked="true"', '');
+    s += write(friends, '', '');
+    s += write(declines, ' disabled="true"', '(not attending)');
     $("fieldset#friendsPopup").html(s);
     $("#friendsPopup").trigger('create');
 }

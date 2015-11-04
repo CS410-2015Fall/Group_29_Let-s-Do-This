@@ -8,6 +8,7 @@ function getUser(userId, callback){
 
 	$.ajax({
 		type: 'GET',
+		async: false,
 		url: userUrl,
 		dataType: 'json',
 		beforeSend: function(xhr) {

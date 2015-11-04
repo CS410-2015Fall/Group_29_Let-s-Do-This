@@ -47,13 +47,12 @@ function openEvent(destinationEvent) {
 
 // pull values from server using object IDs
 function getUserById(userId) {
-	var u = getUser(userId, function(resp) {
+	return getUser(userId, function(resp) {
 		return {
 			username:resp.username,
 			user_id: userId
 		};
 	});
-	return u;
 }
 
 // function getEventById(eventId) {
@@ -126,8 +125,8 @@ function convertTime(dateObject) {
 	// TODO watch out for the dumb time zone conversions that seem to happen sometimes. might have to deal with those.
 	var hour = dateObject.getHours();
 	var minute = dateObject.getMinutes();
-	if (minute == 0) {
-		minute = "00";
+	if (minute < 10) {
+		minute = "0" + minute;
 	}
 	return "" + hour + ":" + minute;
 }
