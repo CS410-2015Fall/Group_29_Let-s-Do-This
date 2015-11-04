@@ -1,5 +1,10 @@
+$.getScript("js/user/login-controller.js");
+$.getScript("js/user/session.js");
+$.getScript("js/serverInteractions/eventServerInteraction.js");
+
 //temp fake data
 var tempFakeFriends = ["Tom","Dick","Harry","Sally","Wolfgang","Emil","Mathias","Magnus","Jonas","William","Oliver","Noah","Adrian","Tobias","Elias","Daniel","Henrik","Sebastian","Lucas","Martin","Andreas","Benjamin","Leon","Sander","Alexander","Liam","Isak","Jakob","Kristian","Aksel","Julian","Fredrik","Sondre","Johannes","Erik","Marius","Jonathan","Filip"];
+
 
 //UI
 function createContentBoxes(boxes,divLocation) {
@@ -14,6 +19,12 @@ function createContentBoxes(boxes,divLocation) {
 			+ value.body
 			+ '</p></div>');
 	});
+}
+
+//navigation
+function openEvent(destinationEvent) {
+	localStorage.setItem("eventObj", JSON.stringify(destinationEvent));
+	window.location="event.html";
 }
 
 // server interface
@@ -77,6 +88,10 @@ function getComment(commentId) {
 }
 
 // conversion
+function convertDateRange(date1,date2) {
+	//takes two DateTime strings, "YYYY-MM-DDTHH:MM:SSZ"
+}
+
 function convertDate(dateObject) {
 	// var now = currentDate();
 	// if (now.getFullYear() != dateObject.getFullYear()) {

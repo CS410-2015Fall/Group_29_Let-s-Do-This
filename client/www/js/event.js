@@ -21,7 +21,7 @@ $(document).ready(function() {
     $("#commentForm").submit(function(event) {
         event.preventDefault(); //do not redirect page
         var currentDateTime = currentDate();
-        var author = ""; // get user's username
+        var author = LetsDoThis.Session.getInstance().getUserInfo().username;
         var newComment = {
             author: author,
             post_date: currentDateTime,

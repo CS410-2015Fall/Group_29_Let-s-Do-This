@@ -13,7 +13,7 @@ var tempFakeEventData = [
 
 $(document).ready(function() {
 	//Get the script to get events
-	$.getScript("js/serverInteractions/eventServerInteraction.js");
+	// $.getScript("js/serverInteractions/eventServerInteraction.js");
 
 	console.log("Loading home page script");
 	createContentBoxes(tempFakeNotificationData,$("#mainContent"));
@@ -69,11 +69,6 @@ function handleContentBoxLinks() {
 			openEvent(destinationEvent);
 		}
 	});
-}
-
-function openEvent(destinationEvent) {
-	localStorage.setItem("eventObj", JSON.stringify(destinationEvent));
-	window.location="event.html";
 }
 
 function loadFriends() {
