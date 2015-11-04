@@ -36,18 +36,17 @@ $.getScript("js/global.js", function() {
 function loadEventData(e) {
     $("#eventName").html("<strong>" + e.display_name + "</strong>");
 
-    var dateString = convertDate(e.start_date);//,e.end_date);
+    var dateString = convertDate(e.start_date,e.end_date);
 
-$("#dateTime").html(dateString);
-$("#location").html("Location: " + e.location);
+    $("#dateTime").html(dateString);
+    $("#location").html("Location: " + e.location);
 
-loadGuests(e);
+    loadGuests(e);
 
-    // TODO
-    // if (you yourself are already marked as attending) {
-        // LetsDoThis.Session.getInstance().getUserId();
-        // $("#rsvpButton").attr('disabled', 'true');
-    // }
+    var userId = LetsDoThis.Session.getInstance().getUserId();
+    if ($.inArray(userId,e.accepts) == 0) {
+        $("#rsvpButton").attr('disabled', 'true');
+    }
 
     var comments = formatComments(e.comments);
     createContentBoxes(comments,$("#comments"));

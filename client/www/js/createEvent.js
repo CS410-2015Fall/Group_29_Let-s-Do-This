@@ -38,9 +38,9 @@ $(document).ready(function() {
 			//Format the times appropriately
 		var startTimeFormatted = formatTime(date, startTime);
 		var endTimeFormatted = formatTime(date, endTime);
-		sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(){
+		// sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(){
 
-		});
+		// });
 		openEvent(newEvent);
 
 	}
@@ -96,15 +96,16 @@ function reloadValues(){
 }
 
 function eventBuilder(name, date, start, end, location) {
+	var userId = LetsDoThis.Session.getInstance().getUserId();
 	var newEvent  = {
 		display_name: name,
 		start_date:date,
 		end_date:"",
 		budget:0,
 		location:location,
-		hosts:[],
+		hosts:[userId],
 		invites:[],
-		accepts:[],
+		accepts:[userId],
 		declines:[],
 		comments:[]};
 
