@@ -1,6 +1,7 @@
 $.getScript("js/global.js", function() {
     $(document).ready(function() {
         var eventData = JSON.parse( localStorage.getItem("eventObj") );
+        console.log(eventData);
         loadEventData(eventData);
 
         $("#inviteButton").click(function(){
@@ -169,7 +170,9 @@ function handleRsvp(e,userId) {
         return value != userId;
     });
 
-    rsvpToEvent(e.event_id,'accepts');
+    rsvpToEvent(e.id,'accepts', function(){
+        // do something
+    });
 
     e.accepts.push(userId);
     updateGuestListUi(e.accepts,e.invites,[],e.declines);

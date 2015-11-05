@@ -8,8 +8,10 @@ $(document).ready(function() {
 //       (or create separate function?)
 function sendToServer(name, start, end, budget, location, callback){
 	console.log('Prepping to create event on server.');
-
-	var host = ['1']; //Hosts has to be a list
+	
+	var userId = LetsDoThis.Session.getInstance().getUserId();
+	
+	var host = [userId.toString()]; //Hosts has to be a list
 	var postData = {
 		"display_name": name,
 		"start_date": start,
@@ -109,11 +111,43 @@ function getEvent(eventId, callback){
 		}
 	});
 }
-
+function inviteToEvent(eventId, userId, callback) {
+	// note: this function only invites one user at a time
+	
+	console.log("prepping to invite a user to an event");
+	console.log("eventId is " + eventId);
+	
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+	
+	var userList = [userId.toString()]; // has to be a list
+	var postData = {
+		"invites": userList
+	}
+	
+	var rsvpUrl = "http://159.203.12.88/api/events/"+eventId+"/";
+	
+		$.ajax({
+		type: 'PUT',
+		url: rsvpUrl,
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
+		},
+		data: JSON.stringify(postData),
+		contentType: 'application/json',
+		dataType: 'json',
+		success: function (resp) {
+			console.log("Invited user to event");
+			callback();
+		},
+		error: function(e) {
+			console.log("Failed to invite user: ");
+			console.log(e);
+		}
+	});
+}
 
 function rsvpToEvent(eventId, rsvpStatus, callback){
 	// rsvpStatus is one of:
-	// - "invites"
 	// - "accepts"
 	// - "declines"
 
