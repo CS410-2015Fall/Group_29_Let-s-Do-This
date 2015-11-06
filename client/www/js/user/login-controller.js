@@ -17,7 +17,7 @@ LetsDoThis.LogInController.prototype.init = function() {
     this.$btnSubmit = $("#btn-submit", this.$logInPage);
     this.$username = $("#username", this.$logInPage);
     this.$password = $("#password", this.$logInPage);
-    console.log(this);
+    // console.log(this);
 };
 
 LetsDoThis.LogInController.prototype.resetLogInForm = function() {
@@ -150,5 +150,5 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
     });
 };
 
-console.log("login-controller has finished running");
-console.log(LetsDoThis);
+// console.log("login-controller has finished running");
+// console.log(LetsDoThis);

@@ -12,17 +12,17 @@ $(document).ready(function(){
 
     var logInController = new LetsDoThis.LogInController();
 
-    console.log("My login controller looks like this: ");
-    console.log(logInController);
-    
+    // console.log("My login controller looks like this: ");
+    // console.log(logInController);
+
     logInController.init();
-    
+
     // trigger onLogInCommand when login Submit button pressed
     logInController.$btnSubmit.off("tap").on("tap",function() {
         console.log("logging in user");
         logInController.onLogInCommand();
     });
-    
+
     // Reset login form
     $(document).on("pagecontainerbeforeshow", function (event,ui) {
         if (typeof ui.toPage == "object") {
@@ -36,9 +36,5 @@ $(document).ready(function(){
         }
     });
 
-    
+
 })
-
-
-
-

@@ -95,5 +95,5 @@ LetsDoThis.Session = (function () {
     };
 }());
 
-console.log("Session has finished running. Final LDT:");
-console.log(LetsDoThis);
+// console.log("Session has finished running. Final LDT:");
+// console.log(LetsDoThis);
