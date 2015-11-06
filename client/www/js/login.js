@@ -14,8 +14,8 @@ $(document).ready(function(){
 
     // console.log("My login controller looks like this: ");
     // console.log(logInController);
+    // console.log("isCordova: " + LetsDoThis.Session.getInstance().getIsCordova());
 
-    
     logInController.init();
 
     // trigger onLogInCommand when login Submit button pressed
