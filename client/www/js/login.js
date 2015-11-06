@@ -7,7 +7,7 @@
 var LetsDoThis = LetsDoThis || {};
 
 $(document).ready(function(){
-
+  console.log("Initial LetsDoThis: ");
     console.log(LetsDoThis);
 
     var logInController = new LetsDoThis.LogInController();
@@ -15,6 +15,7 @@ $(document).ready(function(){
     // console.log("My login controller looks like this: ");
     // console.log(logInController);
 
+    
     logInController.init();
 
     // trigger onLogInCommand when login Submit button pressed
