@@ -24,11 +24,12 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 class ShoppingListItemAdmin(admin.ModelAdmin):
-    fields = ["display_name", "quantity", "cost", "supplier"]
+    fields = ["display_name", "quantity", "cost", "supplier", "ready"]
+    list_display = ("id", "display_name")
 
 
 class ShoppingListAdmin(admin.ModelAdmin):
-    fields = ["items"]
+    fields = ["id", "items"]
 
 
 # Customize views of Users

@@ -7,7 +7,7 @@ This is for remote CRUD requests only. Most app logic will be in front-end clien
 - hash/don't return User passwords (here or in views.py)
 """
 from rest_framework import serializers
-from models import Event, LdtUser, Comment
+from models import Event, LdtUser, Comment, ShoppingList, ShoppingListItem
 from django.contrib.auth.models import User
 
 
@@ -27,34 +27,30 @@ class LdtUserSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
 
-    # useful for displaying id + username, but not helpful for POSTs - see views/comment for logic
+    # useful for displaying id + username, but not helpful for POSTs - see views/comment for that logic
     author = UserSerializer(read_only=True)
 
     class Meta:
         model = Comment
         fields = ('id', 'author', 'post_date', 'content', 'event')
 
-    # def create(self, validated_data):
-    #     """
-    #     Trying to follow http://www.django-rest-framework.org/api-guide/relations/ but can't get to work
-    #     """
-    #     author_data = validated_data.pop('author')
-    #     # return author_data
-    #     comment = Comment.objects.create(**validated_data)
-    #     comment.author = author_data
-    #     # comment.author = author_data
-    #     # for au in author_data:
-    #     #     Track.objects.create(album=album, **track_data)
-    #     return comment
 
 
-# class UserListSerializer(serializers.ModelSerializer):
-#
-#     # !!! May not use this. May be easier in Event view function
-#
-#     class Meta:
-#         model = User
-#         fields = ('id', 'username',)
+class ShoppingListItemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ShoppingListItem
+        fields = ('id', 'display_name', 'quantity', 'cost', 'supplier', 'ready')
+
+
+
+class ShoppingListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ShoppingList
+        fields = ('id', 'items')
+
+
 
 
 class EventSerializer(serializers.ModelSerializer):

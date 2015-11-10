@@ -80,10 +80,15 @@ All actions require an authentication token in the request header. This is obtai
 
 ### Event ShoppingList
 
-| Action   | Url                                              | Url keys             | JSON keys                                     |
-| -------- | ------------------------------------------------ | -------------------- | --------------------------------------------- |
-| GET      | http://159.203.12.88/api/events/2/shoppinglist/  | Event id             | *Coming soon!*                                |
-
+| Action   | Url                                                    | Url keys             | JSON keys                                     |
+| -------- | ------------------------------------------------------ | -------------------- | --------------------------------------------- |
+| GET      | http://159.203.12.88/api/events/2/shoppinglist/        | Event id             |                                               |
+| POST     | http://159.203.12.88/api/events/2/shoppinglist/        | Event id             | display_name, quantity, cost, supplier, ready |
+| PUT      | http://159.203.12.88/api/events/2/shoppinglist/edit/   | Event id             | display_name, quantity, cost, supplier, ready |
+| POST     | http://159.203.12.88/api/events/2/shoppinglist/remove/ | Event id             | item_id                                       |
+| GET      | http://159.203.12.88/api/events/2/shoppinglist/5/      | Event id, Item id    |                                               |
+| PUT      | http://159.203.12.88/api/events/2/shoppinglist/5/      | Event id, Item id    | display_name, quantity, cost, supplier, ready |
+| DELETE   | http://159.203.12.88/api/events/2/shoppinglist/5/      | Event id, Item id    |                                               |
 
 
 

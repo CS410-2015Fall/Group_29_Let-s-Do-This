@@ -88,16 +88,23 @@ class ShoppingListItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     # For now, if user it Null then there is nobody assigned
-    supplier = models.OneToOneField(User, related_name="supplier", null=True, blank=True)
-    # !!! ready flag enumeration
+    supplier = models.ForeignKey(User, related_name="supplier", null=True, blank=True)
+    ready = models.NullBooleanField(blank=True)
+
+    def __str__(self):
+        return self.display_name
 
 
 class ShoppingList(models.Model):
     """
     ShoppingList of ShoppingListItems
     """
+    # Required: see Event.shopping_list
     # Optional
     items = models.ManyToManyField(ShoppingListItem, related_name="items", blank=True)
+
+    def __str__(self):
+        return self.shopping_list.display_name  # display_name of linked Event
 
 
 class Event(models.Model):
@@ -117,7 +124,8 @@ class Event(models.Model):
     accepts = models.ManyToManyField(User, related_name="accepts", blank=True)
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
     comments = models.ManyToManyField(Comment, related_name="event", blank=True)
-    shopping_list = models.OneToOneField(ShoppingList, related_name="shopping_list", null=True, blank=True)
+    shopping_list = models.OneToOneField(ShoppingList, related_name="shopping_list", null=True, blank=True,
+                                         on_delete=models.CASCADE)
 
     def __str__(self):
         """

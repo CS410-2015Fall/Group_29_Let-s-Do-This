@@ -21,6 +21,8 @@ This seems to me to be the fastest option for deployment. We are allowed to use 
 
 Django is quite bulky in terms of all its features + additional frameworks and seems like overkill for a database + API. But they install relatively quickly and are useful, such as the REST framework.
 
+This application runs on **Django 1.8.3**.
+
 
 
 # Requirements
@@ -45,7 +47,7 @@ Test that new Python venv works by activating then deactivating it. See (http://
 
 For all steps from now on (setup and development), have venv activated so you work using the venv Python executable and installed libraries.
 
-Install all required packages using `pip install -r requirements.txt`  If there is an issue installing or using psycopg2 and you are using Windows, you may need to install Microsoft Visual C++ Compiler for Python 2.7 and restart the command line. `pip uninstall psycopg2` then install [this version of psycopg](http://www.stickpeople.com/projects/python/win-psycopg/) using easy_install instead of pip.
+Install all required packages using `pip install -r requirements.txt`  This installs Django 1.8.3 and other libraries. If there is an issue installing or using psycopg2 and you are using Windows, you may need to install Microsoft Visual C++ Compiler for Python 2.7 and restart the command line. `pip uninstall psycopg2` then install [this version of psycopg](http://www.stickpeople.com/projects/python/win-psycopg/) using easy_install instead of pip.
 
 The end product of this section is a project-specific Python executable with the site-packages/libraries needed to run server, which should run on your own computer only.
 

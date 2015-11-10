@@ -160,6 +160,7 @@ def event_detail(request, pk):
         "declines": [86]
     }
     Note1: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
+    Note2: This will automatically create a "shopping_list" for that event, which is empty when first returned.
 
     For GETs, the lists "hosts", "invites", "accepts", "declines" are returned as lists of dictionaries/objects of
     user details (each formatted as below) instead of lists of IDs (shown above):
@@ -170,9 +171,26 @@ def event_detail(request, pk):
         "email": "back@future.com"
     }
 
-    Note2: If the user has no LdtUser profile (e.g. admin staff/superuser), only the user's id and username will be
+    Note3: If the user has no LdtUser profile (e.g. admin staff/superuser), only the user's id and username will be
     shown. They will NOT have a phone or email.
+
+    For GETs, the "shopping_list" is returned as a list of dictionaries/objects of shopping list items (each formatted
+    as below):
+    {
+        "display_name": "hot dogs",
+        "quantity": 9001,
+        "cost": 12345678.90,
+        "supplier": {
+            "id": 123,
+            "username": "MartyMcFly",
+            "phone": "6045554321",
+            "email": "back@future.com"
+        },
+        "ready": "Yes"
+    }
     """
+    # !!! TODO: implement above
+
     try:
         event = Event.objects.get(pk=pk)
     except Event.DoesNotExist:
