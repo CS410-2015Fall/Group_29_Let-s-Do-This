@@ -59,6 +59,34 @@ def user_list(request):
                     "username": user.username,
                     "password": user.password,
                 }
+            # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
+            if "friends" in userdict:
+                ulist = userdict["friends"]
+                detailed_ulist = []
+                for uid in ulist:
+                    user = User.objects.get(pk=uid)
+                    # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
+                    # !!! refactor: flexible instead of hardcoded
+                    #     See also user.py
+                    try:
+                        profile_id = user.userlink.id
+                        profile = LdtUser.objects.get(pk=profile_id)
+                        udict = {
+                            "id": user.id,
+                            "username": user.username,
+                            # "password": user.password,
+                            "phone": profile.phone,
+                            "email": profile.email,
+                        }
+                    except:
+                        # User has no profile, e.g. superuser or staff
+                        udict = {
+                            "id": user.id,
+                            "username": user.username,
+                            # "password": user.password,
+                        }
+                    detailed_ulist.append(udict)
+                userdict["friends"] = detailed_ulist
             res.append(userdict.copy())
         return Response(res, status=status.HTTP_200_OK)
 
@@ -97,6 +125,34 @@ def user_list(request):
                 "email": ser2.data["email"],
                 "friends": ser2.data["friends"]
             }
+        # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
+        if "friends" in res:
+            ulist = res["friends"]
+            detailed_ulist = []
+            for uid in ulist:
+                user = User.objects.get(pk=uid)
+                # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
+                # !!! refactor: flexible instead of hardcoded
+                #     See also user.py
+                try:
+                    profile_id = user.userlink.id
+                    profile = LdtUser.objects.get(pk=profile_id)
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                        "phone": profile.phone,
+                        "email": profile.email,
+                    }
+                except:
+                    # User has no profile, e.g. superuser or staff
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                    }
+                detailed_ulist.append(udict)
+            res["friends"] = detailed_ulist
             return Response(res, status=status.HTTP_201_CREATED)
         else:
             # Delete newly created user because shouldn't be used without ldtuser profile
@@ -167,6 +223,34 @@ def user_detail(request, pk):
                 "username": user.username,
                 "password": user.password,
             }
+        # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
+        if "friends" in res:
+            ulist = res["friends"]
+            detailed_ulist = []
+            for uid in ulist:
+                user = User.objects.get(pk=uid)
+                # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
+                # !!! refactor: flexible instead of hardcoded
+                #     See also user.py
+                try:
+                    profile_id = user.userlink.id
+                    profile = LdtUser.objects.get(pk=profile_id)
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                        "phone": profile.phone,
+                        "email": profile.email,
+                    }
+                except:
+                    # User has no profile, e.g. superuser or staff
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                    }
+                detailed_ulist.append(udict)
+            res["friends"] = detailed_ulist
         return Response(res, status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
@@ -225,6 +309,34 @@ def user_detail(request, pk):
             "email": updated_profile.email,
             "friends": friends
         }
+        # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
+        if "friends" in res:
+            ulist = res["friends"]
+            detailed_ulist = []
+            for uid in ulist:
+                user = User.objects.get(pk=uid)
+                # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
+                # !!! refactor: flexible instead of hardcoded
+                #     See also user.py
+                try:
+                    profile_id = user.userlink.id
+                    profile = LdtUser.objects.get(pk=profile_id)
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                        "phone": profile.phone,
+                        "email": profile.email,
+                    }
+                except:
+                    # User has no profile, e.g. superuser or staff
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                    }
+                detailed_ulist.append(udict)
+            res["friends"] = detailed_ulist
         return Response(res, status=status.HTTP_200_OK)
 
     elif request.method == 'DELETE':
@@ -255,7 +367,37 @@ def user_friends_remove(request, pk):
     serializer = LdtUserSerializer(ldtuser, data=data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        res = serializer.data
+        # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
+        if "friends" in res:
+            ulist = res["friends"]
+            detailed_ulist = []
+            for uid in ulist:
+                user = User.objects.get(pk=uid)
+                # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
+                # !!! refactor: flexible instead of hardcoded
+                #     See also user.py
+                try:
+                    profile_id = user.userlink.id
+                    profile = LdtUser.objects.get(pk=profile_id)
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                        "phone": profile.phone,
+                        "email": profile.email,
+                    }
+                except:
+                    # User has no profile, e.g. superuser or staff
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                    }
+                detailed_ulist.append(udict)
+            res["friends"] = detailed_ulist
+        return Response(res, status=status.HTTP_200_OK)                # friends as list of detailed udicts
+        # return Response(serializer.data, status=status.HTTP_200_OK)  # original - friends as list of user ID
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
