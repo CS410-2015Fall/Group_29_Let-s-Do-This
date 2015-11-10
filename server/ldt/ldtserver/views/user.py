@@ -32,6 +32,18 @@ def user_list(request):
         "phone": "6045555555",
         "friends": [123, 789]
     }
+
+    For GETs and after successful POSTs, "friends" is returned as a list of dictionaries/objects of user details
+    (each formatted as below) instead of lists of IDs (shown above):
+    {
+        "id": 123,
+        "username": "MartyMcFly",
+        "phone": "6045554321",
+        "email": "back@future.com"
+    }
+
+    Note: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
+    shown. They will NOT have a phone or email.
     """
     if request.method == 'GET':
         users = User.objects.all()
@@ -194,6 +206,18 @@ def user_detail(request, pk):
         "phone": "6045555555",
         "friends": [123, 789]
     }
+
+    For GETs and after successful PUTs, "friends" is returned as a list of dictionaries/objects of user details
+    (each formatted as below) instead of lists of IDs (shown above):
+    {
+        "id": 123,
+        "username": "MartyMcFly",
+        "phone": "6045554321",
+        "email": "back@future.com"
+    }
+
+    Note: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
+    shown. They will NOT have a phone or email.
     """
     try:
         user = User.objects.get(pk=pk)
@@ -351,6 +375,18 @@ def user_friends_remove(request, pk):
 
     POST request data must be formatted as follows:
     { "friends": [1, 4] }
+
+    After successful POSTs, "friends" is returned as a list of dictionaries/objects of user details
+    (each formatted as below) instead of lists of IDs (shown above):
+    {
+        "id": 123,
+        "username": "MartyMcFly",
+        "phone": "6045554321",
+        "email": "back@future.com"
+    }
+
+    Note: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
+    shown. They will NOT have a phone or email.
     """
     try:
         user = User.objects.get(pk=pk)

@@ -37,7 +37,6 @@ def event_list(request):
         "accepts": [90],
         "declines": [86]
     }
-
     Note: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
     """
     if request.method == 'GET':
@@ -160,8 +159,19 @@ def event_detail(request, pk):
         "accepts": [90],
         "declines": [86]
     }
+    Note1: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
 
-    Note: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
+    For GETs, the lists "hosts", "invites", "accepts", "declines" are returned as lists of dictionaries/objects of
+    user details (each formatted as below) instead of lists of IDs (shown above):
+    {
+        "id": 123,
+        "username": "MartyMcFly",
+        "phone": "6045554321",
+        "email": "back@future.com"
+    }
+
+    Note2: If the user has no LdtUser profile (e.g. admin staff/superuser), only the user's id and username will be
+    shown. They will NOT have a phone or email.
     """
     try:
         event = Event.objects.get(pk=pk)
