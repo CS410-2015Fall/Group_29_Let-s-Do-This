@@ -48,6 +48,15 @@ class CommentSerializer(serializers.ModelSerializer):
     #     return comment
 
 
+# class UserListSerializer(serializers.ModelSerializer):
+#
+#     # !!! May not use this. May be easier in Event view function
+#
+#     class Meta:
+#         model = User
+#         fields = ('id', 'username',)
+
+
 class EventSerializer(serializers.ModelSerializer):
 
     comments = CommentSerializer(many=True, read_only=True)

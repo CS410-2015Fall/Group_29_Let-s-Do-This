@@ -92,7 +92,7 @@ def user_list(request):
             res = {
                 "id": ser1.data["id"],
                 "username": ser1.data["username"],
-                "password": ser1.data["password"],
+                # "password": ser1.data["password"],  # KeyError at view after post
                 "phone": ser2.data["phone"],
                 "email": ser2.data["email"],
                 "friends": ser2.data["friends"]

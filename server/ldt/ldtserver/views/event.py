@@ -10,12 +10,14 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ..models import Event, Comment
+from ..models import Event, LdtUser
+from django.contrib.auth.models import User
 from ..serializers import EventSerializer
 
 
 OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments", "shopping_list"]
 EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
+USERLIST_FIELDS = ["hosts", "invites", "accepts", "declines"]
 
 
 @api_view(['GET', 'POST'])
@@ -169,23 +171,38 @@ def event_detail(request, pk):
     if request.method == 'GET':
         serializer = EventSerializer(event)
 
-        # # Display details of Comments
-        # # !!! No longer needed with Nested Relationships in EventSerializer, but keep in this commit just in case
-        # event_data = serializer.data
-        # comments_details = []
-        # for c in event_data["comments"]:
-        #     comment = Comment.objects.get(pk=c)
-        #     comments_details.append(
-        #         {
-        #             "author": comment.author.username,  # !!! display username? or display user_ids?
-        #             "post_date": comment.post_date,
-        #             "content": comment.content
-        #         }
-        #     )
-        # event_data.update({"comments": comments_details})
-        # return Response(event_data, status=status.HTTP_200_OK)
+        res = serializer.data
 
-        return Response(serializer.data, status=status.HTTP_200_OK)  # original
+        for f in USERLIST_FIELDS:
+            ulist = res[f]
+            detailed_ulist = []
+            for uid in ulist:
+                user = User.objects.get(pk=uid)
+                # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
+                # !!! refactor: flexible instead of hardcoded
+                #     See also user.py
+                try:
+                    profile_id = user.userlink.id
+                    profile = LdtUser.objects.get(pk=profile_id)
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                        "phone": profile.phone,
+                        "email": profile.email,
+                    }
+                except:
+                    # User has no profile, e.g. superuser or staff
+                    udict = {
+                        "id": user.id,
+                        "username": user.username,
+                        # "password": user.password,
+                    }
+                detailed_ulist.append(udict)
+            res[f] = detailed_ulist
+
+        return Response(res, status=status.HTTP_200_OK)                # include IAD as lists of udicts
+        # return Response(serializer.data, status=status.HTTP_200_OK)  # original: IAD as lists of user IDs
 
     elif request.method == 'PUT':
         data = {}
