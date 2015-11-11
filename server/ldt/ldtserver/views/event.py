@@ -16,7 +16,7 @@ from ..serializers import EventSerializer, ShoppingListSerializer
 
 
 OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments"]
-ALL_EVENT_FIELDS = OPTIONAL_EVENT_FIELDS + ["display_name"]
+ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + ["display_name"]
 EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
 USERLIST_FIELDS = ["hosts", "invites", "accepts", "declines"]
 
@@ -51,8 +51,6 @@ def event_list(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-
-        # NEW:
         # First create new Event
         if "display_name" not in request.data:
             return Response("KeyError: event display_name required.", status=status.HTTP_400_BAD_REQUEST)
@@ -69,7 +67,7 @@ def event_list(request):
         if ser2.is_valid():
             ser2.save()
             # Return flat JSON response of new Event with ShoppingList fields
-            res = {k: ser1.data[k] for k in ALL_EVENT_FIELDS}
+            res = {k: ser1.data[k] for k in ALL_FIELDS_BUT_SHOPLIST}
             res.update({"shopping_list": ser2.data})
             return Response(res, status=status.HTTP_201_CREATED)
         else:
@@ -77,15 +75,6 @@ def event_list(request):
             event = Event.objects.get(pk=ser1.data["id"])
             event.delete()
             return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-        # # ORIGINAL
-        # serializer = EventSerializer(data=request.data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # else:
-        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def rsvp(event=None, replies=None):
@@ -263,8 +252,37 @@ def event_detail(request, pk):
                 detailed_ulist.append(udict)
             res[f] = detailed_ulist
 
-        return Response(res, status=status.HTTP_200_OK)                # include IAD as lists of udicts
-        # return Response(serializer.data, status=status.HTTP_200_OK)  # original: IAD as lists of user IDs
+        # res["shopping_list"] = "abc"
+        # res["shopping_list"] = "abc"
+
+
+        #         events = Event.objects.all()
+        # # Return flat JSON response of new Event with ShoppingList fields
+        # res = []
+        # for event in events:
+        #     # Iterate through all event fields except its ShoppingList
+        #     edict = {f: getattr(event, f, None) for f in ALL_FIELDS_BUT_SHOPLIST}
+        #
+        #     # fields = event._meta.get_all_field_names()
+        #     # fields.remove("shopping_list")
+        #     # edict = {f: getattr(event, f, None) for f in fields}
+        #
+        #
+        #     # for field in filter(lambda f: f != "author" and f != "event", fields):
+        #     #     if field not in request.data:
+        #     #         data.update({field: getattr(comment, field, None)})
+        #     #     else:
+        #     #         data.update({field: request.data[field]})
+        #
+        #
+        #
+        #
+        #     res.append(edict)
+        # return Response({"res_is": res})
+
+
+
+        return Response(res, status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
         data = {}

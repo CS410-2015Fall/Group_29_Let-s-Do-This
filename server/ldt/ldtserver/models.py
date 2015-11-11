@@ -95,18 +95,6 @@ class ShoppingListItem(models.Model):
         return self.display_name
 
 
-# class ShoppingList(models.Model):
-#     """
-#     ShoppingList of ShoppingListItems
-#     """
-#     # Required: see Event.shopping_list
-#     # Optional
-#     items = models.ManyToManyField(ShoppingListItem, related_name="items", blank=True)
-#
-#     def __str__(self):
-#         return self.eventlink.display_name   # display_name of linked Event
-
-
 class Event(models.Model):
     """
     Event with fields for display_name, dates, hosts, invitees, accepts, declines.
@@ -124,8 +112,6 @@ class Event(models.Model):
     accepts = models.ManyToManyField(User, related_name="accepts", blank=True)
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
     comments = models.ManyToManyField(Comment, related_name="event", blank=True)
-    # shopping_list = models.OneToOneField(ShoppingList, related_name="eventlink", null=True, blank=True,
-    #                                      on_delete=models.CASCADE)
 
     def __str__(self):
         """
@@ -154,14 +140,12 @@ class Event(models.Model):
         return [c for c in self.comments.all()]
 
 
-# NEW: to better resemble LdtUser arrangement
 class ShoppingList(models.Model):
     """
     ShoppingList of ShoppingListItems
     """
-    # Required: see Event.shopping_list
-    event = models.OneToOneField(Event, related_name="eventlink", on_delete=models.CASCADE, null=True, blank=True)
     # Optional
+    event = models.OneToOneField(Event, related_name="shopping_list", on_delete=models.CASCADE, null=True, blank=True)
     items = models.ManyToManyField(ShoppingListItem, related_name="items", blank=True)
 
     def __str__(self):

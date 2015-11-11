@@ -52,8 +52,7 @@ class ShoppingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShoppingList
-        fields = ('id', 'items', 'event')     # Field name `event` is not valid for model `ShoppingList`
-        # fields = ('id', 'items', 'eventlink')
+        fields = ('id', 'items', 'event')
 
 
 class EventSerializer(serializers.ModelSerializer):
