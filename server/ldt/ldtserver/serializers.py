@@ -35,27 +35,31 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'author', 'post_date', 'content', 'event')
 
 
-
 class ShoppingListItemSerializer(serializers.ModelSerializer):
+
+    # useful for displaying id + username, but not helpful for POSTs - see views/comment for that logic
+    supplier = UserSerializer(read_only=True)
 
     class Meta:
         model = ShoppingListItem
         fields = ('id', 'display_name', 'quantity', 'cost', 'supplier', 'ready')
 
 
-
 class ShoppingListSerializer(serializers.ModelSerializer):
+
+    # useful for item details, but not helpful for POSTs - see views/comment for that logic
+    items = ShoppingListItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = ShoppingList
-        fields = ('id', 'items')
-
-
+        fields = ('id', 'items', 'event')     # Field name `event` is not valid for model `ShoppingList`
+        # fields = ('id', 'items', 'eventlink')
 
 
 class EventSerializer(serializers.ModelSerializer):
 
     comments = CommentSerializer(many=True, read_only=True)
+    shopping_list = ShoppingListSerializer(read_only=True)
 
     class Meta:
         model = Event

@@ -10,12 +10,13 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ..models import Event, LdtUser
+from ..models import Event, LdtUser, ShoppingList
 from django.contrib.auth.models import User
-from ..serializers import EventSerializer
+from ..serializers import EventSerializer, ShoppingListSerializer
 
 
-OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments", "shopping_list"]
+OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments"]
+ALL_EVENT_FIELDS = OPTIONAL_EVENT_FIELDS + ["display_name"]
 EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
 USERLIST_FIELDS = ["hosts", "invites", "accepts", "declines"]
 
@@ -37,7 +38,12 @@ def event_list(request):
         "accepts": [90],
         "declines": [86]
     }
-    Note: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
+    Note1: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
+
+    Note2: This will automatically create a "shopping_list" for that event, which is empty when first returned.
+
+    Note3: At this time, the "shopping_list" cannot be edited through this call. It can only be edited using the Event
+    Shopping List-related functions (see server README).
     """
     if request.method == 'GET':
         events = Event.objects.all()
@@ -45,13 +51,41 @@ def event_list(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        # example = request.user.id    # to give requesting user's pk
-        serializer = EventSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        # NEW:
+        # First create new Event
+        if "display_name" not in request.data:
+            return Response("KeyError: event display_name required.", status=status.HTTP_400_BAD_REQUEST)
+        data1 = {k: request.data[k] for k in request.data}
+        ser1 = EventSerializer(data=data1)
+        if ser1.is_valid():
+            ser1.save()
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(ser1.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Then create new ShoppingList associated with new Event
+        data2 = {"event": ser1.data["id"]}
+        ser2 = ShoppingListSerializer(data=data2)
+        if ser2.is_valid():
+            ser2.save()
+            # Return flat JSON response of new Event with ShoppingList fields
+            res = {k: ser1.data[k] for k in ALL_EVENT_FIELDS}
+            res.update({"shopping_list": ser2.data})
+            return Response(res, status=status.HTTP_201_CREATED)
+        else:
+            # Delete newly created Event because shouldn't be used without ShoppingList
+            event = Event.objects.get(pk=ser1.data["id"])
+            event.delete()
+            return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+        # # ORIGINAL
+        # serializer = EventSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # else:
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def rsvp(event=None, replies=None):
@@ -160,7 +194,9 @@ def event_detail(request, pk):
         "declines": [86]
     }
     Note1: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
-    Note2: This will automatically create a "shopping_list" for that event, which is empty when first returned.
+
+    Note2: At this time, the "shopping_list" cannot be edited through this call. It can only be edited using the Event
+    Shopping List-related functions (see server README).
 
     For GETs, the lists "hosts", "invites", "accepts", "declines" are returned as lists of dictionaries/objects of
     user details (each formatted as below) instead of lists of IDs (shown above):
@@ -174,8 +210,8 @@ def event_detail(request, pk):
     Note3: If the user has no LdtUser profile (e.g. admin staff/superuser), only the user's id and username will be
     shown. They will NOT have a phone or email.
 
-    For GETs, the "shopping_list" is returned as a list of dictionaries/objects of shopping list items (each formatted
-    as below):
+    For GETs, there is also a "shopping_list" returned, in addition to above PUT request fields. "shopping_list" is a
+    list of dictionaries/objects of shopping list items (each formatted as below):
     {
         "display_name": "hot dogs",
         "quantity": 9001,
@@ -186,11 +222,9 @@ def event_detail(request, pk):
             "phone": "6045554321",
             "email": "back@future.com"
         },
-        "ready": "Yes"
+        "ready": null, "Yes", or "No"
     }
     """
-    # !!! TODO: implement above
-
     try:
         event = Event.objects.get(pk=pk)
     except Event.DoesNotExist:

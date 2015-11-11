@@ -95,16 +95,16 @@ class ShoppingListItem(models.Model):
         return self.display_name
 
 
-class ShoppingList(models.Model):
-    """
-    ShoppingList of ShoppingListItems
-    """
-    # Required: see Event.shopping_list
-    # Optional
-    items = models.ManyToManyField(ShoppingListItem, related_name="items", blank=True)
-
-    def __str__(self):
-        return self.shopping_list.display_name  # display_name of linked Event
+# class ShoppingList(models.Model):
+#     """
+#     ShoppingList of ShoppingListItems
+#     """
+#     # Required: see Event.shopping_list
+#     # Optional
+#     items = models.ManyToManyField(ShoppingListItem, related_name="items", blank=True)
+#
+#     def __str__(self):
+#         return self.eventlink.display_name   # display_name of linked Event
 
 
 class Event(models.Model):
@@ -124,8 +124,8 @@ class Event(models.Model):
     accepts = models.ManyToManyField(User, related_name="accepts", blank=True)
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
     comments = models.ManyToManyField(Comment, related_name="event", blank=True)
-    shopping_list = models.OneToOneField(ShoppingList, related_name="shopping_list", null=True, blank=True,
-                                         on_delete=models.CASCADE)
+    # shopping_list = models.OneToOneField(ShoppingList, related_name="eventlink", null=True, blank=True,
+    #                                      on_delete=models.CASCADE)
 
     def __str__(self):
         """
@@ -152,3 +152,20 @@ class Event(models.Model):
     def get_comments(self):
         """ Return list of Event's Comments """
         return [c for c in self.comments.all()]
+
+
+# NEW: to better resemble LdtUser arrangement
+class ShoppingList(models.Model):
+    """
+    ShoppingList of ShoppingListItems
+    """
+    # Required: see Event.shopping_list
+    event = models.OneToOneField(Event, related_name="eventlink", on_delete=models.CASCADE, null=True, blank=True)
+    # Optional
+    items = models.ManyToManyField(ShoppingListItem, related_name="items", blank=True)
+
+    def __str__(self):
+        if self.event:
+            return self.event.display_name   # display_name of linked Event
+        else:
+            return "(ShoppingList without Event)"
