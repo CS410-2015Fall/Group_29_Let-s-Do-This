@@ -45,12 +45,8 @@ def shoppinglistitem_list(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        all_items = Event.get_shoppinglistitems(event)
-        res = []
-        for item in all_items:
-            ser = ShoppingListItemSerializer(item)
-            res.append(ser.data)
-        return Response({"res_is": res}, status=status.HTTP_200_OK)
+        res = [ShoppingListItemSerializer(i).data for i in Event.get_shoppinglistitems(event)]
+        return Response(res, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
         return Response({"test": "posted shoppinglist"}, status=status.HTTP_200_OK)  # temp stub
