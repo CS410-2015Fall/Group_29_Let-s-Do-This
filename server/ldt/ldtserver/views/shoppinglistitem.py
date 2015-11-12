@@ -45,7 +45,6 @@ def shoppinglistitem_list(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        # return Response({"test": "got shoppinglist"}, status=status.HTTP_200_OK)  # temp stub
         all_items = Event.get_shoppinglistitems(event)
         res = []
         for item in all_items:
@@ -123,18 +122,18 @@ def shoppinglistitem_detail(request, pk, item_id):
     except Event.DoesNotExist:
         return Response({"error": "No Event matching primary key"}, status=status.HTTP_404_NOT_FOUND)
 
-    return Response({"test": "detail of shoppinglistitem"}, status=status.HTTP_200_OK)  # temp stub
+    # return Response({"test": "detail of shoppinglistitem"}, status=status.HTTP_200_OK)  # temp stub
 
-    # # FROM comments.py
-    # try:
-    #     comment = Comment.objects.get(pk=comment_id)
-    # except Comment.DoesNotExist:
-    #     return Response({"error": "No Comment matching primary key"}, status=status.HTTP_404_NOT_FOUND)
-    #
-    # if request.method == 'GET':
-    #     serializer = CommentSerializer(comment)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-    #
+    try:
+        item = ShoppingListItem.objects.get(pk=item_id)
+        # return Response({"yes": "we have lift off"}, status=status.HTTP_200_OK)  # temp stub
+    except ShoppingListItem.DoesNotExist:
+        return Response({"error": "No Comment matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ShoppingListItemSerializer(item)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     # elif request.method == 'PUT':
     #     data = {}
     #
