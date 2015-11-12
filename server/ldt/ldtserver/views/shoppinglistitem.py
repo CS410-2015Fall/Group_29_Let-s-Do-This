@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from ..models import Event, ShoppingList, ShoppingListItem, User
+from ..serializers import ShoppingListItemSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -44,13 +45,13 @@ def shoppinglistitem_list(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        return Response({"test": "got shoppinglist"}, status=status.HTTP_200_OK)  # temp stub
-
-        # # FROM comments.py
-        # all_comments = Comment.objects.all()
-        # event_comments = [ac for ac in all_comments if ac in Event.get_comments(event)]
-        # serializer = CommentSerializer(event_comments, many=True)
-        # return Response(serializer.data, status=status.HTTP_200_OK)
+        # return Response({"test": "got shoppinglist"}, status=status.HTTP_200_OK)  # temp stub
+        all_items = Event.get_shoppinglistitems(event)
+        res = []
+        for item in all_items:
+            ser = ShoppingListItemSerializer(item)
+            res.append(ser.data)
+        return Response({"res_is": res}, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
         return Response({"test": "posted shoppinglist"}, status=status.HTTP_200_OK)  # temp stub

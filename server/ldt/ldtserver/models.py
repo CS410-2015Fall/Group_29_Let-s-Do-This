@@ -139,6 +139,10 @@ class Event(models.Model):
         """ Return list of Event's Comments """
         return [c for c in self.comments.all()]
 
+    def get_shoppinglistitems(self):
+        """ Return list of Event's shoppinglistitem (can be empty) """
+        return [i for i in self.shopping_list.items.all()]
+
 
 class ShoppingList(models.Model):
     """
