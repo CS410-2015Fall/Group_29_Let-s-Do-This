@@ -7,6 +7,10 @@ $.getScript("js/global.js", function() {
         $("#inviteButton").click(function(){
             var invited = getGuestCheckboxValues();
             // TODO set changed users to invited/uninvited
+            // do not call function if no users were invited
+            if (invited.length != 0) {
+                inviteFriends(eventData,invited);
+            };
             $("#friendsPopup").popup("close");
         });
 
@@ -15,8 +19,8 @@ $.getScript("js/global.js", function() {
         });
 
         $("#rsvpButton").click(function(){
-            var userId = LetsDoThis.Session.getInstance().getUserId();;
-            handleRsvp(eventData,userId);
+            var userInfo = LetsDoThis.Session.getInstance().getUserInfo();;
+            handleRsvp(eventData,userInfo);
         });
 
         $("#commentForm").submit(function(event) {
@@ -48,8 +52,9 @@ createContentBoxes(comments,$("#comments"));
 }
 
 function loadGuests(event) {
+    
     var friendIds = LetsDoThis.Session.getInstance().getUserFriends();
-
+    
     // reduce friendIds so that it contains only those ids which are not already invited, attending or declining the event
     function reduceList(l1,l2) {
         $.each(l2, function(index, val) {
@@ -67,35 +72,35 @@ function loadGuests(event) {
     updateGuestListUi(event.accepts,event.invites,friendIds,event.declines);
 }
 
-function updateGuestListUi(acceptIds,inviteIds,friendIds,declineIds) {
+function updateGuestListUi(accepts,invites,friends,declines) {
 
-    var accepts = [];
-    var invites = [];
-    var friends = [];
-    var declines = [];
+    //var accepts = [];
+    //var invites = [];
+    //var friends = [];
+    //var declines = [];
 
     // get user information corresponding to the userIds
-    function mapUsers(userIds, users) {
-        jQuery.map(userIds, function(val,key){
-            getUser(val, function(resp) {
-                var u = {
-                    username:resp.username,
-                    user_id:val
-                }
-                users.push(u);
-            });
-        });
-    }
+    //function mapUsers(userIds, users) {
+    //    jQuery.map(userIds, function(val,key){
+    //        getUser(val, function(resp) {
+    //            var u = {
+    //                username:resp.username,
+    //                user_id:val
+    //            }
+    //            users.push(u);
+    //        });
+    //    });
+    //}
 
-    mapUsers(acceptIds,accepts);
-    mapUsers(inviteIds,invites);
-    mapUsers(friendIds,friends);
-    mapUsers(declineIds,declines);
+    //mapUsers(acceptIds,accepts);
+    //mapUsers(inviteIds,invites);
+    //mapUsers(friendIds,friends);
+    //mapUsers(declineIds,declines);
     //create html for list of users associated with event
     function write(list, attrs, status) {
         var str = "";
         $.each(list, function(i, user) {
-            str += '<input type="checkbox" name="accept" id="' + user.user_id + '" value="' + user.user_id + '" ' + attrs + '><label for="' + user.user_id + '">' + user.username + ' ' + status + '</label>';
+            str += '<input type="checkbox" name="accept" id="' + user.id + '" value="' + user.id + '" ' + attrs + '><label for="' + user.id + '">' + user.username + ' ' + status + '</label>';
         });
         return str;
     }
@@ -162,22 +167,35 @@ function formatComments(comments) {
     return formattedComments;
 }
 
-function handleRsvp(e,userId) {
+function handleRsvp(e,userInfo) {
     e.invites = jQuery.grep(e.invites, function(value) {
-        return value != userId;
+        return value != userInfo;
     });
     e.declines = jQuery.grep(e.declines, function(value) {
-        return value != userId;
+        return value != userInfo;
     });
 
     rsvpToEvent(e.id,'accepts', function(){
         // do something
     });
 
-    e.accepts.push(userId);
+    e.accepts.push(userInfo);
     updateGuestListUi(e.accepts,e.invites,[],e.declines);
 
     $("#rsvpButton").attr('disabled', 'true');
     $("#rsvpPopup").popup( "open" )
 
+}
+
+function inviteFriends(e,invitedUsers) {
+    inviteToEvent(e.id, invitedUsers, function(){
+        // on success, update event information
+        // there is probably a simpler way to do this
+        getEvent(e.id,function(updatedEvent){
+            localStorage.setItem("eventObj", JSON.stringify(updatedEvent));
+            eventData = JSON.parse( localStorage.getItem("eventObj") );
+            loadGuests(eventData);
+        });
+
+    });
 }

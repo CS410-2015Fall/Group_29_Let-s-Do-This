@@ -43,6 +43,7 @@ var getUserInfo = function(id) {
         success: function (resp) {
             console.log("User info retrieved!");
             LetsDoThis.Session.getInstance().setUserInfo({
+                "id": id,
                 "username": resp.username,
                 "email": resp.email,
                 "phone": resp.phone

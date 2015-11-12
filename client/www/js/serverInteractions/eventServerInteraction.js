@@ -111,15 +111,13 @@ function getEvent(eventId, callback){
 		}
 	});
 }
-function inviteToEvent(eventId, userId, callback) {
-	// note: this function only invites one user at a time
+function inviteToEvent(eventId, userList, callback) {
 	
 	console.log("prepping to invite a user to an event");
 	console.log("eventId is " + eventId);
 	
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	
-	var userList = [userId.toString()]; // has to be a list
 	var postData = {
 		"invites": userList
 	}

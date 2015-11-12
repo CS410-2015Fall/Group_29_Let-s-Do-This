@@ -50,7 +50,7 @@ LetsDoThis.Session = (function () {
       },
 
       // user information
-      // getUserInfo returns {username:<username>, email:<email>, phone:<phone>}
+      // getUserInfo returns {id:<id>, username:<username>, email:<email>, phone:<phone>}
       setUserInfo: function(sessionData) {
         window.localStorage.setItem(userInfoKey, JSON.stringify(sessionData));
       },
@@ -66,7 +66,11 @@ LetsDoThis.Session = (function () {
       },
 
       // user friends
-      // getUserFriends returns <list of user IDs>
+      // getUserFriends returns
+      // <list of {id:<id>,
+      //           username:<username>,
+      //           email:<email>,
+      //           phone:<phone>}>
       setUserFriends: function(sessionData) {
         window.localStorage.setItem(userFriendsKey, JSON.stringify(sessionData));
       },
