@@ -157,3 +157,9 @@ class ShoppingList(models.Model):
             return self.event.display_name   # display_name of linked Event
         else:
             return "(ShoppingList without Event)"
+
+    def add_item(self, item):
+        """ Add item to items """
+        self.items.add(item)
+        # self.items += self.items  # unsupported operand type(s) for +=: 'ManyRelatedManager' and 'ManyRelatedManager'
+        return self.items

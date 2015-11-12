@@ -22,7 +22,7 @@ def shoppinglistitem_list(request, pk):
             "quantity": 9001,
             "cost": 12345678.90,
             "supplier": 123,
-            "ready": "Yes"
+            "ready": false or true      (No quotes needed)
         },
         ...
     ]
@@ -49,40 +49,40 @@ def shoppinglistitem_list(request, pk):
         return Response(res, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
-        return Response({"test": "posted shoppinglist"}, status=status.HTTP_200_OK)  # temp stub
-
-        # # FROM comments.py
-        # # Automatically add event ID, which is pk provided
-        # data_with_event = request.data
-        # data_with_event.update({"event": [pk]})
-        # # Get author ID to add author after comment serialization
-        # author_id = request.data["author"]
-        # serializer = CommentSerializer(data=data_with_event)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     # Hacky because Django REST framework doesn't support writable nested entities
-        #     new_comment = Comment.objects.get(pk=serializer.data["id"])
-        #     new_comment.author = User.objects.get(pk=author_id)
-        #     new_comment.save()
-        #     # Return flat JSON response of new comment with author user fields
-        #     # !!! refactor: flexible instead of hardcoded
-        #     res = {
-        #         "id": serializer.data["id"],
-        #         "author": {
-        #             "id": new_comment.author.id,
-        #             "username": new_comment.author.username
-        #         },
-        #         "post_date": serializer.data["post_date"],
-        #         "content": serializer.data["content"],
-        #         "event": serializer.data["event"]
-        #     }
-        #     return Response(res, status=status.HTTP_201_CREATED)     # new
-        #     # return Response(serializer.data, status=status.HTTP_201_CREATED)   # original
-        # else:
-        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
+        # Request data should be a list of dicts
+        list_of_data = request.data
+        if not isinstance(list_of_data, list):
+            return Response({"error": "Request must be list of ShoppingListItem dicts/objects"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        # Perform serializations on each in list_of_data
+        res = []
+        for data in list_of_data:
+            # Get supplier ID to add author after comment serialization (but not a mandatory field)
+            if "supplier" in data:
+                supplier_id = data["supplier"]
+            else:
+                supplier_id = None
+            serializer = ShoppingListItemSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                # If supplier ID has been provided need to add to new item after creation
+                if supplier_id:
+                    # Hacky because Django REST framework doesn't support writable nested entities
+                    new_item = ShoppingListItem.objects.get(pk=serializer.data["id"])
+                    new_item.supplier = User.objects.get(pk=supplier_id)
+                    new_item.save()
+                    # Also update serializer data to return with supplier's id
+                    new_item_dict = serializer.data
+                    new_item_dict["supplier"] = supplier_id
+                    res.append(new_item_dict)
+                else:
+                    res.append(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # After all serializations, add each newly-created ShoppingListItem to Event's ShoppingList
+        [event.shopping_list.add_item(ShoppingListItem.objects.get(id=i["id"])) for i in res]
+        # Finally, return the newly-created ShoppingListItems
+        return Response(res, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
