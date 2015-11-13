@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ..models import Event, ShoppingList, ShoppingListItem, User
+from ..models import Event, ShoppingListItem, User
 from ..serializers import ShoppingListItemSerializer
 
 
@@ -32,24 +32,81 @@ def shoppinglist_put(request, pk):
     ]
 
     After successful PUT, the "supplier" of each item is returned as a dictionary/object of user details (formatted as
-    below) instead of an ID (shown above):
-    {
-        "id": 123,
-        "username": "MartyMcFly",
-        "phone": "6045554321",
-        "email": "back@future.com"
-    }
+    below) instead of an ID (shown above). ALL shoppinglistitem are returned in a list:
+    [
+        {
+        "id": 2,
+        "display_name": "just a few hot dogs",
+        "quantity": "9001.00",
+        "cost": "12345678.90",
+        "supplier": {
+            "id": 92,
+            "username": "EmilioEstevez"
+        },
+        "ready": true
+        },
+        ...
+    ]
 
-    Note: If the user has no LdtUser profile (e.g. admin staff/superuser), only the user's id and username will be
-    shown. They will NOT have a phone or email.
+    Note: Only the user's id and username will be returned for these calls.
     """
     try:
         event = Event.objects.get(pk=pk)
-        return Response({"test": "put shoppinglist"}, status=status.HTTP_200_OK)  # temp stub
     except Event.DoesNotExist:
         return Response({"error": "No Event matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        items = [ShoppingListItem.objects.get(pk=item["id"]) for item in request.data]
+    except ShoppingListItem.DoesNotExist:
+        return Response({"error": "No ShoppingListItem matching primary key"}, status=status.HTTP_404_NOT_FOUND)
 
+    # Request data should be a list of dicts
+    list_of_data = request.data
+    if not isinstance(list_of_data, list):
+        return Response({"error": "Request must be list of ShoppingListItem dicts/objects"},
+                        status=status.HTTP_400_BAD_REQUEST)
 
+    # Update each item as specified by corresponding data in list_of_data
+    for item in items:
+        # try:
+        item_id = item.id
+        # except Exception as e:
+        #     return Response({"error": e.message}, status=status.HTTP_400_BAD_REQUEST)
+
+        # try:
+        data = [d for d in list_of_data if d["id"] == item_id][0]
+        # except Exception as e:
+        #     return Response({"error": e.message}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve request vals or use original ShoppingListItem fields (all except supplier)
+        fields = item._meta.get_all_field_names()
+        for field in filter(lambda f: f != "supplier", fields):
+            if field not in data:
+                data.update({field: getattr(item, field, None)})
+            else:
+                data.update({field: data[field]})
+
+        # Retrieve request val for supplier, or use existing supplier's ID, or use None
+        if "supplier" in data:
+            supplier_id = data["supplier"]
+        elif item.supplier:
+            supplier_id = item.supplier.id
+        else:
+            supplier_id = None
+
+        serializer = ShoppingListItemSerializer(item, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            if supplier_id:
+                # Hacky because Django REST framework doesn't support writable nested entities
+                updated_item = ShoppingListItem.objects.get(pk=item_id)
+                updated_item.supplier = User.objects.get(pk=supplier_id)
+                updated_item.save()
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Prepare response with up-to-date list of all items
+    res = [ShoppingListItemSerializer(i).data for i in Event.get_shoppinglistitems(event)]
+    return Response(res, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -98,61 +155,3 @@ def shoppinglist_delete(request, pk):
     # Prepare response with list of remaining items
     res = [ShoppingListItemSerializer(i).data for i in Event.get_shoppinglistitems(event)]
     return Response(res, status=status.HTTP_204_NO_CONTENT)
-
-
-    # COPIED from comment.py
-    # try:
-    #     shoppinglist = ShoppingList.objects.get(pk=comment_id)
-    # except ShoppingList.DoesNotExist:
-    #     return Response({"error": "No Comment matching primary key"}, status=status.HTTP_404_NOT_FOUND)
-    #
-    # if request.method == 'GET':
-    #     serializer = CommentSerializer(comment)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-    #
-    # elif request.method == 'PUT':
-    #     data = {}
-    #
-    #     # Retrieve request vals or use original Comment fields (all except author and event)
-    #     fields = comment._meta.get_all_field_names()
-    #     for field in filter(lambda f: f != "author" and f != "event", fields):
-    #         if field not in request.data:
-    #             data.update({field: getattr(comment, field, None)})
-    #         else:
-    #             data.update({field: request.data[field]})
-    #
-    #     # Automatically add event ID, which is pk provided
-    #     data.update({"event": [pk]})
-    #
-    #     # Retrieve request val for author, or use existing author's ID
-    #     if "author" in request.data:
-    #         author_id = request.data["author"]
-    #     else:
-    #         author_id = comment.author.id
-    #
-    #     serializer = CommentSerializer(comment, data=data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         # Hacky because Django REST framework doesn't support writable nested entities
-    #         updated_comment = Comment.objects.get(pk=comment_id)
-    #         updated_comment.author = User.objects.get(pk=author_id)
-    #         updated_comment.save()
-    #         # Return flat JSON response of new comment with author user fields
-    #         # !!! refactor: flexible instead of hardcoded
-    #         res = {
-    #             "id": serializer.data["id"],
-    #             "author": {
-    #                 "id": updated_comment.author.id,
-    #                 "username": updated_comment.author.username
-    #             },
-    #             "post_date": serializer.data["post_date"],
-    #             "content": serializer.data["content"],
-    #             "event": serializer.data["event"]
-    #         }
-    #         return Response(res, status=status.HTTP_200_OK)
-    #     else:
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # elif request.method == 'DELETE':
-    #     comment.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
