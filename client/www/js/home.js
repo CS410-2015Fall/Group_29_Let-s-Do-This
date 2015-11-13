@@ -7,7 +7,8 @@ var tempFakeNotificationData = [
 $(document).ready(function() {
 	//Get the script to get events
 	// $.getScript("js/serverInteractions/eventServerInteraction.js");
-
+	$.getScript("js/osInteractions/calendarInteractions.js");
+	// console.log("isCordova: " + LetsDoThis.Session.getInstance().getIsCordova);
 	console.log("Loading home page script");
 	createContentBoxes(tempFakeNotificationData,$("#mainContent"));
 	loadFriends();
