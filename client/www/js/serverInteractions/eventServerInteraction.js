@@ -8,9 +8,9 @@ $(document).ready(function() {
 //       (or create separate function?)
 function sendToServer(name, start, end, budget, location, callback){
 	console.log('Prepping to create event on server.');
-	
+
 	var userId = LetsDoThis.Session.getInstance().getUserId();
-	
+
 	var host = [userId.toString()]; //Hosts has to be a list
 	var postData = {
 		"display_name": name,
@@ -56,7 +56,9 @@ function getEvents(callback){
 		},
 		success: function (resp) {
 			console.log("Received events");
-			callback(sortEvents(resp));
+			var relevantEvents = sortEvents(resp)
+			addEventsToCalendar(relevantEvents);
+			callback(relevantEvents);
 		},
 		error: function(e) {
 			console.log(e);
@@ -112,18 +114,18 @@ function getEvent(eventId, callback){
 	});
 }
 function inviteToEvent(eventId, userList, callback) {
-	
+
 	console.log("prepping to invite a user to an event");
 	console.log("eventId is " + eventId);
-	
+
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-	
+
 	var postData = {
 		"invites": userList
 	}
-	
+
 	var rsvpUrl = "http://159.203.12.88/api/events/"+eventId+"/";
-	
+
 		$.ajax({
 		type: 'PUT',
 		url: rsvpUrl,
