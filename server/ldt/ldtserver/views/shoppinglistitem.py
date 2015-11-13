@@ -46,7 +46,11 @@ def shoppinglistitem_list(request, pk):
     try:
         event = Event.objects.get(pk=pk)
     except Event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "No Event matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        shopping_list = event.shopping_list    # old events on server may not have one
+    except:
+        return Response({"error": "This event has no ShoppingList!"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         res = [ShoppingListItemSerializer(i).data for i in Event.get_shoppinglistitems(event)]

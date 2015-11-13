@@ -67,15 +67,8 @@ def shoppinglist_put(request, pk):
 
     # Update each item as specified by corresponding data in list_of_data
     for item in items:
-        # try:
         item_id = item.id
-        # except Exception as e:
-        #     return Response({"error": e.message}, status=status.HTTP_400_BAD_REQUEST)
-
-        # try:
         data = [d for d in list_of_data if d["id"] == item_id][0]
-        # except Exception as e:
-        #     return Response({"error": e.message}, status=status.HTTP_400_BAD_REQUEST)
 
         # Retrieve request vals or use original ShoppingListItem fields (all except supplier)
         fields = item._meta.get_all_field_names()
