@@ -10,8 +10,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from ..models import Event, ShoppingList, ShoppingListItem, User
-
-
+from ..serializers import ShoppingListItemSerializer
 
 
 @api_view(['PUT'])
@@ -64,31 +63,41 @@ def shoppinglist_delete(request, pk):
     is deleted. Then the list is automatically deleted.
 
     POST request data must be formatted as follows:
-    {
-        "item_id": [456, 789]
-    }
+    [456, 789]
     where each number is the id of an existing shopping list item.
 
-    After successful POST, the response contains the list of items that remain on the list after deletion. For each
-    item, the "supplier" is returned as a dictionary/object of user details (each formatted as below) instead of an ID
-    (shown above):
-    {
-        "id": 123,
-        "username": "MartyMcFly",
-        "phone": "6045554321",
-        "email": "back@future.com"
-    }
+    After successful POST, the response is the list of items that remain after deletion:
+    [
+        {
+        "id": 2,
+        "display_name": "just a few hot dogs",
+        "quantity": "9001.00",
+        "cost": "12345678.90",
+        "supplier": {
+            "id": 92,
+            "username": "EmilioEstevez"
+        },
+        "ready": true
+        },
+        ...
+    ]
 
-    Note3: If the user has no LdtUser profile (e.g. admin staff/superuser), only the user's id and username will be
-    shown. They will NOT have a phone or email.
+    Note3: Only the user's id and username will be returned for these calls.
     """
     try:
         event = Event.objects.get(pk=pk)
-        return Response({"test": "deleted shoppinglist"}, status=status.HTTP_200_OK)  # temp stub
     except Event.DoesNotExist:
         return Response({"error": "No Event matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        items = [ShoppingListItem.objects.get(pk=item_id) for item_id in request.data]
+    except ShoppingListItem.DoesNotExist:
+        return Response({"error": "No ShoppingListItem matching primary key"}, status=status.HTTP_404_NOT_FOUND)
 
+    [item.delete() for item in items]
 
+    # Prepare response with list of remaining items
+    res = [ShoppingListItemSerializer(i).data for i in Event.get_shoppinglistitems(event)]
+    return Response(res, status=status.HTTP_204_NO_CONTENT)
 
 
     # COPIED from comment.py

@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ..models import Event, ShoppingList, ShoppingListItem, User
+from ..models import Event, ShoppingListItem, User
 from ..serializers import ShoppingListItemSerializer
 
 
@@ -27,17 +27,21 @@ def shoppinglistitem_list(request, pk):
         ...
     ]
 
-    At GET of after successful POST, the "supplier" of each item is returned as a dictionary/object of user details
-    (formatted as below) instead of a user's ID (shown above):
+    At GET or after successful POST, the "supplier" of each item is returned as a dictionary/object of user details
+    (formatted as below) instead of a user's ID (shown above). GET returns a list of objects while POST returns only one
+    object:
     {
-        "id": 123,
-        "username": "MartyMcFly",
-        "phone": "6045554321",
-        "email": "back@future.com"
+        "id": 2,
+        "display_name": "just a few hot dogs",
+        "quantity": "9001.00",
+        "cost": "12345678.90",
+        "supplier": {
+            "id": 92,
+            "username": "EmilioEstevez"
+        },
+        "ready": true
     }
-
-    Note: If the user has no LdtUser profile (e.g. admin staff/superuser), only the user's id and username will be
-    shown. They will NOT have a phone or email.
+    Note: Only the user's id and username will be returned for these calls.
     """
     try:
         event = Event.objects.get(pk=pk)
@@ -102,17 +106,21 @@ def shoppinglistitem_detail(request, pk, item_id):
         "ready": false or true      (No quotes needed)
     }
 
-    At GET of after successful PUT, the "supplier" is returned as a dictionary/object of user details (formatted as
+    At GET or after successful PUT, the "supplier" is returned as a dictionary/object of user details (formatted as
     below) instead of a user's ID (shown above):
     {
-        "id": 123,
-        "username": "MartyMcFly",
-        "phone": "6045554321",
-        "email": "back@future.com"
+        "id": 2,
+        "display_name": "just a few hot dogs",
+        "quantity": "9001.00",
+        "cost": "12345678.90",
+        "supplier": {
+            "id": 92,
+            "username": "EmilioEstevez"
+        },
+        "ready": true
     }
 
-    Note: If the user has no LdtUser profile (e.g. admin staff/superuser), only the user's id and username will be
-    shown. They will NOT have a phone or email.
+    Note: Only the user's id and username will be returned for these calls.
     """
     try:
         event = Event.objects.get(pk=pk)

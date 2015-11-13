@@ -161,5 +161,4 @@ class ShoppingList(models.Model):
     def add_item(self, item):
         """ Add item to items """
         self.items.add(item)
-        # self.items += self.items  # unsupported operand type(s) for +=: 'ManyRelatedManager' and 'ManyRelatedManager'
         return self.items
