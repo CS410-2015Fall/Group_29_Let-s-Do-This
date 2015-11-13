@@ -73,7 +73,8 @@ def shoppinglistitem_list(request, pk):
                     new_item.save()
                     # Also update serializer data to return with supplier's id
                     new_item_dict = serializer.data
-                    new_item_dict["supplier"] = supplier_id
+                    supplier = User.objects.get(pk=supplier_id)
+                    new_item_dict["supplier"] = {"id": supplier_id, "username": supplier.username}
                     res.append(new_item_dict)
                 else:
                     res.append(serializer.data)
@@ -98,7 +99,7 @@ def shoppinglistitem_detail(request, pk, item_id):
         "quantity": 9001,
         "cost": 12345678.90,
         "supplier": 123,
-        "ready": "Yes"
+        "ready": false or true      (No quotes needed)
     }
 
     At GET of after successful PUT, the "supplier" is returned as a dictionary/object of user details (formatted as
@@ -126,49 +127,35 @@ def shoppinglistitem_detail(request, pk, item_id):
         serializer = ShoppingListItemSerializer(item)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # elif request.method == 'PUT':
-    #     data = {}
-    #
-    #     # Retrieve request vals or use original Comment fields (all except author and event)
-    #     fields = comment._meta.get_all_field_names()
-    #     for field in filter(lambda f: f != "author" and f != "event", fields):
-    #         if field not in request.data:
-    #             data.update({field: getattr(comment, field, None)})
-    #         else:
-    #             data.update({field: request.data[field]})
-    #
-    #     # Automatically add event ID, which is pk provided
-    #     data.update({"event": [pk]})
-    #
-    #     # Retrieve request val for author, or use existing author's ID
-    #     if "author" in request.data:
-    #         author_id = request.data["author"]
-    #     else:
-    #         author_id = comment.author.id
-    #
-    #     serializer = CommentSerializer(comment, data=data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         # Hacky because Django REST framework doesn't support writable nested entities
-    #         updated_comment = Comment.objects.get(pk=comment_id)
-    #         updated_comment.author = User.objects.get(pk=author_id)
-    #         updated_comment.save()
-    #         # Return flat JSON response of new comment with author user fields
-    #         # !!! refactor: flexible instead of hardcoded
-    #         res = {
-    #             "id": serializer.data["id"],
-    #             "author": {
-    #                 "id": updated_comment.author.id,
-    #                 "username": updated_comment.author.username
-    #             },
-    #             "post_date": serializer.data["post_date"],
-    #             "content": serializer.data["content"],
-    #             "event": serializer.data["event"]
-    #         }
-    #         return Response(res, status=status.HTTP_200_OK)
-    #     else:
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #
+    elif request.method == 'PUT':
+        data = {}
+        # Retrieve request vals or use original ShoppingListItem fields (all except supplier)
+        fields = item._meta.get_all_field_names()
+        for field in filter(lambda f: f != "supplier", fields):
+            if field not in request.data:
+                data.update({field: getattr(item, field, None)})
+            else:
+                data.update({field: request.data[field]})
+        # Retrieve request val for author, or use existing author's ID
+        if "supplier" in request.data:
+            supplier_id = request.data["supplier"]
+        else:
+            supplier_id = item.supplier.id
+        serializer = ShoppingListItemSerializer(item, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            # Hacky because Django REST framework doesn't support writable nested entities
+            updated_item = ShoppingListItem.objects.get(pk=item_id)
+            updated_item.supplier = User.objects.get(pk=supplier_id)
+            updated_item.save()
+            # Also update serializer data to return with supplier's id
+            new_item_dict = serializer.data
+            supplier = User.objects.get(pk=supplier_id)
+            new_item_dict["supplier"] = {"id": supplier_id, "username": supplier.username}
+            return Response(new_item_dict, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     elif request.method == 'DELETE':
         item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
