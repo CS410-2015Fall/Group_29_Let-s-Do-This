@@ -143,6 +143,12 @@ class Event(models.Model):
         """ Return list of Event's shoppinglistitem (can be empty) """
         return [i for i in self.shopping_list.items.all()]
 
+    def get_contributions(self):
+        """
+        Return list of "contributions": current shopping_list as list of users
+        """
+        return ["abc", "def"]  # stub
+
 
 class ShoppingList(models.Model):
     """

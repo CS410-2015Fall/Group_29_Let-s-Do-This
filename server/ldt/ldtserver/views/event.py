@@ -10,13 +10,13 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ..models import Event, LdtUser, ShoppingList
+from ..models import Event, LdtUser
 from django.contrib.auth.models import User
 from ..serializers import EventSerializer, ShoppingListSerializer
 
 
 OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments"]
-ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + ["display_name"]
+ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + ["display_name"] + ["id"]
 EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
 USERLIST_FIELDS = ["hosts", "invites", "accepts", "declines"]
 
@@ -40,10 +40,12 @@ def event_list(request):
     }
     Note1: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
 
-    Note2: This will automatically create a "shopping_list" for that event, which is empty when first returned.
+    Note2: This will automatically create a "shopping_list" and "contributions" for that event, both empty when first returned.
 
     Note3: At this time, the "shopping_list" cannot be edited through this call. It can only be edited using the Event
     Shopping List-related functions (see server README).
+
+    Note4: "contributions" cannot be edited. It is just the "shopping_list" restructured on per-user basis.
     """
     if request.method == 'GET':
         events = Event.objects.all()
@@ -69,6 +71,7 @@ def event_list(request):
             # Return flat JSON response of new Event with ShoppingList fields
             res = {k: ser1.data[k] for k in ALL_FIELDS_BUT_SHOPLIST}
             res.update({"shopping_list": ser2.data})
+            res["contributions"] = Event.get_contributions(Event.objects.get(pk=ser1.data["id"]))
             return Response(res, status=status.HTTP_201_CREATED)
         else:
             # Delete newly created Event because shouldn't be used without ShoppingList
@@ -213,6 +216,8 @@ def event_detail(request, pk):
         },
         "ready": null, "Yes", or "No"
     }
+
+    Note4: "contributions" cannot be edited. It is just the "shopping_list" restructured on per-user basis.
     """
     try:
         event = Event.objects.get(pk=pk)

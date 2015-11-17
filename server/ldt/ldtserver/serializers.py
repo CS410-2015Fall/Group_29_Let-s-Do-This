@@ -60,7 +60,12 @@ class EventSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     shopping_list = ShoppingListSerializer(read_only=True)
 
+    contributions = serializers.SerializerMethodField("get_event_contributions")
+
+    def get_event_contributions(self, event):
+        return Event.get_contributions(event)
+
     class Meta:
         model = Event
         fields = ('id', 'display_name', 'start_date', 'end_date', 'budget', 'location', 'hosts', 'invites',
-                  'accepts', 'declines', 'comments', 'shopping_list')
+                  'accepts', 'declines', 'comments', 'shopping_list', 'contributions')
