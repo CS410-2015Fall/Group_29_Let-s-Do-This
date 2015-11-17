@@ -5,9 +5,11 @@ var tempFakeNotificationData = [
 {head:"Christmas Party",body:"Sally commented",boxId:"4"}];
 
 $(document).ready(function() {
-	//Get the script to get events
-	// $.getScript("js/serverInteractions/eventServerInteraction.js");
+	//Get the script to handle the native calendar
 	$.getScript("js/osInteractions/calendarInteractions.js");
+	//Get the script to handle notifications
+	$.getScript("js/osInteractions/notificationInteractions.js");
+
 	// console.log("isCordova: " + LetsDoThis.Session.getInstance().getIsCordova);
 	console.log("Loading home page script");
 	createContentBoxes(tempFakeNotificationData,$("#mainContent"));
