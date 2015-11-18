@@ -112,6 +112,7 @@ class Event(models.Model):
     invites = models.ManyToManyField(User, related_name="invitees", blank=True)
     accepts = models.ManyToManyField(User, related_name="accepts", blank=True)
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
+    changed = models.ManyToManyField(User, related_name="changed", blank=True)
     comments = models.ManyToManyField(Comment, related_name="event", blank=True)
 
     def __str__(self):
@@ -135,6 +136,10 @@ class Event(models.Model):
     def get_declines(self):
         """ Return list of IDs of Event's invites """
         return [d.id for d in self.declines.all()]
+
+    def get_changed(self):
+        """ Return list of IDs of Event's 'changed', i.e. which users need to be updated on changed Event """
+        return [c.id for c in self.changed.all()]
 
     def get_comments(self):
         """ Return list of Event's Comments """

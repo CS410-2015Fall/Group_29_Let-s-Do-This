@@ -49,14 +49,15 @@ All actions (except login) require an authentication token in the request header
 
 All actions require an authentication token in the request header. This is obtained by successful login with any existing account's username and password.
 
-| Action   | Url                                             | Url keys             | JSON keys                                     |
-| -------- | ----------------------------------------------- | -------------------- | --------------------------------------------- |
-| GET all  | http://159.203.12.88/api/events/                |                      |                                               |
-| POST     | http://159.203.12.88/api/events/                |                      | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines    |
-| GET      | http://159.203.12.88/api/events/2/              | Event id             |                                               |
-| PUT      | http://159.203.12.88/api/events/2/              | Event id             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
-| DELETE   | http://159.203.12.88/api/events/2/              | Event id             |                                               |
-| POST     | http://159.203.12.88/api/events/2/hosts/remove/ | Event id             | hosts (to remove)                             |
+| Action   | Url                                               | Url keys             | JSON keys                                     |
+| -------- | ------------------------------------------------- | -------------------- | --------------------------------------------- |
+| GET all  | http://159.203.12.88/api/events/                  |                      |                                               |
+| POST     | http://159.203.12.88/api/events/                  |                      | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines    |
+| GET      | http://159.203.12.88/api/events/2/                | Event id             |                                               |
+| PUT      | http://159.203.12.88/api/events/2/                | Event id             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
+| DELETE   | http://159.203.12.88/api/events/2/                | Event id             |                                               |
+| POST     | http://159.203.12.88/api/events/2/hosts/remove/   | Event id             | hosts (to remove)                             |
+| POST     | http://159.203.12.88/api/events/2/changed/remove/ | Event id             | changed (user IDs to remove)                  |
 
 **start_date, end_date** = UTC and in format `YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]`
 

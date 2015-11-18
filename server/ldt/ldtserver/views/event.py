@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from ..serializers import EventSerializer, ShoppingListSerializer
 
 
-OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments"]
+OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments", "changed"]
 ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + ["display_name"] + ["id"]
 EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
 USERLIST_FIELDS = ["hosts", "invites", "accepts", "declines"]
@@ -301,6 +301,44 @@ def event_detail(request, pk):
 
 
 @api_view(['POST'])
+def event_changed_remove(request, pk):
+    """
+    Remove user(s) from the 'changed' list of an event
+
+    POST request data must be formatted as follows:
+    { "changed: [4] }
+
+    Note: The value must be a list
+    """
+    try:
+        event = Event.objects.get(pk=pk)
+        old_changed = Event.get_changed(event)
+    except Event.DoesNotExist:
+        return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
+
+    if "changed" not in request.data:
+        return Response({"error": "'changed' must be provided as list of user IDs"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Prepare data with updated changed list
+    data = {}
+    try:
+        new_changed = [uid for uid in old_changed if uid not in request.data["changed"]]
+    except:
+        return Response({"error": "'changed' must be provided as list of user IDs"}, status=status.HTTP_404_NOT_FOUND)
+    data.update({"changed": new_changed})
+
+    # Django REST requires a display_name
+    data.update({"display_name": event.display_name})
+
+    serializer = EventSerializer(event, data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
 def event_hosts_remove(request, pk):
     """
     Remove host(s) from a specific event
@@ -312,7 +350,7 @@ def event_hosts_remove(request, pk):
         event = Event.objects.get(pk=pk)
         hosts = event.get_hosts()
     except Event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
 
     data = {}
     data.update({"display_name": event.display_name})
