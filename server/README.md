@@ -33,9 +33,9 @@ All actions (except login) require an authentication token in the request header
 | Action            | Url                                               | Url keys   | JSON keys                                     |
 | ----------------- | ------------------------------------------------  | ---------- | --------------------------------------------- |
 | **POST (login)**  | http://159.203.12.88/login/                       |            | username, password                            |
+| **POST (create new user)**   | http://159.203.12.88/users/new/        |            | username, password, email, phone, friends     |
 | POST              | http://159.203.12.88/api/users/search             |            | username                                      |
 | GET all           | http://159.203.12.88/api/users/                   |            |                                               |
-| POST              | http://159.203.12.88/api/users/                   |            | username, password, email, phone, friends     |
 | GET               | http://159.203.12.88/api/users/2/                 | User id    |                                               |
 | PUT               | http://159.203.12.88/api/users/2/                 | User id    | username, password, email, phone, friends     |
 | DELETE            | http://159.203.12.88/api/users/2/                 | User id    |                                               |
@@ -91,6 +91,18 @@ All actions require an authentication token in the request header. This is obtai
 | PUT      | http://159.203.12.88/api/events/2/shoppinglist/5/      | Event id, Item id    | display_name, quantity, cost, supplier, ready |
 | DELETE   | http://159.203.12.88/api/events/2/shoppinglist/5/      | Event id, Item id    |                                               |
 
+
+### Event Polls
+
+**NOT YET IMPLEMENTED**
+
+| Action   | Url                                          | Url keys          | JSON keys                                     |
+| -------- | -------------------------------------------- | ----------------- | --------------------------------------------- |
+| GET      | http://159.203.12.88/api/events/2/polls/     | Event id          |                                               |
+| POST     | http://159.203.12.88/api/events/2/polls/     | Event id          | question, choices                             |
+| GET      | http://159.203.12.88/api/events/2/polls/5/   | Event id, Poll id |                                               |
+| PUT      | http://159.203.12.88/api/events/2/polls/5/   | Event id, Poll id | question, choices                             |
+| DELETE   | http://159.203.12.88/api/events/2/polls/5/   | Event id, Poll id |                                               |
 
 
 ## Events associated with Users

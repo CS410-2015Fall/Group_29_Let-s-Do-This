@@ -6,7 +6,8 @@ All User views for ldtserver (for RESTful API)
 - hash/don't return User passwords (here or in serializers.py)
 """
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from ..models import Event, LdtUser
@@ -19,10 +20,11 @@ OPTIONAL_PROFILE_FIELDS = ["email", "phone", "friends"]
 ALL_USER_FIELDS = USER_FIELDS + OPTIONAL_PROFILE_FIELDS
 
 
-@api_view(['GET', 'POST'])
-def user_list(request):
+@api_view(['POST'])
+@permission_classes((AllowAny, ))
+def user_new(request):
     """
-    List all User, or create new User with associated LdtUser profile
+    Create new User with associated LdtUser profile
 
     POST request data must be formatted as follows. Only username and password mandatory:
     {
@@ -33,7 +35,7 @@ def user_list(request):
         "friends": [123, 789]
     }
 
-    For GETs and after successful POSTs, "friends" is returned as a list of dictionaries/objects of user details
+    After successful POSTs, "friends" is returned as a list of dictionaries/objects of user details
     (each formatted as below) instead of lists of IDs (shown above):
     {
         "id": 123,
@@ -45,101 +47,136 @@ def user_list(request):
     Note: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
     shown. They will NOT have a phone or email.
     """
-    if request.method == 'GET':
-        users = User.objects.all()
+    # First create new User object
+    # !!! refactor to use USER_FIELDS
+    if not ("username" in request.data and "password" in request.data):
+        return Response("KeyError: username and password required.", status=status.HTTP_400_BAD_REQUEST)
+    data1 = {
+        "username": request.data["username"],
+        "password": request.data["password"],
+    }
+    ser1 = UserSerializer(data=data1)
+    if ser1.is_valid():
+        ser1.save()
+    else:
+        return Response(ser1.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Then create new LdtUser associated with new User
+    data2 = {"user": ser1.data["id"]}
+    for key in OPTIONAL_PROFILE_FIELDS:
+        if key in request.data:
+            data2.update({key: request.data[key]})
+
+    ser2 = LdtUserSerializer(data=data2)
+    if ser2.is_valid():
+        ser2.save()
         # Return flat JSON response of new user with ldtuser profile fields
         # !!! refactor: flexible instead of hardcoded
         #     but note: copying ser1 and updating with ser2 gives 'BoundField" object is not iterable
-        res = []
-        for user in users:
+        res = {
+            "id": ser1.data["id"],
+            "username": ser1.data["username"],
+            # "password": ser1.data["password"],  # KeyError at view after post
+            "phone": ser2.data["phone"],
+            "email": ser2.data["email"],
+            "friends": ser2.data["friends"]
+        }
+    else:
+        return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
+    if "friends" in res:
+        ulist = res["friends"]
+        detailed_ulist = []
+        for uid in ulist:
+            user = User.objects.get(pk=uid)
+            # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
+            # !!! refactor: flexible instead of hardcoded
+            #     See also user.py
             try:
                 profile_id = user.userlink.id
                 profile = LdtUser.objects.get(pk=profile_id)
-                friends = [f.id for f in profile.friends.all()]
-                userdict = {
+                udict = {
                     "id": user.id,
                     "username": user.username,
-                    "password": user.password,
+                    # "password": user.password,
                     "phone": profile.phone,
                     "email": profile.email,
-                    "friends": friends
                 }
             except:
-                # User has no profile, e.g. superuser
-                userdict = {
+                # User has no profile, e.g. superuser or staff
+                udict = {
                     "id": user.id,
                     "username": user.username,
-                    "password": user.password,
+                    # "password": user.password,
                 }
-            # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
-            if "friends" in userdict:
-                ulist = userdict["friends"]
-                detailed_ulist = []
-                for uid in ulist:
-                    user = User.objects.get(pk=uid)
-                    # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
-                    # !!! refactor: flexible instead of hardcoded
-                    #     See also user.py
-                    try:
-                        profile_id = user.userlink.id
-                        profile = LdtUser.objects.get(pk=profile_id)
-                        udict = {
-                            "id": user.id,
-                            "username": user.username,
-                            # "password": user.password,
-                            "phone": profile.phone,
-                            "email": profile.email,
-                        }
-                    except:
-                        # User has no profile, e.g. superuser or staff
-                        udict = {
-                            "id": user.id,
-                            "username": user.username,
-                            # "password": user.password,
-                        }
-                    detailed_ulist.append(udict)
-                userdict["friends"] = detailed_ulist
-            res.append(userdict.copy())
-        return Response(res, status=status.HTTP_200_OK)
+            detailed_ulist.append(udict)
+        res["friends"] = detailed_ulist
+        return Response(res, status=status.HTTP_201_CREATED)
+    else:
+        # Delete newly created user because shouldn't be used without ldtuser profile
+        user = User.objects.get(pk=ser1.data["id"])
+        user.delete()
+        return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'POST':
-        # First create new User object
-        # !!! refactor to use USER_FIELDS
-        if not ("username" in request.data and "password" in request.data):
-            return Response("KeyError: username and password required.", status=status.HTTP_400_BAD_REQUEST)
-        data1 = {
-            "username": request.data["username"],
-            "password": request.data["password"],
-        }
-        ser1 = UserSerializer(data=data1)
-        if ser1.is_valid():
-            ser1.save()
-        else:
-            return Response(ser1.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Then create new LdtUser associated with new User
-        data2 = {"user": ser1.data["id"]}
-        for key in OPTIONAL_PROFILE_FIELDS:
-            if key in request.data:
-                data2.update({key: request.data[key]})
+@api_view(['GET'])
+def user_list(request):
+    """
+    List all User with associated LdtUser profile, each as follows:
 
-        ser2 = LdtUserSerializer(data=data2)
-        if ser2.is_valid():
-            ser2.save()
-            # Return flat JSON response of new user with ldtuser profile fields
-            # !!! refactor: flexible instead of hardcoded
-            #     but note: copying ser1 and updating with ser2 gives 'BoundField" object is not iterable
-            res = {
-                "id": ser1.data["id"],
-                "username": ser1.data["username"],
-                # "password": ser1.data["password"],  # KeyError at view after post
-                "phone": ser2.data["phone"],
-                "email": ser2.data["email"],
-                "friends": ser2.data["friends"]
+    {
+        "username": "testyuser",
+        "password": "test",
+        "email": "testy@test.com",
+        "phone": "6045555555",
+        "friends": [
+            {
+            "id": 123,
+            "username": "MartyMcFly",
+            "phone": "6045551985",
+            "email": "back@future.com"
+            },
+            {
+            "id": 456,
+            "username": "DocBrown",
+            "phone": "6045551885",
+            "email": "back@in-time.com"
+            }
+        ]
+    }
+
+    Note: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
+    shown. They will NOT have a phone or email.
+    """
+    users = User.objects.all()
+    # Return flat JSON response of new user with ldtuser profile fields
+    # !!! refactor: flexible instead of hardcoded
+    #     but note: copying ser1 and updating with ser2 gives 'BoundField" object is not iterable
+    res = []
+    for user in users:
+        try:
+            profile_id = user.userlink.id
+            profile = LdtUser.objects.get(pk=profile_id)
+            friends = [f.id for f in profile.friends.all()]
+            userdict = {
+                "id": user.id,
+                "username": user.username,
+                "password": user.password,
+                "phone": profile.phone,
+                "email": profile.email,
+                "friends": friends
+            }
+        except:
+            # User has no profile, e.g. superuser
+            userdict = {
+                "id": user.id,
+                "username": user.username,
+                "password": user.password,
             }
         # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
-        if "friends" in res:
-            ulist = res["friends"]
+        if "friends" in userdict:
+            ulist = userdict["friends"]
             detailed_ulist = []
             for uid in ulist:
                 user = User.objects.get(pk=uid)
@@ -164,13 +201,9 @@ def user_list(request):
                         # "password": user.password,
                     }
                 detailed_ulist.append(udict)
-            res["friends"] = detailed_ulist
-            return Response(res, status=status.HTTP_201_CREATED)
-        else:
-            # Delete newly created user because shouldn't be used without ldtuser profile
-            user = User.objects.get(pk=ser1.data["id"])
-            user.delete()
-            return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
+            userdict["friends"] = detailed_ulist
+        res.append(userdict.copy())
+    return Response(res, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
