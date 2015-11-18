@@ -1,8 +1,9 @@
 var tempFakeNotificationData = [
-{head:"Christmas Party",body:"Tom is attending",boxId:"1"},
-{head:"Trivia Night at The Biltmore",body:"Dick invited you",boxId:"2"},
-{head:"Harry's Birthday Party",body:"Is today at 19:30",boxId:"3"},
-{head:"Christmas Party",body:"Sally commented",boxId:"4"}];
+	{head:"Christmas Party",body:"Tom is attending",boxId:"1"},
+	{head:"Trivia Night at The Biltmore",body:"Dick invited you",boxId:"2"},
+	{head:"Harry's Birthday Party",body:"Is today at 19:30",boxId:"3"},
+	{head:"Christmas Party",body:"Sally commented",boxId:"4"}
+];
 
 $(document).ready(function() {
 	//Get the script to handle the native calendar
@@ -10,7 +11,6 @@ $(document).ready(function() {
 	//Get the script to handle notifications
 	$.getScript("js/osInteractions/notificationInteractions.js");
 
-	// console.log("isCordova: " + LetsDoThis.Session.getInstance().getIsCordova);
 	console.log("Loading home page script");
 	createContentBoxes(tempFakeNotificationData,$("#mainContent"));
 	loadFriends();
@@ -62,7 +62,7 @@ function loadFriends() {
 			'<li><a href="">'
 			+ value
 			+'</a></li>'
-			);
+		);
 	});
 	$("#friendList").listview("refresh");
 }
