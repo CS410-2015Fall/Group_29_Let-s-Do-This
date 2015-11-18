@@ -2,7 +2,7 @@
 // start: YYYY-MM-DDThh:mm
 // end: YYYY-MM-DDThh:mm
 $(document).ready(function() {
-	// console.log('eventServerInt loaded');
+	console.log('eventServerInt loaded');
 });
 // TODO: add list of invited users to create event request (sendToServer)
 //       (or create separate function?)
@@ -88,6 +88,9 @@ function sortEvents(events){
 		}
 	}
 
+	//Before returning, check if any of these relevantEvents have changed since we last saw it
+	checkForChange(relevantEvents);
+
 	//Send back to the callback function
 	return relevantEvents;
 }
@@ -113,8 +116,8 @@ function getEvent(eventId, callback){
 		}
 	});
 }
-function inviteToEvent(eventId, userList, callback) {
 
+function inviteToEvent(eventId, userList, callback) {
 	console.log("prepping to invite a user to an event");
 	console.log("eventId is " + eventId);
 
@@ -126,7 +129,7 @@ function inviteToEvent(eventId, userList, callback) {
 
 	var rsvpUrl = "http://159.203.12.88/api/events/"+eventId+"/";
 
-		$.ajax({
+	$.ajax({
 		type: 'PUT',
 		url: rsvpUrl,
 		beforeSend: function(xhr) {
@@ -181,4 +184,55 @@ function rsvpToEvent(eventId, rsvpStatus, callback){
 			console.log(e);
 		}
 	});
+}
+
+//Remove the current user from the 'changed' list on the given event
+function removeFromChanged(eventID){
+	console.log('Prepping to remove self from changed on event: ' + eventID);
+
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+	var userId = LetsDoThis.Session.getInstance().getUserId();
+
+	var postData = {
+		changed: [userId]
+	};
+
+	var changeURL = "http://159.203.12.88/api/events/"+eventID+"/changed/remove/";
+
+	console.log(postData);
+	console.log(changeURL);
+	$.ajax({
+		type: 'POST',
+		url: changeURL,
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
+		},
+		data: JSON.stringify(postData),
+		contentType: 'application/json',
+		dataType: 'json',
+		success: function (resp) {
+			console.log("Changed 'change' status");
+			// callback();
+		},
+		error: function(e) {
+			console.log("Failed to change 'change' status");
+			console.log(e);
+		}
+	});
+}
+
+//Check through the list of events to see if any of them have changed since we last saw them
+function checkForChange(events){
+	var userID = LetsDoThis.Session.getInstance().getUserId();
+	// console.log("Checking for changes");
+	for(i=0; i<events.length; i++){
+		if($.inArray(userID, events[i].changed) > -1){
+			//User is a part of the changed event
+
+			//Lets notify them of the change
+			notifyOfChange(events[i].display_name);
+			//We have dealt with the changed event, now remove this user from it
+			removeFromChanged(events[i].id);
+		}
+	}
 }
