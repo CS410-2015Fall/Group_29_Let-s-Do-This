@@ -36,10 +36,10 @@ All actions (except login) require an authentication token in the request header
 | **POST (create new user)**   | http://159.203.12.88/api/users/new/    |            | username, password, email, phone, friends     |
 | POST              | http://159.203.12.88/api/users/search             |            | username                                      |
 | GET all           | http://159.203.12.88/api/users/                   |            |                                               |
-| GET               | http://159.203.12.88/api/users/2/                 | User id    |                                               |
-| PUT               | http://159.203.12.88/api/users/2/                 | User id    | username, password, email, phone, friends     |
-| DELETE            | http://159.203.12.88/api/users/2/                 | User id    |                                               |
-| POST (rm friends) | http://159.203.12.88/api/users/2/friends/remove/  | User id    | friends (to remove)                           |
+| GET               | http://159.203.12.88/api/users/42/                 | User id    |                                               |
+| PUT               | http://159.203.12.88/api/users/42/                 | User id    | username, password, email, phone, friends     |
+| DELETE            | http://159.203.12.88/api/users/42/                 | User id    |                                               |
+| POST (rm friends) | http://159.203.12.88/api/users/42/friends/remove/  | User id    | friends (to remove)                           |
 
 **friends** = list/array of other User IDs
 
@@ -53,11 +53,11 @@ All actions require an authentication token in the request header. This is obtai
 | -------- | ------------------------------------------------- | -------------------- | --------------------------------------------- |
 | GET all  | http://159.203.12.88/api/events/                  |                      |                                               |
 | POST     | http://159.203.12.88/api/events/                  |                      | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines    |
-| GET      | http://159.203.12.88/api/events/2/                | Event id             |                                               |
-| PUT      | http://159.203.12.88/api/events/2/                | Event id             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
-| DELETE   | http://159.203.12.88/api/events/2/                | Event id             |                                               |
-| POST     | http://159.203.12.88/api/events/2/hosts/remove/   | Event id             | hosts (to remove)                             |
-| POST     | http://159.203.12.88/api/events/2/changed/remove/ | Event id             | changed (user IDs to remove)                  |
+| GET      | http://159.203.12.88/api/events/42/                | Event id             |                                               |
+| PUT      | http://159.203.12.88/api/events/42/                | Event id             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
+| DELETE   | http://159.203.12.88/api/events/42/                | Event id             |                                               |
+| POST     | http://159.203.12.88/api/events/42/hosts/remove/   | Event id             | hosts (to remove)                             |
+| POST     | http://159.203.12.88/api/events/42/changed/remove/ | Event id             | changed (user IDs to remove)                  |
 
 **start_date, end_date** = UTC and in format `YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]`
 
@@ -71,11 +71,11 @@ All actions require an authentication token in the request header. This is obtai
 
 | Action   | Url                                             | Url keys             | JSON keys                                     |
 | -------- | ----------------------------------------------- | -------------------- | --------------------------------------------- |
-| POST     | http://159.203.12.88/api/events/2/comments/     | Event id             | author (user id), post_date, content          |
-| GET      | http://159.203.12.88/api/events/2/comments/     | Event id             |                                               |
-| GET      | http://159.203.12.88/api/events/2/comments/5/   | Event id, Comment id |                                               |
-| PUT      | http://159.203.12.88/api/events/2/comments/5/   | Event id, Comment id | author (user id), post_date, content          |
-| DELETE   | http://159.203.12.88/api/events/2/comments/5/   | Event id, Comment id |                                               |
+| POST     | http://159.203.12.88/api/events/42/comments/     | Event id             | author (user id), post_date, content          |
+| GET      | http://159.203.12.88/api/events/42/comments/     | Event id             |                                               |
+| GET      | http://159.203.12.88/api/events/42/comments/5/   | Event id, Comment id |                                               |
+| PUT      | http://159.203.12.88/api/events/42/comments/5/   | Event id, Comment id | author (user id), post_date, content          |
+| DELETE   | http://159.203.12.88/api/events/42/comments/5/   | Event id, Comment id |                                               |
 
 
 
@@ -83,13 +83,13 @@ All actions require an authentication token in the request header. This is obtai
 
 | Action   | Url                                                    | Url keys             | JSON keys                                     |
 | -------- | ------------------------------------------------------ | -------------------- | --------------------------------------------- |
-| GET      | http://159.203.12.88/api/events/2/shoppinglist/        | Event id             |                                               |
-| POST     | http://159.203.12.88/api/events/2/shoppinglist/        | Event id             | display_name, quantity, cost, supplier, ready |
-| PUT      | http://159.203.12.88/api/events/2/shoppinglist/edit/   | Event id             | display_name, quantity, cost, supplier, ready |
-| POST     | http://159.203.12.88/api/events/2/shoppinglist/remove/ | Event id             | item_id                                       |
-| GET      | http://159.203.12.88/api/events/2/shoppinglist/5/      | Event id, Item id    |                                               |
-| PUT      | http://159.203.12.88/api/events/2/shoppinglist/5/      | Event id, Item id    | display_name, quantity, cost, supplier, ready |
-| DELETE   | http://159.203.12.88/api/events/2/shoppinglist/5/      | Event id, Item id    |                                               |
+| GET      | http://159.203.12.88/api/events/42/shoppinglist/        | Event id             |                                               |
+| POST     | http://159.203.12.88/api/events/42/shoppinglist/        | Event id             | display_name, quantity, cost, supplier, ready |
+| PUT      | http://159.203.12.88/api/events/42/shoppinglist/edit/   | Event id             | display_name, quantity, cost, supplier, ready |
+| POST     | http://159.203.12.88/api/events/42/shoppinglist/remove/ | Event id             | item_id                                       |
+| GET      | http://159.203.12.88/api/events/42/shoppinglist/5/      | Event id, Item id    |                                               |
+| PUT      | http://159.203.12.88/api/events/42/shoppinglist/5/      | Event id, Item id    | display_name, quantity, cost, supplier, ready |
+| DELETE   | http://159.203.12.88/api/events/42/shoppinglist/5/      | Event id, Item id    |                                               |
 
 
 ### Event Polls
@@ -98,11 +98,11 @@ All actions require an authentication token in the request header. This is obtai
 
 | Action   | Url                                          | Url keys          | JSON keys                                     |
 | -------- | -------------------------------------------- | ----------------- | --------------------------------------------- |
-| GET      | http://159.203.12.88/api/events/2/polls/     | Event id          |                                               |
-| POST     | http://159.203.12.88/api/events/2/polls/     | Event id          | question, choices                             |
-| GET      | http://159.203.12.88/api/events/2/polls/5/   | Event id, Poll id |                                               |
-| PUT      | http://159.203.12.88/api/events/2/polls/5/   | Event id, Poll id | question, choices                             |
-| DELETE   | http://159.203.12.88/api/events/2/polls/5/   | Event id, Poll id |                                               |
+| GET      | http://159.203.12.88/api/events/42/polls/     | Event id          |                                               |
+| POST     | http://159.203.12.88/api/events/42/polls/     | Event id          | question, choices                             |
+| GET      | http://159.203.12.88/api/events/42/polls/5/   | Event id, Poll id |                                               |
+| PUT      | http://159.203.12.88/api/events/42/polls/5/   | Event id, Poll id | question, choices                             |
+| DELETE   | http://159.203.12.88/api/events/42/polls/5/   | Event id, Poll id |                                               |
 
 
 ## Events associated with Users
@@ -111,8 +111,8 @@ All actions require an authentication token in the request header. This is obtai
 
 | Action   | Url                                        | Url keys   | JSON keys             |
 | -------- | ------------------------------------------ | ---------- | --------------------- |
-| GET      | http://159.203.12.88/api/users/2/events/   | User id    |                       |
-| PUT      | http://159.203.12.88/api/users/2/events/   | User id    | *not yet implemented* |
+| GET      | http://159.203.12.88/api/users/42/events/   | User id    |                       |
+| PUT      | http://159.203.12.88/api/users/42/events/   | User id    | *not yet implemented* |
 
 
 
