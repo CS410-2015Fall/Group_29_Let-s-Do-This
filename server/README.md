@@ -33,7 +33,7 @@ All actions (except login) require an authentication token in the request header
 | Action            | Url                                               | Url keys   | JSON keys                                     |
 | ----------------- | ------------------------------------------------  | ---------- | --------------------------------------------- |
 | **POST (login)**  | http://159.203.12.88/login/                       |            | username, password                            |
-| **POST (create new user)**   | http://159.203.12.88/users/new/        |            | username, password, email, phone, friends     |
+| **POST (create new user)**   | http://159.203.12.88/api/users/new/    |            | username, password, email, phone, friends     |
 | POST              | http://159.203.12.88/api/users/search             |            | username                                      |
 | GET all           | http://159.203.12.88/api/users/                   |            |                                               |
 | GET               | http://159.203.12.88/api/users/2/                 | User id    |                                               |
