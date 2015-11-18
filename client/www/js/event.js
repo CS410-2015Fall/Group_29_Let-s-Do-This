@@ -18,6 +18,10 @@ $.getScript("js/global.js", function() {
             window.location="home.html";
         });
 
+        $("#viewMap").click(function(){
+            window.location="map.html";
+        });
+
         $("#rsvpButton").click(function(){
             var userInfo = LetsDoThis.Session.getInstance().getUserInfo();;
             handleRsvp(eventData,userInfo);
@@ -52,9 +56,9 @@ createContentBoxes(comments,$("#comments"));
 }
 
 function loadGuests(event) {
-    
+
     var friendIds = LetsDoThis.Session.getInstance().getUserFriends();
-    
+
     // reduce friendIds so that it contains only those ids which are not already invited, attending or declining the event
     function reduceList(l1,l2) {
         $.each(l2, function(index, val) {
