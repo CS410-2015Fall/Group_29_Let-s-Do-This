@@ -3,15 +3,11 @@ Models to abstract ldtserver's database.
 
 This is for remote CRUD requests. Most app logic will be in front-end client.
 
+:NOTE:
+The Poll and Choice options are inspired by the Django Tutorial:
+https://docs.djangoproject.com/en/1.8/intro/tutorial01/
+
 :TODO:
-- Support queries (see also views.py):
-    - Add/Rm event's invitee/accept/decline without rewriting entire list AND user cannot be on all three lists
-    - Put User-specific Event as single call (is this needed?)
-
-- BudgetContribution class - ??? 1:1 accepted user within Event
-- EventPoll class (FP16-3) - ??? link ldtpolls app many:1 with Event class
-
-:LATER:
 - login with email instead of username
 - add profile picture to LdtUser
 """
@@ -217,3 +213,28 @@ class ShoppingList(models.Model):
         """ Add item to items """
         self.items.add(item)
         return self.items
+
+
+class Poll(models.Model):
+    """
+    Poll consisting of question
+    """
+    # Required
+    question = models.CharField(max_length=200)
+    # Optional (but treat as required)
+    event = models.ForeignKey(Event, related_name="event_polls", on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.question
+
+
+class PollChoice(models.Model):
+    """
+    Choices of responses for a poll
+    """
+    poll = models.ForeignKey(Poll)
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.choice_text

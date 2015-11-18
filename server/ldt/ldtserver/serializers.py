@@ -7,7 +7,7 @@ This is for remote CRUD requests only. Most app logic will be in front-end clien
 - hash/don't return User passwords (here or in views.py)
 """
 from rest_framework import serializers
-from models import Event, LdtUser, Comment, ShoppingList, ShoppingListItem
+from models import Event, LdtUser, Comment, ShoppingList, ShoppingListItem, PollChoice, Poll
 from django.contrib.auth.models import User
 
 
@@ -55,12 +55,29 @@ class ShoppingListSerializer(serializers.ModelSerializer):
         fields = ('id', 'items', 'event')
 
 
+class PollChoiceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PollChoice
+        fields = ('id', 'poll', 'choice_text', 'votes')
+
+
+class PollSerializer(serializers.ModelSerializer):
+
+    # useful for details, but not helpful for POSTs - see views/comment for that logic
+    choices = PollChoiceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Poll
+        fields = ('id', 'question', 'event', 'choices')
+
+
 class EventSerializer(serializers.ModelSerializer):
 
     # useful for Event details, but not helpful for POSTs - see views/comment for that logic
     comments = CommentSerializer(many=True, read_only=True)
     shopping_list = ShoppingListSerializer(read_only=True)
-
+    event_polls =PollSerializer(many=True, read_only=True)
     contributions = serializers.SerializerMethodField("get_event_contributions")
 
     def get_event_contributions(self, event):
@@ -69,4 +86,4 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'display_name', 'start_date', 'end_date', 'budget', 'location', 'hosts', 'invites',
-                  'accepts', 'declines', 'changed', 'comments', 'shopping_list', 'contributions')
+                  'accepts', 'declines', 'changed', 'comments', 'shopping_list', 'contributions', 'event_polls')
