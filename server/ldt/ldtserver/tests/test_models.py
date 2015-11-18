@@ -88,7 +88,4 @@ class EventMethodTests(TestCase):
     def test_get_shoppinglistitems(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
-        self.assertEqual(Event.get_contributions(event), ["abc", "def"])
-
-
-
+        self.assertEqual(Event.get_contributions(event), [])

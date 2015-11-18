@@ -57,6 +57,7 @@ class ShoppingListSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
 
+    # useful for Event details, but not helpful for POSTs - see views/comment for that logic
     comments = CommentSerializer(many=True, read_only=True)
     shopping_list = ShoppingListSerializer(read_only=True)
 

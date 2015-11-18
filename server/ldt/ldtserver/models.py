@@ -20,6 +20,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 
 EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
+ITEM_FIELDS_FOR_CONTRIBUTION = ["id", "display_name", "quantity", "cost", "ready"]
 
 
 class PhoneValidator(RegexValidator):
@@ -139,15 +140,58 @@ class Event(models.Model):
         """ Return list of Event's Comments """
         return [c for c in self.comments.all()]
 
+    def has_shoppinglist(self):
+        """ Return True ShoppingList if exists, else False """
+        try:
+            list = self.shopping_list
+            return True
+        except:
+            return False
+
     def get_shoppinglistitems(self):
         """ Return list of Event's shoppinglistitem (can be empty) """
         return [i for i in self.shopping_list.items.all()]
 
     def get_contributions(self):
         """
-        Return list of "contributions": current shopping_list as list of users
+        Return list of "contributions" objects: current shopping_list as list of users
         """
-        return ["abc", "def"]  # stub
+        contributions = []
+        # This is to avoid interruption of new Event cascade via API or bugs
+        if not self.has_shoppinglist():
+            return []
+        items = self.get_shoppinglistitems()
+        # Extract all users from items, only if "supplier" is set
+        users = list(set([i.supplier for i in items if i.supplier]))
+        # Use each user to construct contribution object of id, username, total, and items
+        for user in users:
+            c = {}
+            user_items = []
+            user_total = "0.00"
+            c["id"] = user.id
+            c["username"] = user.username
+            # For each item, check if supplied by current user
+            for i in items:
+                if i.supplier and i.supplier.id == user.id:
+                    # For item, create object with all fields except "supplier"
+                    user_item = {field: getattr(i, field, None) for field in ITEM_FIELDS_FOR_CONTRIBUTION}
+                    # Hacky for now: if item has cost and quantity, we want returned as string or null for the API
+                    # If item has a cost, add it to user's total
+                    if i.cost:
+                        user_item["cost"] = str(user_item["cost"])
+                        user_total = str(float(user_total) + float(i.cost))
+                    else:
+                        user_item["cost"] = None
+                    if i.quantity:
+                        user_item["quantity"] = str(user_item["quantity"])
+                    else:
+                        user_item["quantity"] = None
+                    user_items.append(user_item)
+            # Add all user's items and total to contribution object
+            c["items"] = user_items
+            c["total"] = user_total
+            contributions.append(c)
+        return contributions
 
 
 class ShoppingList(models.Model):

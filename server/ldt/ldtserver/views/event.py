@@ -45,7 +45,9 @@ def event_list(request):
     Note3: At this time, the "shopping_list" cannot be edited through this call. It can only be edited using the Event
     Shopping List-related functions (see server README).
 
-    Note4: "contributions" cannot be edited. It is just the "shopping_list" restructured on per-user basis.
+    Note4: "contributions" cannot be edited. It is just the "shopping_list" restructured on per-user basis. Items that
+    have no set "supplier" will not be included in "contributions". Items with no set "cost" will not be included in
+    each contributor's "total" amount.
     """
     if request.method == 'GET':
         events = Event.objects.all()
@@ -217,7 +219,9 @@ def event_detail(request, pk):
         "ready": null, "Yes", or "No"
     }
 
-    Note4: "contributions" cannot be edited. It is just the "shopping_list" restructured on per-user basis.
+    Note4: "contributions" cannot be edited. It is just the "shopping_list" restructured on per-user basis. Items that
+    have no set "supplier" will not be included in "contributions". Items with no set "cost" will not be included in
+    each contributor's "total" amount.
     """
     try:
         event = Event.objects.get(pk=pk)
