@@ -15,7 +15,11 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'client/www/js/*',
+      'client/www/js/jquery/*.js',
+      'client/www/js/serverInteractions/*.js',
+      'client/www/js/user/*.js',
+      'client/www/js/yelpScripts/*.js',
+      'client/www/js/*.js',
       'test/*.js'
     ],
 
