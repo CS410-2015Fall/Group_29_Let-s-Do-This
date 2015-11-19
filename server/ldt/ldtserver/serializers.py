@@ -65,11 +65,11 @@ class PollChoiceSerializer(serializers.ModelSerializer):
 class PollSerializer(serializers.ModelSerializer):
 
     # useful for details, but not helpful for POSTs - see views/comment for that logic
-    choices = PollChoiceSerializer(many=True, read_only=True)
+    poll_choices = PollChoiceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Poll
-        fields = ('id', 'question', 'event', 'choices')
+        fields = ('id', 'question', 'event', 'poll_choices')
 
 
 class EventSerializer(serializers.ModelSerializer):

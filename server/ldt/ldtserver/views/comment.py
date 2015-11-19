@@ -80,8 +80,6 @@ def comment_detail(request, pk, comment_id):
     """
     Get, update, or delete a specific comment associated with a specific event.
 
-    List all comments associated with event of pk, or create a new comment.
-
     PUT request data must be formatted as follows. No fields mandatory:
     {
         "post_date": "2015-01-01T00:00Z",

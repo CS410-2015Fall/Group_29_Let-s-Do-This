@@ -141,6 +141,10 @@ class Event(models.Model):
         """ Return list of Event's Comments """
         return [c for c in self.comments.all()]
 
+    def get_polls(self):
+        """ Return list of Event's Polls """
+        return [p for p in self.event_polls.all()]
+
     def has_shoppinglist(self):
         """ Return True ShoppingList if exists, else False """
         try:
@@ -232,7 +236,7 @@ class PollChoice(models.Model):
     """
     Choices of responses for a poll
     """
-    poll = models.ForeignKey(Poll)
+    poll = models.ForeignKey(Poll, related_name="poll_choices")
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
 

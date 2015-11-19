@@ -36,10 +36,10 @@ All actions (except login) require an authentication token in the request header
 | **POST (create new user)**   | http://159.203.12.88/api/users/new/    |            | username, password, email, phone, friends     |
 | POST              | http://159.203.12.88/api/users/search             |            | username                                      |
 | GET all           | http://159.203.12.88/api/users/                   |            |                                               |
-| GET               | http://159.203.12.88/api/users/42/                 | User id    |                                               |
-| PUT               | http://159.203.12.88/api/users/42/                 | User id    | username, password, email, phone, friends     |
-| DELETE            | http://159.203.12.88/api/users/42/                 | User id    |                                               |
-| POST (rm friends) | http://159.203.12.88/api/users/42/friends/remove/  | User id    | friends (to remove)                           |
+| GET               | http://159.203.12.88/api/users/2/                 | User id    |                                               |
+| PUT               | http://159.203.12.88/api/users/2/                 | User id    | username, password, email, phone, friends     |
+| DELETE            | http://159.203.12.88/api/users/2/                 | User id    |                                               |
+| POST (rm friends) | http://159.203.12.88/api/users/2/friends/remove/  | User id    | friends (to remove)                           |
 
 **friends** = list/array of other User IDs
 

@@ -4,6 +4,7 @@ e.g. http://.../api/...
 """
 from django.conf.urls import url, include
 from views.event import event_detail, event_list, event_hosts_remove, event_changed_remove
+from views.poll import poll_list, poll_detail
 from views.shoppinglistitem import shoppinglistitem_detail, shoppinglistitem_list
 from views.shoppinglist import shoppinglist_put, shoppinglist_delete
 from views.user import user_detail, user_new, user_list, user_events, user_search, user_friends_remove
@@ -20,6 +21,9 @@ urlpatterns = [
 
     url(r'^events/(?P<pk>[0-9]+)/hosts/remove/$', event_hosts_remove, name='event_hosts_remove'),
     url(r'^events/(?P<pk>[0-9]+)/changed/remove/$', event_changed_remove, name='event_changed_remove'),
+
+    url(r'^events/(?P<pk>[0-9]+)/polls/$', poll_list, name='poll_list'),
+    url(r'^events/(?P<pk>[0-9]+)/polls/(?P<poll_id>[0-9]+)/$', poll_detail, name='poll_detail'),
 
     url(r'^events/(?P<pk>[0-9]+)/shoppinglist/$', shoppinglistitem_list, name='shoppinglistitem_list'),
     url(r'^events/(?P<pk>[0-9]+)/shoppinglist/(?P<item_id>[0-9]+)/$', shoppinglistitem_detail, name='shoppinglistitem_detail'),
