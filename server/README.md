@@ -94,12 +94,13 @@ All actions require an authentication token in the request header. This is obtai
 
 ### Event Polls
 
-| Action   | Url                                          | Url keys          | JSON keys                                     |
-| -------- | -------------------------------------------- | ----------------- | --------------------------------------------- |
-| GET      | http://159.203.12.88/api/events/42/polls/     | Event id          |                                               |
-| POST     | http://159.203.12.88/api/events/42/polls/     | Event id          | question, choices                             |
-| GET      | http://159.203.12.88/api/events/42/polls/5/   | Event id, Poll id |                                               |
-| DELETE   | http://159.203.12.88/api/events/42/polls/5/   | Event id, Poll id |                                               |
+| Action   | Url                                                  | Url keys                     | JSON keys                                     |
+| -------- | ---------------------------------------------------- | ---------------------------- | --------------------------------------------- |
+| GET      | http://159.203.12.88/api/events/42/polls/            | Event id                     |                                               |
+| POST     | http://159.203.12.88/api/events/42/polls/            | Event id                     | question, choices                             |
+| GET      | http://159.203.12.88/api/events/42/polls/5/          | Event id, Poll id            |                                               |
+| DELETE   | http://159.203.12.88/api/events/42/polls/5/          | Event id, Poll id            |                                               |
+| POST     | http://159.203.12.88/api/events/42/polls/5/vote/     | Event id, Poll id,           | vote (id of choice)                           |
 
 
 ## Events associated with Users

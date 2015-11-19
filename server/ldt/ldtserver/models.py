@@ -242,3 +242,22 @@ class PollChoice(models.Model):
 
     def __str__(self):
         return self.choice_text
+
+    def get_votes(self):
+        """ Returns integer of poll's votes """
+        return self.votes
+
+    def add_vote(self, n=1):
+        """
+        Adds n to votes of poll (default n=1). Returns new count of votes
+        :param n must be integer or None
+        """
+        try:
+            if not isinstance(n, int):
+                raise Exception("n must be an integer")
+        except Exception as e:
+            return Exception
+        self.votes += n
+        self.save()
+        return self.votes
+

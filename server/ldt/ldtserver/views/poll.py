@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from ..models import Event, Poll, PollChoice
-from ..serializers import EventSerializer, PollSerializer, PollChoiceSerializer
+from ..serializers import PollSerializer, PollChoiceSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -94,3 +94,49 @@ def poll_detail(request, pk, poll_id):
         poll.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+@api_view(['POST'])
+def poll_choice_vote(request, pk, poll_id):
+    """
+    For given event id, poll id, and choice id (provided as below), adds one vote:
+
+        .../events/<event_id>/polls/<poll_id>/vote/
+
+    Request data formatted as: {"vote": 5}
+    where number is a choice id
+
+    Returns entire poll after successful post.
+
+    Note1: A poll can be created or deleted, but not edited at this time.
+    Note2: Votes can only be added, not removed
+    """
+    try:
+        Event.objects.get(pk=pk)
+    except Event.DoesNotExist:
+        return Response({"error": "No Event matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        Poll.objects.get(pk=poll_id)
+    except Poll.DoesNotExist:
+        return Response({"error": "No Poll matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        if "vote" not in request.data:
+            raise Exception("Data must be formatted as {'vote': 123}")
+        choice_id = request.data["vote"]
+        if not isinstance(choice_id, int):
+            raise Exception("vote must be an integer")
+    except Exception as e:
+        return Response({"error": e.message}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        choice = PollChoice.objects.get(pk=choice_id)
+    except PollChoice.DoesNotExist:
+        return Response({"error": "No PollChoice matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        choice.add_vote(n=1)
+        serializer = PollSerializer(Poll.objects.get(pk=poll_id))
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": e.message}, status=status.HTTP_400_BAD_REQUEST)
