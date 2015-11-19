@@ -6,6 +6,7 @@ var tempFakeNotificationData = [
 ];
 
 $(document).ready(function() {
+	//These scripts all need to be loaded here because they are reliant on the deviceready event, which is fired in the cordova script
 	//Get the script to handle the native calendar
 	$.getScript("js/osInteractions/calendarInteractions.js");
 	//Get the script to handle notifications
