@@ -1,3 +1,6 @@
+//Much of this stolen from the cordova-plugin-googlemaps GitHub page
+//https://github.com/mapsplugin/cordova-plugin-googlemaps/wiki/
+
 var map; //The map object
 var eventTitle;
 var eventLocation;
@@ -5,7 +8,6 @@ document.addEventListener("deviceready", function(){
   //Nothing can occur with this plugin until this function completes
   console.log("Google maps received deviceready");
 
-  // // -------Straight stole this from https://github.com/mapsplugin/cordova-plugin-googlemaps/wiki/Map---------
   // Initialize the map plugin
   map = plugin.google.maps.Map.getMap();
   // You have to wait the MAP_READY event.
@@ -19,11 +21,13 @@ function onMapInit(map) {
   var mapDiv = document.getElementById('mainContent');
   map.setDiv(mapDiv);
 
-  console.log("Searching for a latlong at: " + eventLocation);
+  //Drop the current location into the map
+  // dropLocationMarker();
+  map.setMyLocationEnabled(true);
+
   //Convert the event location into a lat long
   getLatLong(eventLocation, function(latLong){
     //getLatLong is going to run async, so we must use this callback
-    console.log("Result is... " + latLong);
     //And finally put the event marker on the map
     dropMarker(eventTitle, latLong);
   });
@@ -36,8 +40,6 @@ function getLatLong(location, callback){
   var request = {
     'address': location //Ideally location would be an address, but anything will do
   };
-  console.log('request:');
-  console.log(request);
 
   plugin.google.maps.Geocoder.geocode(request, function(results) {
     if (results.length) {//Make sure we found something
@@ -58,9 +60,19 @@ function dropMarker(title, latLong){
     'position': latLong
   }); //addMarker can also take a callback function
   map.animateCamera({
-  'target': latLong,
-  'zoom': 15
-});
+    'target': latLong,
+    'zoom': 15
+  });
+}
+
+function dropLocationMarker(){
+  map.getMyLocation(function(location) {
+    map.addMarker({
+      'position': location.latLng,
+      'icon': 'blue',
+      'title': 'Current Location'
+    });
+  });
 }
 
 function initEventData(title, loc){
