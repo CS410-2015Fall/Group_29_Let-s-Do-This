@@ -73,6 +73,8 @@ def poll_list(request, pk):
 def poll_detail(request, pk, poll_id):
     """
     Get or delete a specific poll associated with a specific event.
+
+    Note: A poll can be created or deleted, but not edited at this time.
     """
     try:
         event = Event.objects.get(pk=pk)
@@ -82,10 +84,13 @@ def poll_detail(request, pk, poll_id):
     try:
         poll = Poll.objects.get(pk=poll_id)
     except Poll.DoesNotExist:
-        return Response({"error": "No Comment matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "No Poll matching primary key"}, status=status.HTTP_404_NOT_FOUND)
 
+    if request.method == 'GET':
+        serializer = PollSerializer(poll)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
+    elif request.method == 'DELETE':
+        poll.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-
-    return Response({"this_call": "is_ok"}, status=status.HTTP_200_OK)  # stub
