@@ -8,19 +8,54 @@ $.getScript("js/serverInteractions/userServerInteraction.js");
 var tempFakeFriends = ["Tom","Dick","Harry","Sally","Wolfgang","Emil","Mathias","Magnus","Jonas","William","Oliver","Noah","Adrian","Tobias","Elias","Daniel","Henrik","Sebastian","Lucas","Martin","Andreas","Benjamin","Leon","Sander","Alexander","Liam","Isak","Jakob","Kristian","Aksel","Julian","Fredrik","Sondre","Johannes","Erik","Marius","Jonathan","Filip"];
 
 //UI
-function createContentBoxes(boxes,divLocation) {
-	divLocation.html("");
-	$.each( boxes, function( index, value ){
-		divLocation.append(
-			'<div id="box" boxId="'
-			+ value.boxId
-			+'"><p><strong>'
-			+ value.head
-			+ '</strong><br>'
-			+ value.body
-			+ '</p></div>');
-	});
+function Box(head, body, id) {
+	this.head = head;
+	this.body = body;
+	this.boxId = id;
+};
+
+Box.prototype.toHtml = function toHtml() {
+	return '<div id="box" boxId="'
+	+ this.boxId
+	+ '"><p><strong>'
+	+ this.head
+	+ '</strong><br>'
+	+ this.body
+	+ '</p></div>';
+};
+
+function displayBoxes(boxes, target) {
+	var boxHtml = "";
+	$.each( boxes, function (i, val) {
+		boxHtml += val.toHtml();
+	})
+	target.html(boxHtml);
 }
+
+// old box
+// function createContentBoxes(boxes,divLocation) {
+// 	divLocation.html("");
+// 	$.each( boxes, function( index, value ){
+// 		divLocation.append(
+// 			'<div id="box" boxId="'
+// 			+ value.boxId
+// 			+'"><p><strong>'
+// 			+ value.head
+// 			+ '</strong><br>'
+// 			+ value.body
+// 			+ '</p></div>');
+// 	});
+// }
+
+// function createContentBox(head,body,boxId) {
+// 	var whatever = '<div id="box" boxId="'
+// 				 + boxId
+// 				 + '"><p><strong>'
+// 				 + head
+// 				 + '</strong><br>'
+// 				 + body
+// 				 + '</p></div>';
+// }
 
 //navigation
 function openEvent(destinationEvent) {
@@ -29,21 +64,6 @@ function openEvent(destinationEvent) {
 }
 
 // server interface
-// function newEvent(event) {
-// 	// push new event to server
-// }
-
-// function addUserToEvent(user,event) {
-// 	addUserToEvent(user,event,0);
-// }
-
-// function addUserToEvent(user,event,x) {
-// 	// user is invited
-// }
-
-// function removeUserFromEvent(user,event) {
-// 	// can only remove invited user (not accepted, declined)
-// }
 
 // pull values from server using object IDs
 function getUserById(userId) {
@@ -54,17 +74,6 @@ function getUserById(userId) {
 		};
 	});
 }
-
-// function getComment(commentId) {
-// 	// get data from server
-// 	var c = {
-// 		post_date:"",
-// 		content:"",
-// 		author:"",
-// 		comment_id:comment_id
-// 	};
-// 	return c;
-// }
 
 // conversion
 function convertDate(dateString1,dateString2) {
