@@ -6,21 +6,21 @@ $.getScript("js/global.js", function() {
 		loadEventData(eventData);
 		var userId = LetsDoThis.Session.getInstance().getUserId();
 
-		GuestListWidget.init(userId,eventData);
+		GuestListModule.init(userId,eventData);
 		$("#inviteButton").click(function(){
-			GuestListWidget.handleInviteButton();
+			GuestListModule.handleInviteButton();
 		});
 		$("#rsvpButton").click(function(){
-			GuestListWidget.handleRsvpButton();
+			GuestListModule.handleRsvpButton();
 		});
 
-		CommentWidget.init(userId,eventData);
+		CommentModule.init(userId,eventData);
 		$("#commentForm").submit(function(event) {
 			event.preventDefault(); // do not redirect
-			CommentWidget.postComment();
+			CommentModule.postComment();
 		});
 
-		ShoppingListWidget.init(userId,eventData);
+		ShoppingListModule.init(userId,eventData);
 
 		$("#homeButton").click(function(){
 			window.location="home.html";
@@ -40,7 +40,7 @@ function loadEventData(e) {
 	$("#location").html("Location: " + e.location);
 }
 
-var CommentWidget = {
+var CommentModule = {
 	// comment = { id:Int, author:String, post_date: YYYY-MM-DDTHH:MM:SS.446000Z, content:String, event:Int }
 	comments: [],
 	userId: -1,
@@ -85,7 +85,7 @@ var CommentWidget = {
 	}
 };
 
-var GuestListWidget = {
+var GuestListModule = {
 	// guest = {id:Int, username:String, status:Int}
 	// status 0 == attending
 	// status 1 == invited
@@ -217,7 +217,7 @@ var GuestListWidget = {
 	}
 };
 
-var ShoppingListWidget = {
+var ShoppingListModule = {
 	// shoppingItem = {id:Int, display_name:String, quantity:Float, cost:Float, supplier:User, ready:Bool, userId:Int}
 	shoppingList: [],
 	userId: -1,
@@ -239,14 +239,26 @@ var ShoppingListWidget = {
 				+ '</a></li>';
 		});
 		$("#shoppingList").html(str);
+		$("#shoppingList").append('<li id="newShoppingLi"></li>')
+		$("li#newShoppingLi").html('<a href="">...</a>');
 		$("#shoppingList").listview("refresh");
 	},
 
 	bindUIActions: function() {
+		// TODO
+		// need to be able to:
+		// add a new item
+		// claim an item
+		// ?? edit an existing item
+		//
 
 	},
 
 	updateServer: function() {
-
+		// TODO
+		// addShoppingListItem(eventId, display_name, quantity, cost, supplier, ready);
+		// editShoppingList(eventId, display_name, quantity, cost, supplier, ready);
+		// editShoppingListItem(eventId, itemId, display_name, quantity, cost, supplier, ready);
+		// removeShoppingList(eventId, itemId);
 	}
 };
