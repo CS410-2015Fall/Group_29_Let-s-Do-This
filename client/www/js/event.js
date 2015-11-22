@@ -81,8 +81,7 @@ var CommentWidget = {
 	},
 
 	updateServer: function(comment) {
-		//TODO push new comment to the server
-		// addComment(this.eventId, this.userId, comment.post_date, comment.content);
+		addComment(this.eventId, this.userId, comment.post_date, comment.content);
 	}
 };
 
@@ -141,12 +140,12 @@ var GuestListWidget = {
 			var status = "";
 			if (guest.status==0) {
 				statusHtml = ' checked="true" disabled="true"';
-				status = ' (accepted)';
+				status = ' (attending)';
 			} else if (guest.status==1) {
 				statusHtml = ' checked="true"';
 				status = " (invited)";
 			} else if (guest.status==3) {
-				status = " (declined)";
+				status = " (not attending)";
 			}
 
 			str += '<input '
