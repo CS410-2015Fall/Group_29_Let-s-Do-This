@@ -5,8 +5,10 @@ $.getScript("js/global.js", function() {
 
 		loadEventData(eventData);
 
-		GuestListWidget.init(eventData);
-		CommentWidget.init(eventData);
+		var userId = LetsDoThis.Session.getInstance().getUserId();
+		GuestListWidget.init(userId,eventData);
+		CommentWidget.init(userId,eventData);
+		ShoppingListWidget.init(userId,eventData);
 
 		$("#homeButton").click(function(){
 			window.location="home.html";
@@ -14,9 +16,9 @@ $.getScript("js/global.js", function() {
 
 		$("#viewMap").click(function(){
 			// TODO Save the location, and name, into the session storage so the map script can pull it up
-
 			window.location="map.html";
 		});
+
 	});
 });
 
@@ -40,8 +42,8 @@ var CommentWidget = {
 	userId: -1,
 	eventId: -1,
 
-	init: function(e) {
-		this.userId = LetsDoThis.Session.getInstance().getUserId();
+	init: function(userId,e) {
+		this.userId = userId;
 		this.eventId = e.id;
 		this.comments = e.comments;
 
@@ -105,13 +107,15 @@ var GuestListWidget = {
 	// status 1 == invited
 	// status 2 == uninvited
 	// status 3 == declined
-	// guests are indexed by id
-	// eg this.guestList[4] = {id:4, ...}
+	// guests are indexed by id, like an hashmap
+	// eg this.guestList[4] == {id:4, ...}
 	guestList: {},
 	userId: -1,
+	eventId: -1,
 
-	init: function(e) {
-		this.userId = LetsDoThis.Session.getInstance().getUserId();
+	init: function(userId,e) {
+		this.userId = userId;
+		this.eventId = e.id;
 
 		var invites = e.invites;
 		var accepts = e.accepts;
@@ -227,7 +231,8 @@ var GuestListWidget = {
 
 		}
 		// TODO
-		// use some of this? :::::::
+		// this.eventId
+		// use some of this? ::::::: with
 		// function inviteFriends(e,invitedUsers) {
 		// 	inviteToEvent(e.id, invitedUsers, function(){
 		// 		// on success, update event information
@@ -245,8 +250,13 @@ var GuestListWidget = {
 var ShoppingListWidget = {
 	// shoppingItem = {name:String, cost:Int, userId:Int}
 	shoppingList: [],
+	userId: -1,
+	eventId: -1,
 
-	init: function() {
+	init: function(userId,e) {
+		this.userId = userId;
+		this.eventId = e.id;
+
 
 	},
 
