@@ -19,6 +19,7 @@ $.getScript("js/global.js", function() {
 			event.preventDefault(); // do not redirect
 			CommentWidget.postComment();
 		});
+
 		ShoppingListWidget.init(userId,eventData);
 
 		$("#homeButton").click(function(){
@@ -29,7 +30,6 @@ $.getScript("js/global.js", function() {
 			// TODO Save the location, and name, into the session storage so the map script can pull it up
 			window.location="map.html";
 		});
-
 	});
 });
 
@@ -172,10 +172,10 @@ var GuestListWidget = {
 		}
 	},
 
-	handleRsvpButon: function() {
+	handleRsvpButton: function() {
 		var yourself = this.guestList[this.userId];
 		yourself.status = 0;
-		updateServer(yourself);
+		this.updateServer(yourself);
 		$("#rsvpButton").attr('disabled', 'true');
 		$("#rsvpPopup").popup( "open" )
 		this.updateUI();
@@ -218,7 +218,7 @@ var GuestListWidget = {
 };
 
 var ShoppingListWidget = {
-	// shoppingItem = {name:String, cost:Int, userId:Int}
+	// shoppingItem = {id:Int, display_name:String, quantity:Float, cost:Float, supplier:User, ready:Bool, userId:Int}
 	shoppingList: [],
 	userId: -1,
 	eventId: -1,
@@ -226,15 +226,23 @@ var ShoppingListWidget = {
 	init: function(userId,e) {
 		this.userId = userId;
 		this.eventId = e.id;
+		this.shoppingList = e.shopping_list.items;
 
-
+		this.updateUI();
 	},
 
 	updateUI: function() {
-
+		var str = "";
+		$.each(this.shoppingList,function(i,v){
+			str += '<li><a href="">'
+				+ v.display_name
+				+ '</a></li>';
+		});
+		$("#shoppingList").html(str);
+		$("#shoppingList").listview("refresh");
 	},
 
-	buildUIActions: function() {
+	bindUIActions: function() {
 
 	},
 
