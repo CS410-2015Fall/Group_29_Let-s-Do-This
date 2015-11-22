@@ -232,16 +232,37 @@ var ShoppingListModule = {
 	},
 
 	updateUI: function() {
-		var str = "";
+		var str = '<h2>Shopping List</h2>';
+
 		$.each(this.shoppingList,function(i,v){
-			str += '<li><a href="">'
-				+ v.display_name
-				+ '</a></li>';
+			str += '<div data-role="collapsible"';
+			if (!v.ready) {
+				str += ' data-collapsed-icon="delete"';
+			}
+			str += '>';
+			str += '<h3>' + v.display_name + '</h3>';
+			if (v.ready) {
+				str += '<p>Cost: $' + v.cost + '</p>'
+					+ '<p>' + v.supplier.username + ' got this</p>';
+			} else {
+				str += '<div data-role="fieldcontain">'
+					+ '<label for="name">Cost:</label>'
+					+ '<input type="number" '
+					+ 'name="' + v.id + '" '
+					+ 'id="' + v.id + '" '
+					+ 'value="' + v.cost + '" />'
+					+ '</div>'
+					+ '<button type="submit" '
+					+ 'id="' + v.id + '" '
+					+ 'data-theme="a">'
+					+ 'I got this'
+					+ '</button>';
+			}
+			str += '</div>';
 		});
+
 		$("#shoppingList").html(str);
-		$("#shoppingList").append('<li id="newShoppingLi"></li>')
-		$("li#newShoppingLi").html('<a href="">...</a>');
-		$("#shoppingList").listview("refresh");
+		$("#shoppingList").trigger('create');
 	},
 
 	bindUIActions: function() {
@@ -256,7 +277,9 @@ var ShoppingListModule = {
 			// drops open, doesn't let you edit, shows price and claimant
 			// "user got this"
 		//case3: click new item
-			// drops open, lets you fill in name, price, save new unclaimed item
+			// drops open, lets you fill in name, price
+				// 3.1: create claimed item (must fill in name, cost)
+				// 3.2: create unclaimed item (must fill in name)
 
 	},
 

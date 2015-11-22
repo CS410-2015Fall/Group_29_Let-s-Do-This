@@ -27,18 +27,17 @@
 
 	<!-- <div id="shoppingDiv"> -->
 
-	<div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-collapsed-icon="check" data-expanded-icon="carat-d">
-			<h2>Shopping List</h2>
-
+	<div id="shoppingList" data-role="collapsibleset" data-theme="a" data-content-theme="a" data-collapsed-icon="check" data-expanded-icon="carat-d">
+		<h2>Shopping List</h2>
 		<div data-role="collapsible">
 			<h3>Two Fat Hens</h3>
 			<p>Cost: $14.30</p>
-			<p>Tim Horton</p>
+			<p>Tim Horton got this</p>
 		</div>
 		<div data-role="collapsible">
 			<h3>Cordero y cilantro taco</h3>
 			<p>Cost: $7.00</p>
-			<p>Wendy</p>
+			<p>Wendy got this</p>
 		</div>
 		<div data-role="collapsible" data-collapsed-icon="delete">
 			<h3>60 litres diet offbrand cola</h3>
@@ -48,6 +47,9 @@
 			</div>
 			<button type="submit" id="item3Button" data-theme="a">I got this</button>
 		</div>
+	</div>
+
+	<div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-collapsed-icon="check" data-expanded-icon="carat-d">
 		<div data-role="collapsible" data-collapsed-icon="edit">
 			<h3>New Item</h3>
 			<div data-role="fieldcontain">
@@ -59,10 +61,10 @@
 				<input type="number" name="item1CostField" id="item1CostField" value=""  />
 			</div>
 
-		<fieldset class="ui-grid-a">
+			<fieldset class="ui-grid-a">
 				<div class="ui-block-a"><button type="submit" data-theme="d">I got this</button></div>
 				<div class="ui-block-b"><button type="submit" data-theme="a">Someone else got this...</button></div>
-	    </fieldset>
+			</fieldset>
 
 		</div>
 	</div>
