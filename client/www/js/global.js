@@ -32,47 +32,10 @@ function displayBoxes(boxes, target) {
 	target.html(boxHtml);
 }
 
-// old box
-// function createContentBoxes(boxes,divLocation) {
-// 	divLocation.html("");
-// 	$.each( boxes, function( index, value ){
-// 		divLocation.append(
-// 			'<div id="box" boxId="'
-// 			+ value.boxId
-// 			+'"><p><strong>'
-// 			+ value.head
-// 			+ '</strong><br>'
-// 			+ value.body
-// 			+ '</p></div>');
-// 	});
-// }
-
-// function createContentBox(head,body,boxId) {
-// 	var whatever = '<div id="box" boxId="'
-// 				 + boxId
-// 				 + '"><p><strong>'
-// 				 + head
-// 				 + '</strong><br>'
-// 				 + body
-// 				 + '</p></div>';
-// }
-
 //navigation
 function openEvent(destinationEvent) {
 	localStorage.setItem("eventObj", JSON.stringify(destinationEvent));
 	window.location="event.html";
-}
-
-// server interface
-
-// pull values from server using object IDs
-function getUserById(userId) {
-	return getUser(userId, function(resp) {
-		return {
-			username:resp.username,
-			user_id: userId
-		};
-	});
 }
 
 // conversion
