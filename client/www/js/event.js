@@ -96,11 +96,12 @@ var CommentWidget = {
 
 var GuestListWidget = {
 	// guest = {id:Int, username:String, status:Int}
-	//TODO might need to give guest a 'setStatus' method. it depends on whether var g = getUser(0); returns a reference to or copy of the guest object
 	// status 0 == attending
 	// status 1 == invited
 	// status 2 == uninvited
 	// status 3 == declined
+	// guests are indexed by id
+	// eg this.guestList[4] = {id:4, ...}
 	guestList: {},
 	userId: -1,
 
@@ -124,20 +125,17 @@ var GuestListWidget = {
 		friends = reduceList(friends,accepts);
 		friends = reduceList(friends,declines);
 
-		// push accepted, invited, uninvited and declined guests to guestList
-		function convertAndPushGuest(list,s,guests) {
-			var gusets
+		// add accepted, invited, uninvited and declined guests to guestList
+		function addGuests(list,s,guests) {
 			$.each(list, function(index, val) {
 				guests[val.id] = {id:val.id, username:val.username, status:s};
 			});
 		}
-		convertAndPushGuest(accepts,0,this.guestList);
-		convertAndPushGuest(e.hosts,0,this.guestList);
-		convertAndPushGuest(invites,1,this.guestList);
-		convertAndPushGuest(friends,2,this.guestList);
-		convertAndPushGuest(declines,3,this.guestList);
-
-		// TODO can we setup guestList to be a hashmap keyed to user ids?
+		addGuests(accepts,0,this.guestList);
+		addGuests(e.hosts,0,this.guestList);
+		addGuests(invites,1,this.guestList);
+		addGuests(friends,2,this.guestList);
+		addGuests(declines,3,this.guestList);
 
 		// TODO should i move these out of init and call them by hand instead??
 		this.bindUIActions();
@@ -237,15 +235,6 @@ var GuestListWidget = {
 		// 		});
 		// 	});
 		// }
-	},
-
-	getUser: function(id) {
-		//TODO what if it doesn't find anything?
-		$.each(this.guestList, function(i,val) {
-			if (id === val.id) {
-				return val;
-			}
-		});
 	}
 };
 
