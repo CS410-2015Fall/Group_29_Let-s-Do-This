@@ -4,9 +4,6 @@ $.getScript("js/serverInteractions/eventServerInteraction.js");
 $.getScript("js/serverInteractions/commentServerInteraction.js");
 $.getScript("js/serverInteractions/userServerInteraction.js");
 
-//temp fake data
-var tempFakeFriends = ["Tom","Dick","Harry","Sally","Wolfgang","Emil","Mathias","Magnus","Jonas","William","Oliver","Noah","Adrian","Tobias","Elias","Daniel","Henrik","Sebastian","Lucas","Martin","Andreas","Benjamin","Leon","Sander","Alexander","Liam","Isak","Jakob","Kristian","Aksel","Julian","Fredrik","Sondre","Johannes","Erik","Marius","Jonathan","Filip"];
-
 //UI
 function Box(head, body, id) {
 	this.head = head;
