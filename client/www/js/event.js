@@ -109,7 +109,7 @@ var GuestListWidget = {
 		function reduceList(l1,l2) {
 			$.each(l2, function(index, val) {
 				l1 = jQuery.grep(l1, function(value) {
-					return value != val;
+					return value.id != val.id;
 				});
 			});
 			return l1;
@@ -138,13 +138,13 @@ var GuestListWidget = {
 		function write(guest) {
 			var statusHtml = "";
 			var status = "";
-			if (guest.status==0) {
+			if (guest.status == 0) {
 				statusHtml = ' checked="true" disabled="true"';
 				status = ' (attending)';
-			} else if (guest.status==1) {
+			} else if (guest.status == 1) {
 				statusHtml = ' checked="true"';
 				status = " (invited)";
-			} else if (guest.status==3) {
+			} else if (guest.status == 3) {
 				status = " (not attending)";
 			}
 
@@ -178,6 +178,7 @@ var GuestListWidget = {
 		updateServer(yourself);
 		$("#rsvpButton").attr('disabled', 'true');
 		$("#rsvpPopup").popup( "open" )
+		this.updateUI();
 	},
 
 	handleInviteButton: function() {
@@ -186,9 +187,8 @@ var GuestListWidget = {
 		descendents = ancestor.getElementsByTagName('input');
 		var i, e;
 		for (i = 0; i < descendents.length; ++i) {
-			g = descendents[i];
-			if (g.checked) {
-				var guest = this.guestList[g.id];
+			var guest = this.guestList[descendents[i].id];
+			if (descendents[i].checked) {
 				if (guest.status == 2) { // uninvited -> invited
 					guest.status = 1;
 					this.updateServer(guest);
@@ -201,30 +201,19 @@ var GuestListWidget = {
 			}
 		}
 		$("#friendsPopup").popup("close");
+		this.updateUI();
 	},
 
 	updateServer: function(guest) {
+		//TODO figure out how the server calls are supposed to work, and why this isn't working
 		if (guest.status == 0) { // accepted
-
+			// can only RSVP yourself
+			rsvpToEvent(this.eventId, "accepts", function(){});
 		} else if (guest.status == 1) { // invited
-
+			inviteToEvent(this.eventId, [guest.id], function() {});
 		} else if (guest.status == 2) { // uninvited
-
+			alert("TODO implemented uninviting");
 		}
-		// TODO
-		// this.eventId
-		// use some of this? ::::::: with
-		// function inviteFriends(e,invitedUsers) {
-		// 	inviteToEvent(e.id, invitedUsers, function(){
-		// 		// on success, update event information
-		// 		// there is probably a simpler way to do this
-		// 		getEvent(e.id,function(updatedEvent){
-		// 			localStorage.setItem("eventObj", JSON.stringify(updatedEvent));
-		// 			eventData = JSON.parse( localStorage.getItem("eventObj") );
-		// 			loadGuests(eventData);
-		// 		});
-		// 	});
-		// }
 	}
 };
 
