@@ -9,7 +9,7 @@ $(document).ready(function() {
 
 	// TODO load some initial content
 	// createContentBoxes(tempFakeNotificationData,$("#mainContent"));
-	loadFriends();
+	// loadFriends();
 
 	bindHomeUIActions();
 });
@@ -84,13 +84,12 @@ function handleContentBoxLinks() {
 }
 
 function loadFriends() {
-	// var friendIds = LetsDoThis.Session.getInstance().getUserFriends();
-
+	var friends = LetsDoThis.Session.getInstance().getUserFriends();
 	$("#friends").html();
-	$.each( tempFakeFriends, function( index, value ){
+	$.each( friends, function( index, value ){
 		$("#friendList").append(
 			'<li><a href="">'
-			+ value
+			+ value.username
 			+'</a></li>'
 			);
 	});
