@@ -9,42 +9,51 @@ $(document).ready(function() {
 		console.log(LetsDoThis.Session.getInstance().getAuthToken());
 	});
 	$.getScript("js/serverInteractions/eventServerInteraction.js"); //Event-Server
-	$("#homeButton").click(function(){
+
+	bindCreateEventUIActions();
+});
+
+function bindCreateEventUIActions() {
+		$("#homeButton").click(function(){
 		window.location="home.html";
 	});
 
 	$("#findLocationButton").click(function(){
-		//redirecting to venueSearch, will cause us to lose all our values
-		//Save already filled fields into storage
+		//changing page will cause us to lose all our values
+		//so save already filled fields into storage first
 		saveValuesToStorage();
-		//And redirect
 		window.location ="venueSearch.html";
 	});
 
 	$("#saveButton").click(function(){
-		var name = document.getElementById('nameField').value;
-		var date = document.getElementById('dateField').value;
-		var startTime = document.getElementById('startTimeField').value;
-		var endTime = document.getElementById('endTimeField').value;
-		var location = document.getElementById('locationField').value;
+		createEvent();
+	});
+}
 
-		// var newEvent = eventBuilder(name, date, startTime, endTime, location);
+function createEvent() {
+	var name = document.getElementById('nameField').value;
+	var date = document.getElementById('dateField').value;
+	var startTime = document.getElementById('startTimeField').value;
+	var endTime = document.getElementById('endTimeField').value;
+	var location = document.getElementById('locationField').value;
 
-		if (name != "" &&
-			date != "" &&
-			startTime != "") {
-			//Format the times appropriately
+
+	if (name != "" && date != "" && startTime != "") {
+		// This function assumes a format of:
+		// Date: YYYY-MM-DD
+		// Time: hh:mm
+		// and outputs YYYY-MM-DDThh:mm
+		function formatTime(date, time){
+			return date.concat('T').concat(time);
+		}
 		var startTimeFormatted = formatTime(date, startTime);
 		var endTimeFormatted = formatTime(date, endTime);
 
 		sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(newEvent){
 			openEvent(newEvent);
 		});
-
-
 	}
-});
-});
+}
 
 //This function is used by the location button to call back on
 function setLocation(name, address){
@@ -54,13 +63,6 @@ function setLocation(name, address){
 	$("#locationField").val(name + ": " + address); //Set the location box
 }
 
-function formatTime(date, time){
-	//This function assumes a format of:
-	// Date: YYYY-MM-DD
-	// Time: hh:mm
-	// and outputs YYYY-MM-DDThh:mm
-	return date.concat('T').concat(time);
-}
 
 //Save everything in the textboxes to storage to restore it later
 function saveValuesToStorage(){
@@ -97,20 +99,3 @@ function loadValuesFromStorage(){
 		localStorage.getItem("currentEventLocation");
 	}
 }
-
-// function eventBuilder(name, date, start, end, location) {
-// 	var userId = LetsDoThis.Session.getInstance().getUserId();
-// 	var newEvent  = {
-// 		display_name: name,
-// 		start_date:date,
-// 		end_date:"",
-// 		budget:0,
-// 		location:location,
-// 		hosts:[userId],
-// 		invites:[],
-// 		accepts:[userId],
-// 		declines:[],
-// 		comments:[]};
-
-// 		return newEvent;
-// 	}
