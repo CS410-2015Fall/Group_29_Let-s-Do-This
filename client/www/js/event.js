@@ -4,10 +4,21 @@ $.getScript("js/global.js", function() {
 		console.log(eventData);
 
 		loadEventData(eventData);
-
 		var userId = LetsDoThis.Session.getInstance().getUserId();
+
 		GuestListWidget.init(userId,eventData);
+		$("#inviteButton").click(function(){
+			GuestListWidget.handleInviteButton();
+		});
+		$("#rsvpButton").click(function(){
+			GuestListWidget.handleRsvpButton();
+		});
+
 		CommentWidget.init(userId,eventData);
+		$("#commentForm").submit(function(event) {
+			event.preventDefault(); // do not redirect
+			CommentWidget.postComment();
+		});
 		ShoppingListWidget.init(userId,eventData);
 
 		$("#homeButton").click(function(){
@@ -23,15 +34,10 @@ $.getScript("js/global.js", function() {
 });
 
 function loadEventData(e) {
-	// console.log("loading event");
-	// console.log(e);
 	$("#eventName").html("<strong>" + e.display_name + "</strong>");
-
 	var dateString = convertDate(e.start_date,e.end_date);
-
 	$("#dateTime").html(dateString);
 	$("#location").html("Location: " + e.location);
-
 }
 
 var CommentWidget = {
@@ -45,35 +51,23 @@ var CommentWidget = {
 		this.eventId = e.id;
 		this.comments = e.comments;
 
-		this.bindUIActions();
 		this.updateUI();
 	},
 
-	bindUIActions: function() {
-		//TODO make this work. CommentWidget's methods apparently aren't within scope to be called from within the submit() callback
-		// can fix by changing html to use a normal button, not a button which is part of a form.
-		// can also fix by redirecting the call through a truly global variable, even something as dumb as CommentWidget.postComment();
-		// but that seems so stupid I can't bring myself to do it unless there really isnt a better way
-		$("#commentForm").submit(function(event) {
-			event.preventDefault(); // do not redirect
-			// this.postComment();
-		});
-	},
-
 	postComment: function() {
-			var author = LetsDoThis.Session.getInstance().getUserInfo();
-			var newComment = {
-				author: author,
-				post_date: currentDate(),
-				content: $('textarea#commentTextArea').val()
-			};
-			// new comments, unlike comments from the server, don't have ids or eventIds, but we don't really care because we don't use those.
-			this.comments.push(newComment);
+		var author = LetsDoThis.Session.getInstance().getUserInfo();
+		var newComment = {
+			author: author,
+			post_date: currentDate(),
+			content: $('textarea#commentTextArea').val()
+		};
+		// new comments, unlike comments from the server, don't have ids or eventIds, but we don't really care because we don't actually use those.
+		this.comments.push(newComment);
 
-			$('textarea#commentTextArea').val("");
+		$('textarea#commentTextArea').val("");
 
-			this.updateUI();
-			this.updateServer(newComment);
+		this.updateUI();
+		this.updateServer(newComment);
 	},
 
 	updateUI: function() {
@@ -137,7 +131,6 @@ var GuestListWidget = {
 		addGuests(friends,2,this.guestList);
 		addGuests(declines,3,this.guestList);
 
-		this.bindUIActions();
 		this.updateUI();
 	},
 
@@ -180,37 +173,35 @@ var GuestListWidget = {
 		}
 	},
 
-	bindUIActions: function() {
-		$("#inviteButton").click(function(){
-			// get checkbox data and compare it to guestList
-			var ancestor = document.getElementById('friendsPopup'),
-			descendents = ancestor.getElementsByTagName('input');
-			var i, e;
-			for (i = 0; i < descendents.length; ++i) {
-				g = descendents[i];
-				if (e.checked) { // TODO this doesn't work
-					var guest = guestList[g.id];
-					if (guest.status == 2) { // uninvited -> invited
-						guest.status = 1;
-						this.updateServer(guest);
-					}
-				} else {
-					if (guest.status == 1) { // invited -> uninvited
-						guest.status = 2;
-						this.updateServer(guest)
-					}
+	handleRsvpButon: function() {
+		var yourself = this.guestList[this.userId];
+		yourself.status = 0;
+		updateServer(yourself);
+		$("#rsvpButton").attr('disabled', 'true');
+		$("#rsvpPopup").popup( "open" )
+	},
+
+	handleInviteButton: function() {
+		// get checkbox data and compare it to guestList
+		var ancestor = document.getElementById('friendsPopup'),
+		descendents = ancestor.getElementsByTagName('input');
+		var i, e;
+		for (i = 0; i < descendents.length; ++i) {
+			g = descendents[i];
+			if (g.checked) {
+				var guest = this.guestList[g.id];
+				if (guest.status == 2) { // uninvited -> invited
+					guest.status = 1;
+					this.updateServer(guest);
+				}
+			} else {
+				if (guest.status == 1) { // invited -> uninvited
+					guest.status = 2;
+					this.updateServer(guest)
 				}
 			}
-			$("#friendsPopup").popup("close");
-		});
-
-		$("#rsvpButton").click(function(){
-			var yourself = guestList[this.userId];
-			yourself.status = 0;
-			updateServer(yourself);
-			$("#rsvpButton").attr('disabled', 'true');
-			$("#rsvpPopup").popup( "open" )
-		});
+		}
+		$("#friendsPopup").popup("close");
 	},
 
 	updateServer: function(guest) {
