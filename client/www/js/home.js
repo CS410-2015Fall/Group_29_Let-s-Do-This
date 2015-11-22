@@ -21,14 +21,14 @@ function bindHomeUIActions() {
 		// 	var boxes = formatNotificationBoxes(resp);
 		// 	displayBoxes(boxes, $("#mainContent"));
 		// });
-	var tempFakeNotificationData = [
-	new Box("Christmas Party","Tom is attending","1"),
-	new Box("Trivia Night at The Biltmore","Dick invited you","2"),
-	new Box("Harry's Birthday Party","Is today at 19:30","3"),
-	new Box("Christmas Party","Sally commented","4")
-	];
-	displayBoxes(tempFakeNotificationData, $("#mainContent"));
-});
+		var tempFakeNotificationData = [
+		new Box("Christmas Party","Tom is attending","1"),
+		new Box("Trivia Night at The Biltmore","Dick invited you","2"),
+		new Box("Harry's Birthday Party","Is today at 19:30","3"),
+		new Box("Christmas Party","Sally commented","4")
+		];
+		displayBoxes(tempFakeNotificationData, $("#mainContent"));
+	});
 
 	$("#eventsButton").click(function(){
 		getEvents(function(resp) {
