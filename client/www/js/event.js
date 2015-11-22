@@ -52,36 +52,27 @@ var CommentWidget = {
 	},
 
 	bindUIActions: function() {
-		//TODO make this work
+		//TODO make this work. CommentWidget's methods apparently aren't within scope to be called from within the submit callback
 		$("#commentForm").submit(function(event) {
 			event.preventDefault(); // do not redirect
-			// postComment(eventData);
-
-			function postComment(event, comment) {
-				var date = currentDate();
-				var author = LetsDoThis.Session.getInstance().getUserInfo();
-				var newComment = {
-					author: author,
-					post_date: date,
-					content: $('textarea#commentTextArea').val()
-				};
-
-				getAllComments(event.id, function(resp) {
-					resp.push(newComment);
-					var uiFormattedComments = formatComments(resp);
-					createContentBoxes(uiFormattedComments,$("#comments"));
-					$('textarea#commentTextArea').val("");
-				});
-				// var comments = event.comments; // if we get comments from the server here we will update with any other comments posted since we last reloaded from it
-				// comments.push(newComment);
-
-				// send comment to server
-				addComment(event.id,
-					LetsDoThis.Session.getInstance().getUserId(),
-					date,
-					newComment.content);
-			}
+			this.postComment(event);
 		});
+	},
+
+	postComment: function(event) {
+			var author = LetsDoThis.Session.getInstance().getUserInfo();
+			var newComment = {
+				author: author,
+				post_date: currentDate(),
+				content: $('textarea#commentTextArea').val()
+			};
+			// new comments, unlike comments from the server, don't have ids or eventIds, but we don't really care because we don't use those.
+			this.comments.push(newComment);
+
+			$('textarea#commentTextArea').val("");
+
+			this.updateUI();
+			this.updateServer(newComment);
 	},
 
 	updateUI: function() {
@@ -90,14 +81,13 @@ var CommentWidget = {
 			var h = comment.author.username + " commented on " + convertDate(comment.post_date);
 			var c = new Box(h,comment.content,"");
 			formattedComments.push(c);
-			alert(h);
-			alert(c);
 		});
 		displayBoxes(formattedComments,$('#comments'));
 	},
 
 	updateServer: function(comment) {
 		//TODO push new comment to the server
+		// addComment(this.eventId, this.userId, comment.post_date, comment.content);
 	}
 };
 
@@ -197,7 +187,7 @@ var GuestListWidget = {
 			var i, e;
 			for (i = 0; i < descendents.length; ++i) {
 				g = descendents[i];
-				if (e.checked) {
+				if (e.checked) { // TODO this doesn't work
 					var guest = guestList[g.id];
 					if (guest.status == 2) { // uninvited -> invited
 						guest.status = 1;
