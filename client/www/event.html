@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
 <script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
 
@@ -6,22 +6,12 @@
 <script type="text/javascript" src="js/global.js"></script>
 <script type="text/javascript" src="js/event.js"></script>
 
-<div data-role="header" id="header">
-	<fieldset class="ui-grid-a">
-		<div class="ui-block-a" align="left">
-			<button type="submit" id="homeButton" data-theme="a">Home</button>
-		</div>
-		<div class="ui-block-b" align="right">
-			<button type="submit" id="rsvpButton" data-theme="a">RSVP</button>
-		</div>
-	</fieldset>
-</div><!-- /header -->
-
 <div data-role="content" id="mainContent">
 
 	<div class="ui-field-contain" id="eventName"></div>
 	<div class="ui-field-contain" id="dateTime"></div>
 	<div class="ui-field-contain" id="location"></div>
+
 	<div class="ui-field-contain" id="guests">
 		<a href="#friendsPopup" data-rel="popup" data-role="button" data-inline="true" id="inviteWindowButton">Guests</a><br>
 	</div>
@@ -30,15 +20,51 @@
 	</div>
 	<div class="ui-field-contain" id="newComment">
 		<form id="commentForm">
-		<textarea name="comment" id="commentTextArea"></textarea>
-		<input type="submit" data-inline="true" value="Comment">
+			<textarea name="comment" id="commentTextArea"></textarea>
+			<input type="submit" data-inline="true" value="Comment">
 		</form>
 	</div>
 
-	<div id="shoppingDiv">
-		<h2>Shopping List</h2>
-		<ul id="shoppingList" data-role="listview" data-inset="true">
-		</ul>
+	<!-- <div id="shoppingDiv"> -->
+
+	<div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-collapsed-icon="check" data-expanded-icon="carat-d">
+			<h2>Shopping List</h2>
+
+		<div data-role="collapsible">
+			<h3>Two Fat Hens</h3>
+			<p>Cost: $14.30</p>
+			<p>Tim Horton</p>
+		</div>
+		<div data-role="collapsible">
+			<h3>Cordero y cilantro taco</h3>
+			<p>Cost: $7.00</p>
+			<p>Wendy</p>
+		</div>
+		<div data-role="collapsible" data-collapsed-icon="delete">
+			<h3>60 litres diet offbrand cola</h3>
+			<div data-role="fieldcontain">
+				<label for="name">Cost:</label>
+				<input type="number" name="item1CostField" id="item1CostField" value="4.99"  />
+			</div>
+			<button type="submit" id="item3Button" data-theme="a">I got this</button>
+		</div>
+		<div data-role="collapsible" data-collapsed-icon="edit">
+			<h3>New Item</h3>
+			<div data-role="fieldcontain">
+				<label for="name">Name:</label>
+				<input type="text" name="item1CostField" id="item1CostField" value=""  />
+			</div>
+			<div data-role="fieldcontain">
+				<label for="name">Cost:</label>
+				<input type="number" name="item1CostField" id="item1CostField" value=""  />
+			</div>
+
+		<fieldset class="ui-grid-a">
+				<div class="ui-block-a"><button type="submit" data-theme="d">I got this</button></div>
+				<div class="ui-block-b"><button type="submit" data-theme="a">Someone else got this...</button></div>
+	    </fieldset>
+
+		</div>
 	</div>
 
 </div>
@@ -53,10 +79,21 @@
 
 <div data-role="popup" id="rsvpPopup">
 	<p>You are marked as attending.<p>
-</div>
-
-<div id="footer" data-role="footer">
-	<div class="ui-block-b" align="right">
-		<button id="viewMap" data-theme="b">View Map</button>
 	</div>
-</div>
+
+	<div data-role="header" id="header">
+		<fieldset class="ui-grid-a">
+			<div class="ui-block-a" align="left">
+				<button type="submit" id="homeButton" data-theme="a">Home</button>
+			</div>
+			<div class="ui-block-b" align="right">
+				<button type="submit" id="rsvpButton" data-theme="a">RSVP</button>
+			</div>
+		</fieldset>
+	</div><!-- /header -->
+
+	<div id="footer" data-role="footer">
+		<div class="ui-block-b" align="right">
+			<button id="viewMap" data-theme="b">View Map</button>
+		</div>
+	</div>

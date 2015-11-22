@@ -245,12 +245,18 @@ var ShoppingListModule = {
 	},
 
 	bindUIActions: function() {
-		// TODO
-		// need to be able to:
-		// add a new item
-		// claim an item
-		// ?? edit an existing item
-		//
+		// item 1
+		// item 2
+		// item 3
+		// new item
+
+		//case1: click on an unclaimed item
+			// drops open, lets you edit price IF you click "I got this" button to claim
+		//case2: click on claimed item
+			// drops open, doesn't let you edit, shows price and claimant
+			// "user got this"
+		//case3: click new item
+			// drops open, lets you fill in name, price, save new unclaimed item
 
 	},
 
