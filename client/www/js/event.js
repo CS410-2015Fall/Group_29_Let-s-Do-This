@@ -8,7 +8,6 @@ $.getScript("js/global.js", function() {
 		GuestListWidget.init(eventData);
 		CommentWidget.init(eventData);
 
-
 		$("#homeButton").click(function(){
 			window.location="home.html";
 		});
@@ -36,6 +35,7 @@ function loadEventData(e) {
 
 
 var CommentWidget = {
+	// comment = { id:Int, author:String, post_date: YYYY-MM-DDTHH:MM:SS.446000Z, content:String, event:Int }
 	comments: [],
 	userId: -1,
 	eventId: -1,
@@ -43,24 +43,18 @@ var CommentWidget = {
 	init: function(e) {
 		this.userId = LetsDoThis.Session.getInstance().getUserId();
 		this.eventId = e.id;
+		this.comments = e.comments;
 
-	},
-
-	updateUI: function() {
-		var formattedComments = [];
-		$.each( this.comments, function( index, comment ){
-			var h = comment.author.username + " commented at " + convertDate(comment.post_date);
-			var c = new Box(h,comment.content,"");
-			formattedComments.push(c);
-		});
-
-		displayBoxes(formattedComments);
+		this.bindUIActions();
+		this.updateUI();
 	},
 
 	bindUIActions: function() {
+		//TODO make this work
 		$("#commentForm").submit(function(event) {
 			event.preventDefault(); // do not redirect
 			// postComment(eventData);
+
 			function postComment(event, comment) {
 				var date = currentDate();
 				var author = LetsDoThis.Session.getInstance().getUserInfo();
@@ -70,27 +64,38 @@ var CommentWidget = {
 					content: $('textarea#commentTextArea').val()
 				};
 
-	// update UI
-	getAllComments(event.id, function(resp) {
-		resp.push(newComment);
-		var uiFormattedComments = formatComments(resp);
-		createContentBoxes(uiFormattedComments,$("#comments"));
-		$('textarea#commentTextArea').val("");
-	});
-	// var comments = event.comments; // if we get comments from the server here we will update with any other comments posted since we last reloaded from it
-	// comments.push(newComment);
+				getAllComments(event.id, function(resp) {
+					resp.push(newComment);
+					var uiFormattedComments = formatComments(resp);
+					createContentBoxes(uiFormattedComments,$("#comments"));
+					$('textarea#commentTextArea').val("");
+				});
+				// var comments = event.comments; // if we get comments from the server here we will update with any other comments posted since we last reloaded from it
+				// comments.push(newComment);
 
-	// send comment to server
-	addComment(event.id,
-		LetsDoThis.Session.getInstance().getUserId(),
-		date,
-		newComment.content);
-}
-});
+				// send comment to server
+				addComment(event.id,
+					LetsDoThis.Session.getInstance().getUserId(),
+					date,
+					newComment.content);
+			}
+		});
+	},
+
+	updateUI: function() {
+		var formattedComments = [];
+		$.each( this.comments, function( index, comment ){
+			var h = comment.author.username + " commented on " + convertDate(comment.post_date);
+			var c = new Box(h,comment.content,"");
+			formattedComments.push(c);
+			alert(h);
+			alert(c);
+		});
+		displayBoxes(formattedComments,$('#comments'));
 	},
 
 	updateServer: function(comment) {
-
+		//TODO push new comment to the server
 	}
 };
 
@@ -137,7 +142,6 @@ var GuestListWidget = {
 		addGuests(friends,2,this.guestList);
 		addGuests(declines,3,this.guestList);
 
-		// TODO should i move these out of init and call them by hand instead??
 		this.bindUIActions();
 		this.updateUI();
 	},
@@ -222,7 +226,7 @@ var GuestListWidget = {
 		} else if (guest.status == 2) { // uninvited
 
 		}
-
+		// TODO
 		// use some of this? :::::::
 		// function inviteFriends(e,invitedUsers) {
 		// 	inviteToEvent(e.id, invitedUsers, function(){
