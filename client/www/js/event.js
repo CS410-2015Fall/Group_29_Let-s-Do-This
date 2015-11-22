@@ -34,8 +34,6 @@ function loadEventData(e) {
 
 }
 
-
-
 var CommentWidget = {
 	// comment = { id:Int, author:String, post_date: YYYY-MM-DDTHH:MM:SS.446000Z, content:String, event:Int }
 	comments: [],
@@ -52,14 +50,17 @@ var CommentWidget = {
 	},
 
 	bindUIActions: function() {
-		//TODO make this work. CommentWidget's methods apparently aren't within scope to be called from within the submit callback
+		//TODO make this work. CommentWidget's methods apparently aren't within scope to be called from within the submit() callback
+		// can fix by changing html to use a normal button, not a button which is part of a form.
+		// can also fix by redirecting the call through a truly global variable, even something as dumb as CommentWidget.postComment();
+		// but that seems so stupid I can't bring myself to do it unless there really isnt a better way
 		$("#commentForm").submit(function(event) {
 			event.preventDefault(); // do not redirect
-			this.postComment(event);
+			// this.postComment();
 		});
 	},
 
-	postComment: function(event) {
+	postComment: function() {
 			var author = LetsDoThis.Session.getInstance().getUserInfo();
 			var newComment = {
 				author: author,
