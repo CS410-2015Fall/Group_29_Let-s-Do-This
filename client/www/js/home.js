@@ -11,10 +11,10 @@ $(document).ready(function() {
 	// createContentBoxes(tempFakeNotificationData,$("#mainContent"));
 	loadFriends();
 
-	bindUIActions();
+	bindHomeUIActions();
 });
 
-function bindUIActions() {
+function bindHomeUIActions() {
 	$("#notificationsButton").click(function(){
 		// TODO
 		// getNotifications(function(resp) {

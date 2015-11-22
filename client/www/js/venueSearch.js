@@ -18,7 +18,7 @@ $(document).ready(function() {
     }
 
 //Make the yelp call
-    searchYelp(city, radius, term, sort, function(results){
+searchYelp(city, radius, term, sort, function(results){
       //Search yelp runs async so we want to give it the function to run on success
       console.log("results = " + results);
       var formattedResults = parseAndPrint(results);
@@ -28,7 +28,12 @@ $(document).ready(function() {
       //And put the new ones in
       $("#results").append(formattedResults);
     });
+});
+
+  $("#backButton").click(function(){
+    window.location="createEvent.html";
   });
+
 });
 
 //This function will return the selected name and address to the createEvent page
