@@ -1,5 +1,8 @@
 $(document).ready(function() {
-	loadValuesFromStorage();
+	if(localStorage.getItem("arrivingFromYelp") != 0){
+		loadValuesFromStorage();
+		localStorage.setItem("arrivingFromYelp", 0);
+	}
 
 	//Get scripts for server interaction
 	$.getScript("js/user/session.js", function(){
@@ -89,7 +92,6 @@ function loadValuesFromStorage(){
 		document.getElementById('locationField').value =
 		localStorage.getItem("yelpLocationName") + ": " +
 		localStorage.getItem("yelpLocationAddress");
-		localStorage.setItem("arrivingFromYelp", 0);
 	} else {
 		document.getElementById('locationField').value =
 		localStorage.getItem("currentEventLocation");

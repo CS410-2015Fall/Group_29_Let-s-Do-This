@@ -31,6 +31,7 @@ searchYelp(city, radius, term, sort, function(results){
 });
 
   $("#backButton").click(function(){
+    localStorage.setItem("arrivingFromYelp", -1);
     window.location="createEvent.html";
   });
 
