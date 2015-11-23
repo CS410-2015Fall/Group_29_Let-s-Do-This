@@ -51,11 +51,12 @@ function addShoppingListItem(eventId, display_name, quantity, cost, supplier, re
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
-		data: JSON.stringify(postData), 
+		data: JSON.stringify(postData),
 		contentType: 'application/json',
 		dataType: 'json',
-		success: function () {
+		success: function (resp) {
 			console.log("Item added");
+			callback(resp);
 		},
 		error: function(e) {
             console.log(e);

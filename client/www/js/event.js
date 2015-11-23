@@ -246,26 +246,26 @@ var ShoppingListModule = {
 			str += '<div data-role="collapsible"';
 			if (!v.ready) {
 				str += ' data-collapsed-icon="delete"'
-					+ ' data-expanded-icon="delete"';
+				+ ' data-expanded-icon="delete"';
 			}
 			str += '>';
 			str += '<h3>' + v.display_name + '</h3>';
 			if (v.ready) {
 				str += '<p>Cost: $' + v.cost + '</p>'
-					+ '<p>' + v.supplier.username + ' got this</p>';
+				+ '<p>' + v.supplier.username + ' got this</p>';
 			} else {
 				str += '<div data-role="fieldcontain">'
-					+ '<label for="name">Cost:</label>'
-					+ '<input type="number" '
-					+ 'name="' + v.id + '" '
-					+ 'id="' + v.id + '" '
-					+ 'value="' + v.cost + '" />'
-					+ '</div>'
-					+ '<button type="submit" '
-					+ 'id="' + v.id + '" '
-					+ 'data-theme="a">'
-					+ 'I got this'
-					+ '</button>';
+				+ '<label for="name">Cost:</label>'
+				+ '<input type="number" '
+				+ 'name="' + v.id + '" '
+				+ 'id="' + v.id + '" '
+				+ 'value="' + v.cost + '" />'
+				+ '</div>'
+				+ '<button type="submit" '
+				+ 'id="' + v.id + '" '
+				+ 'data-theme="a">'
+				+ 'I got this'
+				+ '</button>';
 			}
 			str += '</div>';
 		});
@@ -279,17 +279,12 @@ var ShoppingListModule = {
 		var cost = $('#newItemCost').val();
 		var yourself = LetsDoThis.Session.getInstance().getUserInfo();
 
-		//temp
-		this.shoppingList[99] = {id:99,display_name:name, cost:cost, supplier:yourself, ready:isClaimed};
 		$('#newItemName').val("");
 		$('#newItemCost').val("");
-
-		var uiCallback = this.updateUI();
-		// we live in a dystopian nightmare world where javascript has such dumb rules about scope that a method of this very object can't be accessed from within a callback function unless we make a reference to it within this method. This is the same javascript which makes everything global by default, in which you have to actively try to not make everything accessible from everywhere.
 		// Sometimes when I'm writing Javascript I want to throw up my hands and say "this is bullshit!" but I can never remember what "this" refers to.
 		addShoppingListItem(this.eventId, name, 1, cost, yourself.id, isClaimed, function(resp){
-			this.shoppingList[resp[0].id] = {id:resp[0].id,display_name:name, cost:cost, supplier:yourself, ready:isClaimed};
-			uiCallback();
+			ShoppingListModule.shoppingList[resp[0].id] = resp[0];
+			ShoppingListModule.updateUI();
 		});
 	},
 
@@ -299,16 +294,7 @@ var ShoppingListModule = {
 		this.shoppingList[itemId].cost = cost;
 		this.shoppingList[itemId].supplier = LetsDoThis.Session.getInstance().getUserInfo();
 		this.updateUI();
-		this.updateServerClaimItem(this.shoppingList[itemId]);
-	},
-
-	updateServerNewItem: function(item) {
-		addShoppingListItem(this.eventId, item.display_name, 1, item.cost, item.supplier.id, item.ready, function(resp){
-			alert("if this: " + resp.id + " isnt undefined then this worked.");
-		});
-	},
-
-	updateServerClaimItem: function(item) {
+		var item = this.shoppingList[itemId];
 		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready);
 	}
 };
