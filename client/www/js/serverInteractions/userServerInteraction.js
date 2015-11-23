@@ -43,9 +43,7 @@ function getAllUsers(callback){
 	});
 }
 
-function createUser(username, password, email, phone){
-	// new users start off with no friends :(
-	// var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+function createUser(username, password, email, phone, callback){
 	
     var postData = {
         "username": username,
@@ -56,15 +54,13 @@ function createUser(username, password, email, phone){
     
 	$.ajax({
 		type: 'POST',
-		url: "http://159.203.12.88/api/users",
+		url: "http://159.203.12.88/api/users/new/",
 		dataType: 'json',
         contentType: 'application/json',
-		//beforeSend: function(xhr) {
-		//		xhr.setRequestHeader("Authorization", "JWT " + authToken);
-		//},
         data: JSON.stringify(postData),
 		success: function (resp) {
 			console.log("user created");
+			callback(resp);
 		},
 		error: function(e) {
 			console.log(e);
@@ -72,17 +68,20 @@ function createUser(username, password, email, phone){
 	});
 }
 
-function updateUserInfo(userId, username, password, email, phone, callback){
+function updateUserInfo(userId, username, email, phone, callback){
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
     var userUrl = "http://159.203.12.88/api/users/"+userId+"/";
     
     var putData = {
         "username": username,
-        "password": password,
         "email": email,
 		"phone": phone
     }
-    
+	console.log("userId is "+userId);
+    console.log("username is "+username);
+	console.log("email is "+email);
+	console.log("phone is "+phone);
+	
 	$.ajax({
 		type: 'PUT',
 		url: userUrl,
@@ -97,6 +96,7 @@ function updateUserInfo(userId, username, password, email, phone, callback){
 			callback(resp);
 		},
 		error: function(e) {
+			console.log("Did not update user info");
 			console.log(e);
 		}
 	});

@@ -9,32 +9,30 @@
 
 	<link rel="stylesheet" type="text/css" href="css/index.css">
 	<link rel="stylesheet" type="text/css" href="css/home.css">
-
-	<!-- jQuery mobile stuff, added by Jonathan -->
 	<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+	
 	<script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
-	<script src="js/user/login-controller.js"></script>
-    <script src="js/user/session.js"></script>
-	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/serverInteractions/userServerInteraction.js"></script>
+	<script type="text/javascript" src="js/createUser.js"></script>
 	
 
-	<title>Login</title>
+	<title>Create User</title>
 </head>
 <body>
 	<div data-role="page">
-
-		<div data-role="content" id="mainContent" class="page-login">
-			<div align="center">
-				<h1>Let's Do This</h1>
+		<div data-role="content" id="mainContent" class="page-CreateUser">
+			<div>
+				<h1>Create User</h1>
 				Username:<br>
 				<input type='text' id='username'><br>
 				Password:<br>
 				<input type='password' id='password'><br>
-				<input type='submit' id="btn-submit" value="Login" class="ui-btn ui-btn-inline ui-corner-all">
-			</div>
-			<div align="center">
-				New user? <a href="createUser.html">Create an account.</a>
+				Email:<br>
+				<input type='email' id='email'><br>
+				Phone Number:<br>
+				<input type='text' id='phone'><br>
+				<input type='submit' id="btn-submit" value="Create User" class="ui-btn ui-btn-inline ui-corner-all">
 			</div>
 		</div>
 	</div>
