@@ -113,14 +113,12 @@ function getEvent(eventId, callback){
 		}
 	});
 }
-function inviteToEvent(eventId, userList, callback) {
 
-	console.log("prepping to invite a user to an event");
-	console.log("eventId is " + eventId);
+function inviteToEvent(eventId, userList, callback) {
 
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 
-	var postData = {
+	var putData = {
 		"invites": userList
 	}
 
@@ -132,7 +130,7 @@ function inviteToEvent(eventId, userList, callback) {
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
-		data: JSON.stringify(postData),
+		data: JSON.stringify(putData),
 		contentType: 'application/json',
 		dataType: 'json',
 		success: function (resp) {
@@ -151,13 +149,11 @@ function rsvpToEvent(eventId, rsvpStatus, callback){
 	// - "accepts"
 	// - "declines"
 
-	console.log('Prepping to RSVP to event.');
-
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	var userId = LetsDoThis.Session.getInstance().getUserId();
 
 	var userList = [userId.toString()]; // has to be a list
-	var postData = {
+	var putData = {
 		rsvpStatus: userList
 	};
 
@@ -169,7 +165,7 @@ function rsvpToEvent(eventId, rsvpStatus, callback){
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
-		data: JSON.stringify(postData),
+		data: JSON.stringify(putData),
 		contentType: 'application/json',
 		dataType: 'json',
 		success: function (resp) {
@@ -178,6 +174,87 @@ function rsvpToEvent(eventId, rsvpStatus, callback){
 		},
 		error: function(e) {
 			console.log("Failed to RSVP: ");
+			console.log(e);
+		}
+	});
+}
+
+function removeHost(eventId, hostId) {
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+	// console.log('Auth tok' + authToken);
+	var postData = {
+		"hosts" : hostId,
+	};
+	
+	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/hosts/remove/";
+
+	$.ajax({
+		type: 'POST',
+		url: eventUrl,
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
+		},
+		data: JSON.stringify(postData), 
+		contentType: 'application/json',
+		dataType: 'json',
+		success: function (resp) {
+			console.log("removed host of event");
+			callback(resp);
+		},
+		error: function(e) {
+			console.log(e);
+		}
+	});
+}
+
+function editEvent(eventId, display_name, start_date, end_date, budget, location, callback){
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+
+	var putData = {
+		"display_name": display_name,
+		"start_date": start_date,
+		"end_date": end_date,
+		"budget": budget,
+		"location": location
+	};
+
+	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/";
+
+	$.ajax({
+		type: 'PUT',
+		url: eventUrl,
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
+		},
+		data: JSON.stringify(putData),
+		contentType: 'application/json',
+		dataType: 'json',
+		success: function (resp) {
+			console.log("Edited event");
+			callback();
+		},
+		error: function(e) {
+			console.log(e);
+		}
+	});
+}
+
+function deleteEvent(eventId,callback) {
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+    var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/";
+    
+	$.ajax({
+		type: 'DELETE',
+		url: eventUrl,
+		dataType: 'json',
+		beforeSend: function(xhr) {
+				xhr.setRequestHeader("Authorization", "JWT " + authToken);
+		},
+		success: function (resp) {
+			console.log("Deleted event");
+			callback(resp);
+		},
+		error: function(e) {
 			console.log(e);
 		}
 	});

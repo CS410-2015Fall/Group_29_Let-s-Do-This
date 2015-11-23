@@ -32,6 +32,7 @@ function getShoppingList(eventId, callback) {
 function addShoppingListItem(eventId, display_name, quantity, cost, supplier, ready) {
     // adds items to existing shopping list
     // eventId, display_name are mandatory
+    // submit list of items
     
 	var shoppingListUrl = "http://159.203.12.88/api/events/"+eventId+"/shoppinglist/";
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
@@ -65,6 +66,7 @@ function addShoppingListItem(eventId, display_name, quantity, cost, supplier, re
 function editShoppingList(eventId, display_name, quantity, cost, supplier, ready) {
     // edits existing shopping list items
     // eventId, display_name are mandatory
+    // can edit multiple items at once
 	
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	
@@ -101,6 +103,7 @@ function editShoppingList(eventId, display_name, quantity, cost, supplier, ready
 function removeShoppingList(eventId, itemId) {
     // POST
     // eventId, itemId are mandatory
+    // deletes shopping list item(s) from list
     var shoppingListUrl = "http://159.203.12.88/api/events/"+eventId+"/shoppinglist/remove/";
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
     
