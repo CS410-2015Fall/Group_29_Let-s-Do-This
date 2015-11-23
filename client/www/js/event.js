@@ -26,6 +26,7 @@ $.getScript("js/global.js", function() {
 			window.location="home.html";
 		});
 
+
 		$("#viewMap").click(function(){
 			// TODO Save the location, and name, into the session storage so the map script can pull it up
 			window.location="map.html";
@@ -212,7 +213,7 @@ var GuestListModule = {
 		} else if (guest.status == 1) { // invited
 			inviteToEvent(this.eventId, [guest.id], function() {});
 		} else if (guest.status == 2) { // uninvited
-			alert("TODO implemented uninviting");
+			alert("TODO implement uninviting");
 		}
 	}
 };
@@ -229,6 +230,7 @@ var ShoppingListModule = {
 		this.shoppingList = e.shopping_list.items;
 
 		this.updateUI();
+		this.bindUIActions();
 	},
 
 	updateUI: function() {
@@ -266,10 +268,18 @@ var ShoppingListModule = {
 	},
 
 	bindUIActions: function() {
-		// item 1
-		// item 2
-		// item 3
-		// new item
+		$("#newClaimedItemButton").click(function() {
+			var name = $('#newItemName').val();
+			var cost = $('#newItemCost').val();
+			alert(name + ": " + cost);
+		});
+
+		$("#newUnclaimedItemButton").click(function() {
+			var name = $('#newItemName').val();
+			var cost = $('#newItemCost').val();
+			alert(name + ": " + cost);
+		});
+		// create new item
 
 		//case1: click on an unclaimed item
 			// drops open, lets you edit price IF you click "I got this" button to claim
