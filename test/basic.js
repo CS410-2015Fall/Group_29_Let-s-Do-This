@@ -1,17 +1,26 @@
-// For describe, it and before/after see:
-// http://samwize.com/2014/02/08/a-guide-to-mochas-describe-it-and-setup-hooks/
-//var assert = require('chai').assert;
-
-//The most basic of tests
-//describe('basic tests', function(){
-//  assert.equal(1+1, 2);
-//  assert.equal(true, 1<2);
-//})
-
-describe('testing date formatting', function () {
-  var formattedDate = formatTime("2015-11-17", "20:05");
+describe('testing that this runs', function () {
+  var number = 1+1;
   
-  it('Should have a T between date and time', function(){
-    expect(formattedDate).toBe("2015-11-17T20:05");
+  it('should be equal', function(){
+    expect(number).toBe(2);
+  })
+})
+
+describe('testing retrieving user from database', function (){
+  var request;
+  var callback;
+  var value;
+  beforeEach(function() {
+    jasmine.Ajax.install();
+    callback = jasmine.createSpy('callback');
+    var toCreate = new userCreation();
+    toCreate.createUser("Stampy","","bawoo@test.com","6045555555", callback);
+  
+    request = jasmine.Ajax.requests.mostRecent();
+    console.log("Before each request is :" +request);
   });
-});
+  it('should be a POST request', function(){
+    console.log("Regular request is :"+request);
+    expect(request.method).toBe("POST");
+  })
+})

@@ -21,6 +21,7 @@
   "homepage": "https://github.com/CS410-2015Fall/Group_29_Let-s-Do-This#readme",
   "devDependencies": {
     "jasmine-core": "^2.3.4",
+    "jasmine-node": "^1.14.5",
     "karma": "^0.13.15",
     "karma-firefox-launcher": "^0.1.7",
     "karma-jasmine": "^0.3.6"

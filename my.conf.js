@@ -12,7 +12,6 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-
     // list of files / patterns to load in the browser
     files: [
       'client/www/js/jquery/*.js',
@@ -20,6 +19,7 @@ module.exports = function(config) {
       'client/www/js/user/*.js',
       'client/www/js/yelpScripts/*.js',
       'client/www/js/*.js',
+      'test/javascripts/helpers/mock-ajax.js',
       'test/*.js'
     ],
 
@@ -61,7 +61,6 @@ module.exports = function(config) {
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['Firefox'],
-
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
