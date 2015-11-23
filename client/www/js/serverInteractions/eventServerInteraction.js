@@ -147,6 +147,36 @@ function inviteToEvent(eventId, userList, callback) {
 	});
 }
 
+function removeFromInvite(eventId, inviteIds) {
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+	// inviteIds is a list of userIds of users
+
+	var postData = {
+		"invites" : inviteIds,
+	};
+
+	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/invites/remove/";
+
+	$.ajax({
+		type: 'POST',
+		url: eventUrl,
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
+		},
+		data: JSON.stringify(postData),
+		contentType: 'application/json',
+		dataType: 'json',
+		success: function (resp) {
+			console.log("removed invited users");
+			// callback(resp);
+		},
+		error: function(e) {
+			console.log(e);
+		}
+	});
+}
+
+
 function rsvpToEvent(eventId, rsvpStatus, callback){
 	// rsvpStatus is a bool:
 	// - true if RSVPing to accept
@@ -204,7 +234,7 @@ function removeHost(eventId, hostId) {
 		dataType: 'json',
 		success: function (resp) {
 			console.log("removed host of event");
-			callback(resp);
+			// callback(resp);
 		},
 		error: function(e) {
 			console.log(e);

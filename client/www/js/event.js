@@ -30,7 +30,7 @@ $(document).ready(function() {
 	// Shopping list
 	ShoppingListModule.init(eventData,$("#shoppingList"));
 	$("#newClaimedItemButton").click(function() {
-		ShoppingListModule.newItem(true$('#newItemName'),$('#newItemCost'));
+		ShoppingListModule.newItem(true,$('#newItemName'),$('#newItemCost'));
 	});
 	$("#newUnclaimedItemButton").click(function() {
 		ShoppingListModule.newItem(false,$('#newItemName'),$('#newItemCost'));
@@ -182,7 +182,9 @@ var GuestListModule = {
 	handleRsvpButton: function(rsvpButtonDiv,rsvpPopupDiv) {
 		var yourself = this.guestList[this.userId];
 		yourself.status = 0;
+
 		rsvpToEvent(this.eventId, true, function(){}); // update server
+		removeFromInvite(this.eventId,[this.userId]);
 
 		rsvpButtonDiv.attr('disabled', 'true');
 		rsvpPopupDiv.popup( "open" )
@@ -193,33 +195,32 @@ var GuestListModule = {
 		// get checkbox data and compare it to guestList
 		var ancestor = document.getElementById('friendsPopup'),
 		descendents = ancestor.getElementsByTagName('input');
-		var i, e;
+		var i, e, invites = [], removes = [];
 		for (i = 0; i < descendents.length; ++i) {
 			var guest = this.guestList[descendents[i].id];
 			if (descendents[i].checked) {
 				if (guest.status == 2) { // uninvited -> invited
-					guest.status = 1;
-					this.updateServer(guest);
+					invites.push(guest.id);
+					guest.status = 1
 				}
 			} else {
 				if (guest.status == 1) { // invited -> uninvited
 					guest.status = 2;
-					this.updateServer(guest)
+					removes.push(guest.id);
 				}
 			}
 		}
 		friendsPopupDiv.popup("close");
 		this.updateUI();
-	},
 
-	updateServer: function(guest) {
-		//TODO figure out how the server calls are supposed to work, and why this isn't working
-		if (guest.status == 0) { // accepted
-			rsvpToEvent(this.eventId, "accepts", function(){});
-		} else if (guest.status == 1) { // invited
-			inviteToEvent(this.eventId, [guest.id], function() {});
-		} else if (guest.status == 2) { // uninvited
-			alert("TODO implement uninviting");
+		// update server
+		if (removes.length > 0) {
+			removeFromInvite(this.eventId,removes);
+			alert("removed");
+		}
+		if (invites.length > 0) {
+			inviteToEvent(this.eventId, invites, function() {});
+			alert("invited");
 		}
 	}
 };
