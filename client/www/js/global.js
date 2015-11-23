@@ -3,6 +3,8 @@ $.getScript("js/user/session.js");
 $.getScript("js/serverInteractions/eventServerInteraction.js");
 $.getScript("js/serverInteractions/commentServerInteraction.js");
 $.getScript("js/serverInteractions/userServerInteraction.js");
+$.getScript("js/serverInteractions/shoppinglistServerInteraction.js");
+
 
 //UI
 function Box(head, body, id) {

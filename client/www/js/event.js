@@ -4,9 +4,8 @@ $.getScript("js/global.js", function() {
 		console.log(eventData);
 
 		loadEventData(eventData);
-		var userId = LetsDoThis.Session.getInstance().getUserId();
 
-		GuestListModule.init(userId,eventData);
+		GuestListModule.init(eventData);
 		$("#inviteButton").click(function(){
 			GuestListModule.handleInviteButton();
 		});
@@ -14,13 +13,13 @@ $.getScript("js/global.js", function() {
 			GuestListModule.handleRsvpButton();
 		});
 
-		CommentModule.init(userId,eventData);
+		CommentModule.init(eventData);
 		$("#commentForm").submit(function(event) {
 			event.preventDefault(); // do not redirect
 			CommentModule.postComment();
 		});
 
-		ShoppingListModule.init(userId,eventData);
+		ShoppingListModule.init(eventData);
 		$("#newClaimedItemButton").click(function() {
 			ShoppingListModule.newItem(true);
 		});
@@ -53,11 +52,9 @@ function loadEventData(e) {
 var CommentModule = {
 	// comment = { id:Int, author:String, post_date: YYYY-MM-DDTHH:MM:SS.446000Z, content:String, event:Int }
 	comments: [],
-	userId: -1,
 	eventId: -1,
 
-	init: function(userId,e) {
-		this.userId = userId;
+	init: function(e) {
 		this.eventId = e.id;
 		this.comments = e.comments;
 
@@ -65,13 +62,11 @@ var CommentModule = {
 	},
 
 	postComment: function() {
-		var author = LetsDoThis.Session.getInstance().getUserInfo();
 		var newComment = {
-			author: author,
+			author: LetsDoThis.Session.getInstance().getUserInfo(),
 			post_date: currentDate(),
 			content: $('textarea#commentTextArea').val()
 		};
-		// new comments, unlike comments from the server, don't have ids or eventIds, but we don't really care because we don't actually use those.
 		this.comments.push(newComment);
 
 		$('textarea#commentTextArea').val("");
@@ -91,7 +86,8 @@ var CommentModule = {
 	},
 
 	updateServer: function(comment) {
-		addComment(this.eventId, this.userId, comment.post_date, comment.content);
+		// post new comment to server
+		addComment(this.eventId, LetsDoThis.Session.getInstance().getUserId(), comment.post_date, comment.content);
 	}
 };
 
@@ -101,14 +97,13 @@ var GuestListModule = {
 	// status 1 == invited
 	// status 2 == uninvited
 	// status 3 == declined
-	// guests are indexed by id, like an hashmap
-	// eg this.guestList[4] == {id:4, ...}
+	// gustList is a dict, not an array, guests are indexed by id
 	guestList: {},
 	userId: -1,
 	eventId: -1,
 
-	init: function(userId,e) {
-		this.userId = userId;
+	init: function(e) {
+		this.userId = LetsDoThis.Session.getInstance().getUserId();
 		this.eventId = e.id;
 
 		var invites = e.invites;
@@ -217,7 +212,6 @@ var GuestListModule = {
 	updateServer: function(guest) {
 		//TODO figure out how the server calls are supposed to work, and why this isn't working
 		if (guest.status == 0) { // accepted
-			// can only RSVP yourself
 			rsvpToEvent(this.eventId, "accepts", function(){});
 		} else if (guest.status == 1) { // invited
 			inviteToEvent(this.eventId, [guest.id], function() {});
@@ -231,11 +225,9 @@ var ShoppingListModule = {
 	// shoppingItem = {id:Int, display_name:String, cost:Float, supplier:User, ready:Bool}
 	// choppinglist is a dict, not an array
 	shoppingList: {},
-	userId: -1,
 	eventId: -1,
 
-	init: function(userId,e) {
-		this.userId = userId;
+	init: function(e) {
 		this.eventId = e.id;
 
 		var esli = e.shopping_list.items;
@@ -285,9 +277,20 @@ var ShoppingListModule = {
 	newItem: function(isClaimed) {
 		var name = $('#newItemName').val();
 		var cost = $('#newItemCost').val();
-		alert(name + ": " + cost);
-		this.updateUI();
-		//TODO do this.
+		var yourself = LetsDoThis.Session.getInstance().getUserInfo();
+
+		//temp
+		this.shoppingList[99] = {id:99,display_name:name, cost:cost, supplier:yourself, ready:isClaimed};
+		$('#newItemName').val("");
+		$('#newItemCost').val("");
+
+		var uiCallback = this.updateUI();
+		// we live in a dystopian nightmare world where javascript has such dumb rules about scope that a method of this very object can't be accessed from within a callback function unless we make a reference to it within this method. This is the same javascript which makes everything global by default, in which you have to actively try to not make everything accessible from everywhere.
+		// Sometimes when I'm writing Javascript I want to throw up my hands and say "this is bullshit!" but I can never remember what "this" refers to.
+		addShoppingListItem(this.eventId, name, 1, cost, yourself.id, isClaimed, function(resp){
+			this.shoppingList[resp[0].id] = {id:resp[0].id,display_name:name, cost:cost, supplier:yourself, ready:isClaimed};
+			uiCallback();
+		});
 	},
 
 	claimItem: function(itemId) {
@@ -296,13 +299,16 @@ var ShoppingListModule = {
 		this.shoppingList[itemId].cost = cost;
 		this.shoppingList[itemId].supplier = LetsDoThis.Session.getInstance().getUserInfo();
 		this.updateUI();
+		this.updateServerClaimItem(this.shoppingList[itemId]);
 	},
 
-	updateServer: function() {
-		// TODO
-		// addShoppingListItem(eventId, display_name, quantity, cost, supplier, ready);
-		// editShoppingList(eventId, display_name, quantity, cost, supplier, ready);
-		// editShoppingListItem(eventId, itemId, display_name, quantity, cost, supplier, ready);
-		// removeShoppingList(eventId, itemId);
+	updateServerNewItem: function(item) {
+		addShoppingListItem(this.eventId, item.display_name, 1, item.cost, item.supplier.id, item.ready, function(resp){
+			alert("if this: " + resp.id + " isnt undefined then this worked.");
+		});
+	},
+
+	updateServerClaimItem: function(item) {
+		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready);
 	}
 };

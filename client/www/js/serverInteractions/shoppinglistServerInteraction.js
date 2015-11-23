@@ -29,21 +29,21 @@ function getShoppingList(eventId, callback) {
 }
 
 
-function addShoppingListItem(eventId, display_name, quantity, cost, supplier, ready) {
+function addShoppingListItem(eventId, display_name, quantity, cost, supplier, ready, callback) {
     // adds items to existing shopping list
     // eventId, display_name are mandatory
     // submit list of items
-    
+
 	var shoppingListUrl = "http://159.203.12.88/api/events/"+eventId+"/shoppinglist/";
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-    
-	var postData = {
-		"display_name": name,
+
+	var postData = [{
+		"display_name": display_name,
 		"quantity": quantity,
 		"cost": cost,
 		"supplier" : supplier,
 		"ready" : ready
-	};
+	}];
 
 	$.ajax({
 		type: 'POST',
