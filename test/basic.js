@@ -13,8 +13,7 @@ describe('testing retrieving user from database', function (){
   beforeEach(function() {
     jasmine.Ajax.install();
     callback = jasmine.createSpy('callback');
-    var toCreate = new userCreation();
-    toCreate.createUser("Stampy","","bawoo@test.com","6045555555", callback);
+    createUser("Stampy","","bawoo@test.com","6045555555", callback);
   
     request = jasmine.Ajax.requests.mostRecent();
     console.log("Before each request is :" +request);
