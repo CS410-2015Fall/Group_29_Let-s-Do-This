@@ -219,18 +219,24 @@ var GuestListModule = {
 };
 
 var ShoppingListModule = {
-	// shoppingItem = {id:Int, display_name:String, quantity:Float, cost:Float, supplier:User, ready:Bool, userId:Int}
-	shoppingList: [],
+	// shoppingItem = {id:Int, display_name:String, cost:Float, supplier:User, ready:Bool}
+	// as guestList, choppinglist is kind of a hashmap
+	shoppingList: {},
 	userId: -1,
 	eventId: -1,
 
 	init: function(userId,e) {
 		this.userId = userId;
 		this.eventId = e.id;
-		this.shoppingList = e.shopping_list.items;
+
+		var esli = e.shopping_list.items;
+		for (i = 0; i < esli.length; i++) {
+			var item = esli[i];
+			this.shoppingList[item.id] = {id:item.id,display_name:item.display_name,cost:item.cost,supplier:item.supplier,ready:item.ready};
+		}
 
 		this.updateUI();
-		this.bindUIActions();
+		this.bindUIActions(this.shoppingList, this.updateUI);
 	},
 
 	updateUI: function() {
@@ -239,7 +245,8 @@ var ShoppingListModule = {
 		$.each(this.shoppingList,function(i,v){
 			str += '<div data-role="collapsible"';
 			if (!v.ready) {
-				str += ' data-collapsed-icon="delete"';
+				str += ' data-collapsed-icon="delete"'
+					+ ' data-expanded-icon="delete"';
 			}
 			str += '>';
 			str += '<h3>' + v.display_name + '</h3>';
@@ -267,19 +274,30 @@ var ShoppingListModule = {
 		$("#shoppingList").trigger('create');
 	},
 
-	bindUIActions: function() {
+	bindUIActions: function(shoppingList, updateUI) {
+		// javascript's scope is so dumb! I have to pass the shoppingList and updateUI method to this method as args because it can't see them from within the click handlers? what's the point of even putting things into an object together if they can't access their data anyway
+		// 'Sometimes when I'm writing Javascript I want to throw up my hands and say "this is bullshit!" but I can never remember what "this" refers to.'
 		$("#newClaimedItemButton").click(function() {
 			var name = $('#newItemName').val();
 			var cost = $('#newItemCost').val();
 			alert(name + ": " + cost);
+			updateUI();
 		});
 
 		$("#newUnclaimedItemButton").click(function() {
 			var name = $('#newItemName').val();
 			var cost = $('#newItemCost').val();
 			alert(name + ": " + cost);
+			updateUI();
 		});
 		// create new item
+		$(document).on("click",'#shoppingList button',function(e) {
+			var itemId = $(this).attr("id");
+			alert(itemId);
+			shoppingList[itemId].ready = 'true';
+			alert(shoppingList[itemId].display_name);
+			// updateUI();
+		});
 
 		//case1: click on an unclaimed item
 			// drops open, lets you edit price IF you click "I got this" button to claim
@@ -290,7 +308,12 @@ var ShoppingListModule = {
 			// drops open, lets you fill in name, price
 				// 3.1: create claimed item (must fill in name, cost)
 				// 3.2: create unclaimed item (must fill in name)
+	},
 
+	claimItem: function() {
+		$(document).on("click",'#shoppingList button',function(e) {
+			alert($(this).attr("id"));
+		});
 	},
 
 	updateServer: function() {
