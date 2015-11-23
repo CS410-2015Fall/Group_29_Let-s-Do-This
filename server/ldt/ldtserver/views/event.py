@@ -374,3 +374,31 @@ def insert_hosts(event=None, newhosts=None):
         if n not in hosts:
             hosts.append(n)
     return hosts
+
+
+@api_view(['POST'])
+def event_invites_remove(request, pk):
+    """
+    Remove invite(s) from a specific event
+
+    POST request data must be formatted as follows:
+    { "invites": [1, 4] }
+    """
+    try:
+        event = Event.objects.get(pk=pk)
+        invites = event.get_invites()
+    except Event.DoesNotExist:
+        return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
+
+    data = {}
+    data.update({"display_name": event.display_name})
+
+    newinvites = [i for i in invites if i not in request.data["invites"]]
+    data.update({"invites": newinvites})
+
+    serializer = EventSerializer(event, data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
