@@ -21,11 +21,21 @@ $.getScript("js/global.js", function() {
 		});
 
 		ShoppingListModule.init(userId,eventData);
+		$("#newClaimedItemButton").click(function() {
+			ShoppingListModule.newItem(true);
+		});
+		$("#newUnclaimedItemButton").click(function() {
+			ShoppingListModule.newItem(false);
+		});
+		$(document).on("click",'#shoppingList button',function(e) {
+			var itemId = $(this).attr("id");
+			var cost = $('input#' + itemId).val();
+			ShoppingListModule.claimItem(itemId,cost);
+		});
 
 		$("#homeButton").click(function(){
 			window.location="home.html";
 		});
-
 
 		$("#viewMap").click(function(){
 			// TODO Save the location, and name, into the session storage so the map script can pull it up
@@ -236,7 +246,6 @@ var ShoppingListModule = {
 		}
 
 		this.updateUI();
-		this.bindUIActions(this.shoppingList, this.updateUI);
 	},
 
 	updateUI: function() {
@@ -274,47 +283,56 @@ var ShoppingListModule = {
 		$("#shoppingList").trigger('create');
 	},
 
-	bindUIActions: function(shoppingList, updateUI) {
-		// javascript's scope is so dumb! I have to pass the shoppingList and updateUI method to this method as args because it can't see them from within the click handlers? what's the point of even putting things into an object together if they can't access their data anyway
-		// 'Sometimes when I'm writing Javascript I want to throw up my hands and say "this is bullshit!" but I can never remember what "this" refers to.'
-		$("#newClaimedItemButton").click(function() {
-			var name = $('#newItemName').val();
-			var cost = $('#newItemCost').val();
-			alert(name + ": " + cost);
-			updateUI();
-		});
+	newItem: function(isClaimed) {
+		var name = $('#newItemName').val();
+		var cost = $('#newItemCost').val();
+		alert(name + ": " + cost);
+		this.updateUI();
 
-		$("#newUnclaimedItemButton").click(function() {
-			var name = $('#newItemName').val();
-			var cost = $('#newItemCost').val();
-			alert(name + ": " + cost);
-			updateUI();
-		});
-		// create new item
-		$(document).on("click",'#shoppingList button',function(e) {
-			var itemId = $(this).attr("id");
-			alert(itemId);
-			shoppingList[itemId].ready = 'true';
-			alert(shoppingList[itemId].display_name);
-			// updateUI();
-		});
-
-		//case1: click on an unclaimed item
-			// drops open, lets you edit price IF you click "I got this" button to claim
-		//case2: click on claimed item
-			// drops open, doesn't let you edit, shows price and claimant
-			// "user got this"
-		//case3: click new item
-			// drops open, lets you fill in name, price
-				// 3.1: create claimed item (must fill in name, cost)
-				// 3.2: create unclaimed item (must fill in name)
 	},
 
-	claimItem: function() {
-		$(document).on("click",'#shoppingList button',function(e) {
-			alert($(this).attr("id"));
-		});
+	claimItem: function(itemId,cost) {
+		this.shoppingList[itemId].ready = true;
+		this.shoppingList[itemId].cost = cost;
+		this.shoppingList[itemId].supplier = LetsDoThis.Session.getInstance().getUserInfo();
+		this.updateUI();
 	},
+
+	// bindUIActions: function(shoppingList, updateUI) {
+	// 	// javascript's scope is so dumb! I have to pass the shoppingList and updateUI method to this method as args because it can't see them from within the click handlers? what's the point of even putting things into an object together if they can't access their data anyway
+	// 	// 'Sometimes when I'm writing Javascript I want to throw up my hands and say "this is bullshit!" but I can never remember what "this" refers to.'
+	// 	$("#newClaimedItemButton").click(function() {
+	// 		var name = $('#newItemName').val();
+	// 		var cost = $('#newItemCost').val();
+	// 		alert(name + ": " + cost);
+	// 		updateUI();
+	// 	});
+
+	// 	$("#newUnclaimedItemButton").click(function() {
+	// 		var name = $('#newItemName').val();
+	// 		var cost = $('#newItemCost').val();
+	// 		alert(name + ": " + cost);
+	// 		updateUI();
+	// 	});
+	// 	// create new item
+	// 	$(document).on("click",'#shoppingList button',function(e) {
+	// 		var itemId = $(this).attr("id");
+	// 		alert(itemId);
+	// 		shoppingList[itemId].ready = true;
+	// 		alert(shoppingList[itemId].display_name);
+	// 		// updateUI();
+	// 	});
+
+	// 	//case1: click on an unclaimed item
+	// 		// drops open, lets you edit price IF you click "I got this" button to claim
+	// 	//case2: click on claimed item
+	// 		// drops open, doesn't let you edit, shows price and claimant
+	// 		// "user got this"
+	// 	//case3: click new item
+	// 		// drops open, lets you fill in name, price
+	// 			// 3.1: create claimed item (must fill in name, cost)
+	// 			// 3.2: create unclaimed item (must fill in name)
+	// },
 
 	updateServer: function() {
 		// TODO
