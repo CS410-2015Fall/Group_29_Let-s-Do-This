@@ -1,8 +1,6 @@
 $(document).ready(function() {
-	//Did we arrive here from venueSearch?
-	if(localStorage.getItem("arrivingFromYelp") == 1){
-		//We just came from the venueSearch, so there may be values we wish to reload
-		reloadValues();
+	if(localStorage.getItem("arrivingFromYelp") != 0){
+		loadValuesFromStorage();
 		localStorage.setItem("arrivingFromYelp", 0);
 	}
 
@@ -11,42 +9,51 @@ $(document).ready(function() {
 		console.log(LetsDoThis.Session.getInstance().getAuthToken());
 	});
 	$.getScript("js/serverInteractions/eventServerInteraction.js"); //Event-Server
-	$("#homeButton").click(function(){
+
+	bindCreateEventUIActions();
+});
+
+function bindCreateEventUIActions() {
+		$("#homeButton").click(function(){
 		window.location="home.html";
 	});
 
 	$("#findLocationButton").click(function(){
-		//redirecting to venueSearch, will cause us to lose all our values
-		//Save already filled fields into storage
+		//changing page will cause us to lose all our values
+		//so save already filled fields into storage first
 		saveValuesToStorage();
-		//And redirect
 		window.location ="venueSearch.html";
 	});
 
 	$("#saveButton").click(function(){
-		var name = document.getElementById('nameField').value;
-		var date = document.getElementById('dateField').value;
-		var startTime = document.getElementById('startTimeField').value;
-		var endTime = document.getElementById('endTimeField').value;
-		var location = document.getElementById('locationField').value;
-
-		// var newEvent = eventBuilder(name, date, startTime, endTime, location);
-
-		if (name != "" &&
-		date != "" &&
-		startTime != "") {
-			//Format the times appropriately
-			var startTimeFormatted = formatTime(date, startTime);
-			var endTimeFormatted = formatTime(date, endTime);
-
-			sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(newEvent){
-				openEvent(newEvent);
-			});
-
-
-		}
+		createEvent();
 	});
-});
+}
+
+function createEvent() {
+	var name = document.getElementById('nameField').value;
+	var date = document.getElementById('dateField').value;
+	var startTime = document.getElementById('startTimeField').value;
+	var endTime = document.getElementById('endTimeField').value;
+	var location = document.getElementById('locationField').value;
+
+
+	if (name != "" && date != "" && startTime != "") {
+		// This function assumes a format of:
+		// Date: YYYY-MM-DD
+		// Time: hh:mm
+		// and outputs YYYY-MM-DDThh:mm
+		function formatTime(date, time){
+			return date.concat('T').concat(time);
+		}
+		var startTimeFormatted = formatTime(date, startTime);
+		var endTimeFormatted = formatTime(date, endTime);
+
+		sendToServer(name, startTimeFormatted, endTimeFormatted, null, location, function(newEvent){
+			openEvent(newEvent);
+		});
+	}
+}
 
 //This function is used by the location button to call back on
 function setLocation(name, address){
@@ -55,13 +62,7 @@ function setLocation(name, address){
 	}
 	$("#locationField").val(name + ": " + address); //Set the location box
 }
-//This function assumes a format of:
-// Date: YYYY-MM-DD
-// Time: hh:mm
-// and outputs YYYY-MM-DDThh:mm
-function formatTime(date, time){
-	return date.concat('T').concat(time);
-}
+
 
 //Save everything in the textboxes to storage to restore it later
 function saveValuesToStorage(){
@@ -81,7 +82,7 @@ function saveValuesToStorage(){
 }
 
 //Load previous values back into the textboxes
-function reloadValues(){
+function loadValuesFromStorage(){
 	document.getElementById('nameField').value = localStorage.getItem("currentEventName");
 	document.getElementById('dateField').value = localStorage.getItem("currentEventDate");
 	document.getElementById('startTimeField').value = localStorage.getItem("currentEventStart");
@@ -89,26 +90,12 @@ function reloadValues(){
 
 	//Do we have a new location due to venueSearch?
 	if(localStorage.getItem("arrivingFromYelp") == 1){
-		//We just came from the venueSearch, so there may be values we wish to reload
-		document.getElementById('locationField').value = localStorage.getItem("yelpLocationName") + ": " + localStorage.getItem("yelpLocationAddress");
+		//just came from the venueSearch, there may be values we wish to reload
+		document.getElementById('locationField').value =
+		localStorage.getItem("yelpLocationName") + ": " +
+		localStorage.getItem("yelpLocationAddress");
 	} else {
-		document.getElementById('locationField').value = localStorage.getItem("currentEventLocation");
+		document.getElementById('locationField').value =
+		localStorage.getItem("currentEventLocation");
 	}
 }
-
-function eventBuilder(name, date, start, end, location) {
-	var userId = LetsDoThis.Session.getInstance().getUserId();
-	var newEvent  = {
-		display_name: name,
-		start_date:date,
-		end_date:"",
-		budget:0,
-		location:location,
-		hosts:[userId],
-		invites:[],
-		accepts:[userId],
-		declines:[],
-		comments:[]};
-
-		return newEvent;
-	}

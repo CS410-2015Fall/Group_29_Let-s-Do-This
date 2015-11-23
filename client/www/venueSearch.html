@@ -1,34 +1,46 @@
 <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+<link rel="stylesheet" type="text/css" href="css/home.css">
+
 <script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
 <script src="js/venueSearch.js"></script>
 
-<div data-role="content">
+<div data-role="page" data-theme="a">
+<div data-role="content" id="mainContent">
 
-<h1>Venues</h1>
-<form id="yelpSearchForm">
-  <!-- Yelp call currently supports distance, location, a search term, and sortBy (0-2) -->
-  <label for="searchTerm">Search for:</label>
-  <input type="text" id="searchTerm">
+  <h1>Venues</h1>
+  <form id="yelpSearchForm">
+    <!-- Yelp call currently supports distance, location, a search term, and sortBy (0-2) -->
+    <label for="searchTerm">Search for:</label>
+    <input type="text" id="searchTerm">
 
-  <label for="city">Near:</label>
-  <input type="text" id="city"> <!-- It'd be nice if we could fill this in based on the users location -->
+    <label for="city">Near:</label>
+    <input type="text" id="city"> <!-- It'd be nice if we could fill this in based on the users location -->
 
-  <label for="radius">Radius (metres):</label>
-  <input type="number" id="radius">
+    <label for="radius">Radius (metres):</label>
+    <input type="number" id="radius">
 
-  <fieldset data-role="controlgroup">
-    <legend>Sort by:</legend>
-    <input type="radio" id="bestMatch" value="0" name="sort">
-    <label for="bestMatch">Best Match</label><br>
-    <input type="radio" id="distance" value="1" name="sort">
-    <label for="distance">Distance</label><br>
-    <input type="radio" id="highestRated" value="2" name="sort">
-    <label for="highestRated">Highest Rated</label><br>
-  </fieldset>
+    <fieldset data-role="controlgroup">
+      <legend>Sort by:</legend>
+      <input type="radio" id="bestMatch" value="0" name="sort">
+      <label for="bestMatch">Best Match</label><br>
+      <input type="radio" id="distance" value="1" name="sort">
+      <label for="distance">Distance</label><br>
+      <input type="radio" id="highestRated" value="2" name="sort">
+      <label for="highestRated">Highest Rated</label><br>
+    </fieldset>
 
-  <input type="submit" value="Search">
-</form>
-<div id="results">
+    <input type="submit" value="Search">
+  </form>
+  <div id="results">
+  </div>
 </div>
+
+<div data-role="header" id="header">
+  <fieldset class="ui-grid-a">
+    <div class="ui-block-a" align="left">
+    <button type="submit" id="backButton" data-theme="a">Back</button>
+    </div>
+  </fieldset>
+</div><!-- /header -->
 </div>

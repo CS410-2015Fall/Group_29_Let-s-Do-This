@@ -3,11 +3,13 @@
 // end: YYYY-MM-DDThh:mm
 var ldtIdentifier = "Lets Do This event"
 var cal;
+var isCordova = false;
 $(document).ready(function() {
 	console.log('calendarIntercation loaded');
 });
 
 document.addEventListener("deviceready", function(){
+	isCordova = true;
 	cal = window.plugins.calendar;
 	console.log("Calender plugin defined");
 }, false);
@@ -16,6 +18,9 @@ document.addEventListener("deviceready", function(){
 // Deletes all LDT events from the users calendar, and proceeds to readd all events passed in
 // each event must be formatted as shown in the bottom of the page
 function addEventsToCalendar(events){
+	if(!isCordova){ //Check to see if we are on a cordova device or just a browser
+		return;
+	}
 	deleteAllLDTEvents();
 	//First check to see if theres any events to deal with
 	if(events.length == 0){
@@ -27,11 +32,14 @@ function addEventsToCalendar(events){
 	for(i=0; i<events.length; i++){
 		addEventToCalendar(events[i]);
 	}
-};
+}
 
 // Adds an individual event to the native calendar
 // event must be in the format listed at the bottom of the page
 function addEventToCalendar(event){
+	if(!isCordova){ //Check to see if we are on a cordova device or just a browser
+		return;
+	}
 	//See the format of event at the bottom of the page
 	var title = event.display_name + ": " + ldtIdentifier;
 	var location = event.location;
@@ -45,6 +53,9 @@ function addEventToCalendar(event){
 
 // Searches the users calendar and deletes all LDT events
 function deleteAllLDTEvents(){
+	if(!isCordova){ //Check to see if we are on a cordova device or just a browser
+		return;
+	}
 	//We have to delete events within a specific range.
 	var yearRange = 4; //This is the +/- from todays date
 
