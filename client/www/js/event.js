@@ -53,7 +53,7 @@ $(document).ready(function() {
 });
 
 var CommentModule = {
-	// comment = { id:Int, author:String, post_date: YYYY-MM-DDTHH:MM:SS.446000Z, content:String, event:Int }
+	// comment = { id:Int, author:{User}, post_date: YYYY-MM-DDTHH:MM:SS.446000Z, content:String, event:Int }
 	comments: [],
 	commentDiv: {},
 	eventId: -1,
@@ -182,7 +182,8 @@ var GuestListModule = {
 	handleRsvpButton: function(rsvpButtonDiv,rsvpPopupDiv) {
 		var yourself = this.guestList[this.userId];
 		yourself.status = 0;
-		this.updateServer(yourself);
+		rsvpToEvent(this.eventId, true, function(){}); // update server
+
 		rsvpButtonDiv.attr('disabled', 'true');
 		rsvpPopupDiv.popup( "open" )
 		this.updateUI();
@@ -224,7 +225,7 @@ var GuestListModule = {
 };
 
 var ShoppingListModule = {
-	// shoppingItem = {id:Int, display_name:String, cost:Float, supplier:User, ready:Bool}
+	// shoppingItem = {id:Int, display_name:String, cost:Float, supplier:{User}, ready:Bool}
 	// choppinglist is a dict, not an array
 	shoppingList: {},
 	shoppingListDiv: {},
@@ -286,8 +287,7 @@ var ShoppingListModule = {
 		nameField.val("");
 		costField.val("");
 		// Sometimes when I'm writing Javascript I want to throw up my hands and say "this is bullshit!" but I can never remember what "this" refers to.
-		// send new item to server
-		addShoppingListItem(this.eventId, name, 1, cost, yourself.id, isClaimed, function(resp){
+		addShoppingListItem(this.eventId, name, 1, cost, yourself.id, isClaimed, function(resp){ // update server
 			ShoppingListModule.shoppingList[resp[0].id] = resp[0];
 			ShoppingListModule.updateUI();
 		});
@@ -300,7 +300,6 @@ var ShoppingListModule = {
 		this.shoppingList[itemId].supplier = LetsDoThis.Session.getInstance().getUserInfo();
 		this.updateUI();
 		var item = this.shoppingList[itemId];
-		// update item "ready" on server
-		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready);
+		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready); // update server
 	}
 };

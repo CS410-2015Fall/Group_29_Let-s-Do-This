@@ -148,18 +148,20 @@ function inviteToEvent(eventId, userList, callback) {
 }
 
 function rsvpToEvent(eventId, rsvpStatus, callback){
-	// rsvpStatus is one of:
-	// - "accepts"
-	// - "declines"
+	// rsvpStatus is a bool:
+	// - true if RSVPing to accept
+	// - false if declining
 
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	var userId = LetsDoThis.Session.getInstance().getUserId();
 
 	var userList = [userId.toString()]; // has to be a list
-	var putData = {
-		rsvpStatus: userList
-	};
-
+	var putData;
+	if (rsvpStatus) {
+		putData = {accepts: userList};
+	} else {
+		putData = {declines: userList};
+	}
 	var rsvpUrl = "http://159.203.12.88/api/events/"+eventId+"/";
 
 	$.ajax({
@@ -188,7 +190,7 @@ function removeHost(eventId, hostId) {
 	var postData = {
 		"hosts" : hostId,
 	};
-	
+
 	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/hosts/remove/";
 
 	$.ajax({
@@ -197,7 +199,7 @@ function removeHost(eventId, hostId) {
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
-		data: JSON.stringify(postData), 
+		data: JSON.stringify(postData),
 		contentType: 'application/json',
 		dataType: 'json',
 		success: function (resp) {
@@ -245,7 +247,7 @@ function editEvent(eventId, display_name, start_date, end_date, budget, location
 function deleteEvent(eventId,callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
     var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/";
-    
+
 	$.ajax({
 		type: 'DELETE',
 		url: eventUrl,
