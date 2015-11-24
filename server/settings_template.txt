@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.8/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -20,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '' # !!! TODO
+SECRET_KEY = ''  # !!! TODO
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,12 +42,11 @@ INSTALLED_APPS = (
     # 'rest_framework.authtoken',
     'corsheaders',
     'ldtserver',
-    'ldtpolls',
 )
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',     # comment out: login functionality but token not needed for requests
+    #     'rest_framework.permissions.IsAuthenticated',     # if commented out: login functionality but token not needed for requests
     # ),
     #
     #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),  # more strict
@@ -111,7 +111,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ldt',
         'USER': 'postgres',
-        'PASSWORD': '', # !!! TODO
+        'PASSWORD': '',      # !!! TODO
         'HOST': 'localhost',
         'PORT': '5432',
     }

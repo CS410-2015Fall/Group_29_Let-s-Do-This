@@ -17,7 +17,7 @@ See README.md for general information and using the API.
 
 # Why Django?
 
-This seems to me to be the fastest option for deployment. We are allowed to use any language & framework for backend server. Django is a popular Python web application framework and, as such, DigitalOcean offers a 'one-click' install of Django on one of their droplet servers and $5/month hosting.  The DigitalOcean Community also contains several tutorials on how to work with their Ubuntu, Nginx, PostgreSQL, Gunicorn, Python, and Django web stack. Django's behaviour also abstracts away the web stack.
+This is one of the fastest options for deployment. We are allowed to use any language & framework for backend server. Django is a popular Python web application framework and, as such, DigitalOcean offers a 'one-click' install of Django on one of their droplet servers and cheap hosting.  The DigitalOcean Community also contains several tutorials on how to work with their Ubuntu, Nginx, PostgreSQL, Gunicorn, Python, and Django web stack. Django's behaviour also abstracts away the web stack.
 
 Django is quite bulky in terms of all its features + additional frameworks and seems like overkill for a database + API. But they install relatively quickly and are useful, such as the REST framework.
 
@@ -71,7 +71,7 @@ Create a new database on your Postgres server (default port 5432) by right-click
 
 ### settings.py
 
-Inside /server/ldt/ldt of this repo, create a new settings.py file.  Into settings.py, copy and paste all the text located in settings_template.txt in server.
+Inside /server/ldt/ldt of this repo, create a new settings.py file.  Into settings.py, copy and paste all the text located in `settings_template.` in /server.
 
 Where is says 'TODO', fill in your local database's password and your choice of secret key for the app, as indicated.
 
@@ -112,7 +112,7 @@ Once set up, activate the venv and run the server on your local machine as follo
 
 # Deploying to Droplet/Production Server
 
-Follow this guide: https://www.digitalocean.com/community/tutorials/how-to-use-the-django-one-click-install-image. I used a shell client + SFTP to manage the server.
+Follow this guide: https://www.digitalocean.com/community/tutorials/how-to-use-the-django-one-click-install-image. I was lazy and not smart, and used a shell client + SFTP to manage the server.
 
 Notes:
 * Main folder is 'django_project' instead of 'ldt' (which can be changed but I haven't taken the time yet)
