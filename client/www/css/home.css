@@ -1,0 +1,42 @@
+#mainContent {
+	position:fixed;
+	left:0px;
+	bottom:30px;
+	top:40px;
+	right:0px;
+}
+
+#footer {
+	position:fixed;
+	left:0px;
+	bottom:0px;
+	width:100%;
+	/*background:#999;*/
+}
+
+#header {
+	position:fixed;
+	left:0px;
+	top:0px;
+	width:100%;
+	/*background:#999;*/
+}
+
+#box {
+    border-radius: 10px;
+    border: 2px solid #C0C0C0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 20px;
+    padding-right: 20px;
+    max-width: 80%;
+    min-width: 40%;
+    margin-top: 8px;
+    margin-bottom: 2px;
+}
+
+#friendsPopup {
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-bottom: 8px;
+}

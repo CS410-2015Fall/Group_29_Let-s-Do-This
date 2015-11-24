@@ -1,1 +1,56 @@
-<p>Create Event</p>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+<script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
+
+<!-- <link rel="stylesheet" href="../../../jquery-mobile-datepicker-wrapper/jquery.mobile.datepicker.css" />
+<script src="../../../jquery-mobile-datepicker-wrapper/jquery.mobile.datepicker.js"> -->
+
+<link rel="stylesheet" type="text/css" href="css/home.css">
+<script type="text/javascript" src="js/createEvent.js"></script>
+<script type="text/javascript" src="js/global.js"></script>
+
+<div data-role="page" data-theme="a">
+
+	<div data-role="content" id="mainContent">
+		<div data-role="fieldcontain">
+			<label for="name">Event Name:</label>
+			<input type="text" name="name" id="nameField" value="" />
+		</div>
+		<div data-role="fieldcontain">
+			<label for="name">Date:</label>
+			<input type="date" name="name" id="dateField" value="" />
+			<!-- <input type="text" id="date-input" data-inline="false" data-role="date"> -->
+		</div>
+		<div data-role="fieldcontain">
+			<label for="name">Start Time:</label>
+			<input type="time" name="name" id="startTimeField" value="" />
+		</div>
+		<div data-role="fieldcontain">
+			<label for="name">End Time:</label>
+			<input type="time" name="name" id="endTimeField" value="" />
+		</div>
+		<div data-role="fieldcontain">
+			<label for="name">Location:</label>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">
+					<input type="text" id="locationField" value="" />
+				</div>
+				<div class="ui-block-b">
+					<button id="findLocationButton" type="submit">Find Location</button>
+				</div>
+			</fieldset>
+		</div>
+	</div><!-- /content -->
+
+	<div data-role="header" id="header">
+		<fieldset class="ui-grid-a">
+			<div class="ui-block-a" align="left">
+				<button type="submit" id="homeButton" data-theme="a">Home</button>
+			</div>
+			<div class="ui-block-b" align="right">
+				<button type="submit" id="saveButton" data-theme="a">Save</button>
+			</div>
+		</fieldset>
+	</div><!-- /header -->
+
+</div><!-- /page -->

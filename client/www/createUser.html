@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Cordova set up stuff -->
+	<!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">-->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="msapplication-tap-highlight" content="no">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<link rel="stylesheet" type="text/css" href="css/home.css">
+	<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+	
+	<script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript" src="js/serverInteractions/userServerInteraction.js"></script>
+	<script type="text/javascript" src="js/createUser.js"></script>
+	
+
+	<title>Create User</title>
+</head>
+<body>
+	<div data-role="page">
+		<div data-role="content" id="mainContent" class="page-CreateUser">
+			<div>
+				<h1>Create User</h1>
+				Username:<br>
+				<input type='text' id='username'><br>
+				Password:<br>
+				<input type='password' id='password'><br>
+				Email:<br>
+				<input type='email' id='email'><br>
+				Phone Number:<br>
+				<input type='text' id='phone'><br>
+				<input type='submit' id="btn-submit" value="Create User" class="ui-btn ui-btn-inline ui-corner-all">
+			</div>
+		</div>
+	</div>
+</body>
+</html>

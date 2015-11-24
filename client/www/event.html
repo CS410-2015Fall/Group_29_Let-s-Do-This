@@ -1,0 +1,82 @@
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
+<script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/home.css">
+<script type="text/javascript" src="js/global.js"></script>
+<script type="text/javascript" src="js/event.js"></script>
+
+<div data-role="content" id="mainContent">
+
+	<div class="ui-field-contain" id="eventName"></div>
+	<div class="ui-field-contain" id="dateTime"></div>
+	<div class="ui-field-contain" id="location"></div>
+
+	<div class="ui-field-contain" id="guests">
+		<a href="#friendsPopup" data-rel="popup" data-role="button" data-inline="true" id="inviteWindowButton">Guests</a><br>
+	</div>
+
+	<div id="comments">
+	</div>
+	<div class="ui-field-contain" id="newComment">
+		<form id="commentForm">
+			<textarea id="commentTextArea"></textarea>
+			<input type="submit" data-inline="true" value="Comment">
+		</form>
+	</div>
+
+	<!-- <div id="shoppingDiv"> -->
+
+	<div id="shoppingList" data-role="collapsibleset" data-collapsed-icon="check" data-expanded-icon="check">
+	</div>
+
+	<div data-role="collapsibleset" data-theme="a" data-content-theme="a">
+		<div data-role="collapsible" data-collapsed-icon="edit" data-expanded-icon="edit">
+			<h3>New Item</h3>
+			<div data-role="fieldcontain">
+				<label for="name">Name:</label>
+				<input type="text" id="newItemName" value=""  />
+			</div>
+			<div data-role="fieldcontain">
+				<label for="name">Cost:</label>
+				<input type="number" id="newItemCost" value=""  />
+			</div>
+
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a"><button type="submit" data-theme="d" id="newClaimedItemButton">I got this</button></div>
+				<div class="ui-block-b"><button type="submit" data-theme="a" id="newUnclaimedItemButton">Someone else got this...</button></div>
+			</fieldset>
+
+		</div>
+	</div>
+
+</div>
+
+<div id="friendsPopup" data-role="popup">
+	<div data-role="content">
+		<fieldset data-role="controlgroup" id="friendsPopup">
+		</fieldset>
+		<button type="submit" id="inviteButton" data-theme="a">Okay</button>
+	</div>
+</div>
+
+<div data-role="popup" id="rsvpPopup">
+	<p>You are marked as attending.</p>
+</div>
+
+<div data-role="header" id="header">
+	<fieldset class="ui-grid-a">
+		<div class="ui-block-a" align="left">
+			<button type="submit" id="homeButton" data-theme="a">Home</button>
+		</div>
+		<div class="ui-block-b" align="right">
+			<button type="submit" id="rsvpButton" data-theme="a">RSVP</button>
+		</div>
+	</fieldset>
+</div><!-- /header -->
+
+<div id="footer" data-role="footer">
+	<div class="ui-block-b" align="right">
+		<button id="viewMap" data-theme="b">View Map</button>
+	</div>
+</div>
