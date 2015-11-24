@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+<script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.mobile-1.4.5.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/home.css">
+<script type="text/javascript" src="js/global.js"></script>
+<script type="text/javascript" src="js/profile.js"></script>
+
+<div data-role="page" id="viewProfile">
+	<div data-role="header" id="header">
+		<fieldset class="ui-grid-a">
+			<div class="ui-block-a" align="left">
+				<button type="submit" id="homeButton" data-theme="a">Home</button>
+			</div>
+			<div class="ui-block-b" align="right">
+				<button type="submit" id="backButton" data-theme="a">Back</button>
+			</div>
+		</fieldset>
+	</div>
+
+    <div data-role="content" id="mainContent">
+        New Username: <input type='text' id='editUsername'><br>
+        New Email: <input type='email' id='editEmail'><br>
+        New Phone Number: <input type='text' id='editPhone'><br>
+        <input type='submit' id="saveButton" value="Save Changes" class="ui-btn ui-btn-inline ui-corner-all">
+    </div>
+</div>
+

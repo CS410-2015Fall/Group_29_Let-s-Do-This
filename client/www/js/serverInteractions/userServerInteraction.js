@@ -93,6 +93,12 @@ function updateUserInfo(userId, username, email, phone, callback){
         data: JSON.stringify(putData),
 		success: function (resp) {
 			console.log("Updated user info");
+			LetsDoThis.Session.getInstance().setUserInfo({
+				"id": userId,
+				"username": resp.username,
+				"email": resp.email,
+				"phone": resp.phone
+			});
 			callback(resp);
 		},
 		error: function(e) {
@@ -102,12 +108,14 @@ function updateUserInfo(userId, username, email, phone, callback){
 	});
 }
 
-function addFriends(userId, friendIds, callback) {
+function addFriend(userId, friendId, callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
     var userUrl = "http://159.203.12.88/api/users/"+userId+"/";
     
+	var friend = [friendId.toString()];
+	
     var putData = {
-        "friends": friendIds
+        "friends": friend
     }
     
 	$.ajax({
@@ -121,6 +129,10 @@ function addFriends(userId, friendIds, callback) {
         data: JSON.stringify(putData),
 		success: function (resp) {
 			console.log("Added as friend");
+			LetsDoThis.Session.getInstance().setUserFriends({
+                "friends":resp.friends
+            });
+			callback(resp);
 		},
 		error: function(e) {
 			console.log(e);
@@ -128,18 +140,20 @@ function addFriends(userId, friendIds, callback) {
 	});
 }
 
-function removeFriends(userId, friendIds) {
+function removeFriend(userId, friendId, callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	
-	var userUrl = "http://159.203.12.88/api/users/"+userId+"/friends/remove/";
+	var removeUrl = "http://159.203.12.88/api/users/"+userId+"/friends/remove/";
 	
+	var friend = [friendId];
+
     var postData = {
-        "friends": friendIds
+        "friends": friend
     }; 
     
 	$.ajax({
 		type: 'POST',
-		url: userUrl,
+		url: removeUrl,
 		dataType: 'json',
         contentType: 'application/json',
 		beforeSend: function(xhr) {
@@ -147,7 +161,11 @@ function removeFriends(userId, friendIds) {
 		},
         data: JSON.stringify(postData),
 		success: function (resp) {
-			console.log("friends removed");
+			console.log("friend removed");
+			LetsDoThis.Session.getInstance().setUserFriends({
+                "friends":resp.friends
+            });
+			callback(resp);
 		},
 		error: function(e) {
 			console.log(e);
