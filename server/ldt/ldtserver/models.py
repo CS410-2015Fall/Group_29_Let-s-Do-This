@@ -73,25 +73,6 @@ class Comment(models.Model):
         return str(self.id)
 
 
-class ShoppingListItem(models.Model):
-    """
-    ShoppingListItem with fields for display_name, quantity, cost, supplier (User)
-
-    Acts as a checklist + what was already bought
-    """
-    # Required
-    display_name = models.CharField(max_length=50)
-    # Optional
-    quantity = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    # For now, if user it Null then there is nobody assigned
-    supplier = models.ForeignKey(User, related_name="supplier", null=True, blank=True)
-    ready = models.NullBooleanField(blank=True)
-
-    def __str__(self):
-        return self.display_name
-
-
 class Event(models.Model):
     """
     Event with fields for display_name, dates, hosts, invitees, accepts, declines.
@@ -145,6 +126,10 @@ class Event(models.Model):
         """ Return list of Event's Polls """
         return [p for p in self.event_polls.all()]
 
+    def get_polls_choices(self):
+        """ Return list of lists of Event's Polls choices """
+        return [p.get_choices() for p in self.event_polls.all()]
+
     def has_shoppinglist(self):
         """ Return True ShoppingList if exists, else False """
         try:
@@ -159,7 +144,25 @@ class Event(models.Model):
 
     def get_contributions(self):
         """
-        Return list of "contributions" objects: current shopping_list as list of users
+        Return list of "contributions" objects: current shopping_list as list of users. Example:
+
+        [
+        {
+            "username": "mcgrandlej",
+            "items": [
+                {
+                    "ready": false,
+                    "cost": "200.00",
+                    "display_name": "rain coats",
+                    "id": 2,
+                    "quantity": "4.00"
+                }
+            ],
+            "total": "200.0",
+            "id": 1
+        },
+        ...
+        ]
         """
         contributions = []
         # This is to avoid interruption of new Event cascade via API or bugs
@@ -199,6 +202,25 @@ class Event(models.Model):
         return contributions
 
 
+class ShoppingListItem(models.Model):
+    """
+    ShoppingListItem with fields for display_name, quantity, cost, supplier (User)
+
+    Acts as a checklist + what was already bought
+    """
+    # Required
+    display_name = models.CharField(max_length=50)
+    # Optional
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    # For now, if user it Null then there is nobody assigned
+    supplier = models.ForeignKey(User, related_name="supplier", null=True, blank=True)
+    ready = models.NullBooleanField(blank=True)
+
+    def __str__(self):
+        return self.display_name
+
+
 class ShoppingList(models.Model):
     """
     ShoppingList of ShoppingListItems
@@ -230,6 +252,10 @@ class Poll(models.Model):
 
     def __str__(self):
         return self.question
+
+    def get_choices(self):
+        """ Returns list of poll's choices """
+        return [c for c in self.poll_choices.all()]
 
 
 class PollChoice(models.Model):
