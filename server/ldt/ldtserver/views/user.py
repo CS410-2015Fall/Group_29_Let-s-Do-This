@@ -51,15 +51,24 @@ def user_new(request):
     # !!! refactor to use USER_FIELDS
     if not ("username" in request.data and "password" in request.data):
         return Response("KeyError: username and password required.", status=status.HTTP_400_BAD_REQUEST)
+    pword = request.data["password"]
     data1 = {
         "username": request.data["username"],
-        "password": request.data["password"],
     }
     ser1 = UserSerializer(data=data1)
     if ser1.is_valid():
         ser1.save()
     else:
         return Response(ser1.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = User.objects.get(pk=ser1.data["id"])
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    # Manually set password because serializer doesn't handle
+    user.set_password(pword)
+    user.save()
 
     # Then create new LdtUser associated with new User
     data2 = {"user": ser1.data["id"]}
