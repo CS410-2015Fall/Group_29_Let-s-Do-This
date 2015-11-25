@@ -1,9 +1,5 @@
 """
 All Event views for ldtserver (for RESTful API)
-
-:TODO:
-- test below with cURL/httpie
-- different timezones? leave to client side to convert from UTC
 """
 import copy
 from rest_framework import status
@@ -315,6 +311,20 @@ def event_changed_remove(request, pk):
 
     if "changed" not in request.data:
         return Response({"error": "'changed' must be provided as list of user IDs"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Error if trying to remove non-existent user from changed list
+    try:
+        [User.objects.get(pk=uid) for uid in request.data["changed"]]
+    except:
+        return Response({"error": "no user exists for one or more IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove user who isn't already on changed list
+    try:
+        for uid in request.data["changed"]:
+            if uid not in old_changed:
+                raise Exception
+    except:
+        return Response({"error": "user(s) is not on 'changed' list and cannot be removed"}, status=status.HTTP_400_BAD_REQUEST)
 
     # Prepare data with updated changed list
     data = {}
