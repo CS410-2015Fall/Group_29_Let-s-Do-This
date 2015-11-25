@@ -64,7 +64,7 @@ def user_new(request):
     try:
         user = User.objects.get(pk=ser1.data["id"])
     except User.DoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response("error: Could not retrieve new user", status=status.HTTP_400_BAD_REQUEST)
 
     # Manually set password because serializer doesn't handle
     user.set_password(pword)

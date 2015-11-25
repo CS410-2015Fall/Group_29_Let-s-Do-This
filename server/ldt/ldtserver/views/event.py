@@ -16,9 +16,9 @@ from ..serializers import EventSerializer, ShoppingListSerializer
 
 
 OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments", "changed"]
-ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + ["display_name"] + ["id"]
 EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
 USERLIST_FIELDS = ["hosts", "invites", "accepts", "declines"]
+ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + USERLIST_FIELDS + ["display_name"] + ["id"]
 
 
 @api_view(['GET', 'POST'])
@@ -52,7 +52,7 @@ def event_list(request):
     if request.method == 'GET':
         events = Event.objects.all()
         serializer = EventSerializer(events, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
         # First create new Event
