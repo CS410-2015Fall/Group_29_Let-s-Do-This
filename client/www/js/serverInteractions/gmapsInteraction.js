@@ -21,8 +21,7 @@ function onMapInit(map) {
   var mapDiv = document.getElementById('mainContent');
   map.setDiv(mapDiv);
 
-  //Drop the current location into the map
-  // dropLocationMarker();
+  //Show our current location on the map
   map.setMyLocationEnabled(true);
 
   //Convert the event location into a lat long
@@ -62,16 +61,6 @@ function dropMarker(title, latLong){
   map.animateCamera({
     'target': latLong,
     'zoom': 15
-  });
-}
-
-function dropLocationMarker(){
-  map.getMyLocation(function(location) {
-    map.addMarker({
-      'position': location.latLng,
-      'icon': 'blue',
-      'title': 'Current Location'
-    });
   });
 }
 
