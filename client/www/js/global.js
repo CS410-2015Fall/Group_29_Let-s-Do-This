@@ -33,7 +33,7 @@ function displayBoxes(boxes, target) {
 
 //navigation
 function openEvent(destinationEvent) {
-	localStorage.setItem("eventObj", JSON.stringify(destinationEvent));
+	localStorage.setItem("eventId", JSON.stringify(destinationEvent));
 	window.location="event.html";
 }
 

@@ -42,6 +42,7 @@ function bindHomeUIActions() {
 	});
 
 	$("#createEventButton").click(function(){
+	    localStorage.setItem("editEvent", 0);
 		window.location="createEvent.html";
 	});
 
@@ -77,9 +78,7 @@ function handleContentBoxLinks() {
 	$(document).on("click", '#mainContent div', function(e) {
 		if ($(this).attr("id") == "box") {
 			var eventId = $(this).attr("boxId");
-			getEvent(eventId, function(resp) {
-				openEvent(resp);
-			});
+			openEvent(eventId);
 		}
 	});
 }

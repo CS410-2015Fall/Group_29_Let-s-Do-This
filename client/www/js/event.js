@@ -1,6 +1,25 @@
 $.getScript("js/global.js", function() {
 $(document).ready(function() {
-	var eventData = JSON.parse( localStorage.getItem("eventObj") );
+var eventId = JSON.parse(localStorage.getItem("eventId"));
+getEvent(eventId, function(resp) {
+	var eventData = resp;
+
+	// id: 45
+	// display_name: Max Rebo's Show
+	// start_date: 2015-12-13T03:30:00Z
+	// end_date: 2015-12-13T07:00:00Z
+	// budget: null
+	// location: Corbett Fish House: 5901 SW Corbett Ave
+	// hosts: [object Object]
+	// invites: [object Object],[object Object],[object Object]
+	// accepts: [object Object],[object Object]
+	// declines:
+	// changed:
+	// comments: [object Object],[object Object]
+	// shopping_list: [object Object]
+	// contributions: [object Object],[object Object],[object Object],[object Object]
+// event_polls:
+// cancelled: null
 	console.log(eventData);
 
 	$("#eventName").html("<strong>" + eventData.display_name + "</strong>");
@@ -53,6 +72,7 @@ $(document).ready(function() {
 		// TODO Save the location, and name, into the session storage so the map script can pull it up
 		window.location="map.html";
 	});
+});
 });
 });
 
