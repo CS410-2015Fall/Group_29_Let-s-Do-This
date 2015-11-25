@@ -4,46 +4,46 @@ $.getScript("js/global.js", function () {
 	// When clicking on someone's profile, their user ID will be locally stored
 	var someUserId = 13;
 	localStorage.setItem("profileId", JSON.stringify({"id":someUserId}));
-	
+
 	// We then retrieve this stored ID and load the profile of this user
 	var profileId = JSON.parse( localStorage.getItem("profileId") ).id;
 	var userId = LetsDoThis.Session.getInstance().getUserId();
-	
+
 	// if on profile page, display the profile appropriately
-	if (window.location.pathname == "/www/profile.html") {
+	if (window.location.pathname == "/www/profile.html" || window.location.pathname == "/android_asset/www/profile.html") {
         profileToDisplay(profileId, userId);
     }else if (window.location.pathname == "/www/editProfile.html") {
         loadCurrentData();
     }
-	
+
 	// Button logic
 
 	$("#homeButton").click(function(){
 		window.location="home.html";
 	});
-	
+
 	$("#editButton").click(function(){
 		window.location="editProfile.html";
 	})
-	
+
 	$("#backButton").click(function(){
 		window.location="profile.html";
 	})
-	
+
 	$("#saveButton").click(function(){
 		var editedUsername = $("#editUsername").val();
 		var editedEmail = $("#editEmail").val();
 		var editedPhone = $("#editPhone").val();
 		editUserData(editedUsername, editedEmail, editedPhone);
 	})
-	
+
 	$("#friendButton").click(function(){
 		addFriend(userId, profileId, function(resp){
 			clearProfile();
 			profileToDisplay(profileId);
 		})
 	})
-	
+
 	$("#unfriendButton").click(function(){
 		removeFriend(userId, profileId, function(resp){
 			clearProfile();
@@ -54,7 +54,7 @@ $.getScript("js/global.js", function () {
 })
 
 function profileToDisplay(profileId, userId) {
-	
+
 	// check if profile belongs to logged in user
 	if (profileId == userId) {
 		var userData = LetsDoThis.Session.getInstance().getUserInfo();
@@ -82,9 +82,9 @@ function profileToDisplay(profileId, userId) {
 				loadStrangerData(resp.username);
 			})
 		}
-	
+
     }
-	
+
 }
 
 function loadLoggedInData(userData) {
@@ -100,7 +100,7 @@ function loadFriendData(friendData) {
 	$("#mainContent").append('<div class="ui-field-contain" id="email">Email: '+ friendData.email + '</div>');
 	$("#mainContent").append('<div class="ui-field-contain" id="phone">Phone: ' + friendData.phone + '</div>');
 	$("#mainContent").append('<br>'+friendData.username +" is your friend!");
-		
+
 }
 
 function loadStrangerData(username) {
