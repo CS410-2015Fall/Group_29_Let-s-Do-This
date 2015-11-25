@@ -294,6 +294,54 @@ def event_detail(request, pk):
 
 
 @api_view(['POST'])
+def event_cancel(request, pk):
+    """
+    Cancels a given event, puts all users on 'changed' list, and returns event.
+
+    Data needs to be: {"cancelled": true}
+    """
+    try:
+        event = Event.objects.get(pk=pk)
+        already_on_changed = Event.get_changed(event)
+    except Event.DoesNotExist:
+        return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Error if event already cancelled
+    if event.is_cancelled():
+        return Response({"error": "Event has already been cancelled"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Set 'cancelled' to True
+    try:
+        event.cancel()
+    except Exception as e:
+        return Response({"error": "Could not cancel event. " + e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # Prepare data with updated changed list
+    data = {}
+    try:
+        hosts = event.get_hosts()
+        invites = event.get_invites()
+        accepts = event.get_accepts()
+        declines = event.get_declines()
+        all_unique_hiad_uids = list(set(hosts + invites + accepts + declines))
+        new_changed = list(set(all_unique_hiad_uids + already_on_changed))
+    except Exception as e:
+        return Response({"error": "Could not update 'changed' list of event. " + e.message},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    data.update({"changed": new_changed})
+
+    # Django REST requires a display_name
+    data.update({"display_name": event.display_name})
+
+    serializer = EventSerializer(event, data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
 def event_changed_remove(request, pk):
     """
     Remove user(s) from the 'changed' list of an event

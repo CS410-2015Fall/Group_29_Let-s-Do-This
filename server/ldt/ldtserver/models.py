@@ -91,12 +91,24 @@ class Event(models.Model):
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
     changed = models.ManyToManyField(User, related_name="changed", blank=True)
     comments = models.ManyToManyField(Comment, related_name="event", blank=True)
+    cancelled = models.NullBooleanField(blank=True, null=True)
 
     def __str__(self):
         """
         e.g. Event.objects.all() == display_name
         """
         return self.display_name
+
+    def is_cancelled(self):
+        """ Return true if Event cancelled, false otherwise """
+        if self.cancelled:
+            return True
+        return False
+
+    def cancel(self):
+        """ Set Event's cancelled status to True, returns self.cancelled """
+        self.cancelled = True
+        return self.cancelled
 
     def get_hosts(self):
         """ Return list of User IDs of Event's hosts """

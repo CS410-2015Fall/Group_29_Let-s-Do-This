@@ -57,6 +57,7 @@ All actions require an authentication token in the request header. This is obtai
 | GET      | http://159.203.12.88/api/events/42/                | Event id             |                                               |
 | PUT      | http://159.203.12.88/api/events/42/                | Event id             | display_name, start_date, end_date, budget, location, hosts, invites, accepts, declines     |
 | DELETE   | http://159.203.12.88/api/events/42/                | Event id             |                                               |
+| POST     | http://159.203.12.88/api/events/42/cancel/         | Event id             | cancelled (true)                              |
 | POST     | http://159.203.12.88/api/events/42/invites/remove/ | Event id             | invites (to remove)                           |
 | POST     | http://159.203.12.88/api/events/42/hosts/remove/   | Event id             | hosts (to remove)                             |
 | POST     | http://159.203.12.88/api/events/42/changed/remove/ | Event id             | changed (user IDs to remove)                  |
