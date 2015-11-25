@@ -20,6 +20,7 @@ module.exports = function(config) {
       'client/www/js/yelpScripts/*.js',
       'client/www/js/*.js',
       'test/javascripts/helpers/mock-ajax.js',
+      'test/test_responses/*.js',
       'test/*.js'
     ],
 

@@ -6,20 +6,129 @@ describe('testing that this runs', function () {
   })
 })
 
-describe('testing retrieving user from database', function (){
+beforeEach(function() {
+  jasmine.Ajax.install();
+})
+
+afterEach(function(){
+  jasmine.Ajax.uninstall();
+})
+
+describe('test creating user', function (){
   var request;
   var callback;
-  var value;
   beforeEach(function() {
-    jasmine.Ajax.install();
-    callback = jasmine.createSpy('callback');
-    createUser("Stampy","","bawoo@test.com","6045555555", callback);
-  
+    callback = jasmine.createSpy('success');
+    createUser("Stampy","peanuts","bawoo@test.com","6045555555", callback);
+    
+    // confirm that request sent is correct
     request = jasmine.Ajax.requests.mostRecent();
-    console.log("Before each request is :" +request);
-  });
-  it('should be a POST request', function(){
-    console.log("Regular request is :"+request);
+
+    expect(request.url).toBe("http://159.203.12.88/api/users/new/");
     expect(request.method).toBe("POST");
+    expect(request.data()).toEqual({
+        "username": "Stampy",
+		"password": "peanuts",
+		"email": "bawoo@test.com",
+		"phone": "6045555555"});
+  });
+  
+  // currently, createUser takes in a callback function
+  describe("on success", function() {
+    beforeEach(function() {
+      request.respondWith(testResponses.createUserStampy.success);
+    });
+    it("calls callback with created user data", function() {
+      console.log("success for create user is "+callback);
+      expect(callback).toHaveBeenCalled();
+      var callbackArgs = callback.calls.mostRecent().args[0];
+      expect(callbackArgs.username).toEqual("Stampy");
+      expect(callbackArgs.email).toEqual("bawoo@test.com");
+      expect(callbackArgs.phone).toEqual("6045555555");
+      
+    })
+  })
+})
+
+describe("test logging in user", function(){
+  var request;
+  var logInController;
+  var callback;
+  var username;
+  var password;
+  beforeEach(function() {
+    username = "Stampy";
+    password = "peanuts";
+    callback = jasmine.createSpy('success');
+    logInController = new LetsDoThis.LogInController();
+    logInController.logIn(username, password, callback);
+
+    // confirm that request sent is correct
+    request = jasmine.Ajax.requests.mostRecent();
+    expect(request.url).toBe("http://159.203.12.88/login/");
+    expect(request.method).toBe("POST");
+    expect(request.data()).toEqual({
+        "username": "Stampy",
+		"password": "peanuts"});
+  });
+  describe("on success", function() {
+    beforeEach(function() {
+      console.log(testResponses.logInStampy.success);
+      request.respondWith(testResponses.logInStampy.success);
+    });
+    it("calls callback with username", function() {
+      expect(callback).toHaveBeenCalled();
+      var respArg = callback.calls.mostRecent().args[0];
+      expect(respArg).toEqual("Stampy");
+    })
+  });
+  describe("on error", function() {
+    beforeEach(function() {
+      request.respondWith(testResponses.logInStampy.error);
+    });
+    it("should not call callback", function() {
+      expect(callback.calls.count()).toEqual(0);
+    })
+  })
+})
+
+describe("test retrieving user ID", function(){
+  var request;
+  var logInController;
+  var callback;
+  var username;
+  var mockToken;
+  beforeEach(function() {
+    username = "Stampy";
+    callback = jasmine.createSpy('success');
+    logInController = new LetsDoThis.LogInController();
+    logInController.getUserId(username, callback);
+
+    // confirm that request sent is correct
+    request = jasmine.Ajax.requests.mostRecent();
+    expect(request.url).toBe("http://159.203.12.88/api/users/search/");
+    expect(request.method).toBe("POST");
+    expect(request.data()).toEqual({
+      "username": "Stampy"});
+    
+  });
+  describe("on success", function() {
+    beforeEach(function() {
+      request.respondWith(testResponses.userIdStampy.success);
+    });
+    it("calls callback with user Id", function() {
+      // let's say that Stampy's user Id is 123
+      expect(callback).toHaveBeenCalled();
+      var respArg = callback.calls.mostRecent().args[0];
+      expect(respArg).toEqual(123);
+    })
+  });
+  describe("on error - no auth token set", function() {
+    beforeEach(function() {
+      request.respondWith(testResponses.userIdStampy.error);
+    });
+    it("should not call callback", function() {
+      expect(callback.calls.count()).toEqual(0);
+    })
   })
 })

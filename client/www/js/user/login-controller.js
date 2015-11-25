@@ -17,7 +17,6 @@ LetsDoThis.LogInController.prototype.init = function() {
     this.$btnSubmit = $("#btn-submit", this.$logInPage);
     this.$username = $("#username", this.$logInPage);
     this.$password = $("#password", this.$logInPage);
-    // console.log(this);
 };
 
 LetsDoThis.LogInController.prototype.resetLogInForm = function() {
@@ -26,7 +25,7 @@ LetsDoThis.LogInController.prototype.resetLogInForm = function() {
     this.$password.val("");
 };
 
-var getUserInfo = function(id) {
+LetsDoThis.LogInController.prototype.getUserInfo = function(id) {
 
     var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 
@@ -60,7 +59,7 @@ var getUserInfo = function(id) {
     })
 }
 
-var getUserId = function(username) {
+LetsDoThis.LogInController.prototype.getUserId = function(username, callback) {
 
     console.log("call to getUserId was successful");
 
@@ -68,12 +67,6 @@ var getUserId = function(username) {
 
     var postData = {
         "username": username
-    }
-
-    // First, check if authToken was successfully retrieved
-    if (!authToken){
-        console.log("Token was null - user not authenticated");
-        return
     }
 
     $.ajax({
@@ -91,9 +84,7 @@ var getUserId = function(username) {
                 userId: resp.id
             });
             console.log("User ID is "+resp.id);
-            // console.log("about to make call to get user info");
-            getUserInfo(resp.id);
-            // $.mobile.changePage(me.homePageId);
+            callback(resp.id);
 
         },
         error: function(e) {
@@ -119,14 +110,22 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
     }
 
     // Make sure that all the required fields have values.
-    if (invalidInput) {
-                return;
+    if (!invalidInput) {
+        console.log(this);
+        this.logIn(username, password, this.getUserId);
     }
 
+    
+};
+
+// console.log("login-controller has finished running");
+// console.log(LetsDoThis);
+LetsDoThis.LogInController.prototype.logIn = function(username, password, callback) {
     var postData = {
         "username": username,
         "password": password
     }
+    var callbackFn = this.getUserInfo;
 
     $.ajax({
         type: 'POST',
@@ -141,7 +140,7 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
             });
             console.log("auth token returned: "+resp.token);
             console.log("try to get user ID now");
-            getUserId(username);
+            callback(username, callbackFn);
         },
         error: function(e) {
             console.log(e.message);
@@ -149,7 +148,4 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
 
         }
     });
-};
-
-// console.log("login-controller has finished running");
-// console.log(LetsDoThis);
+}

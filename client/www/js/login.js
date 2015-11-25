@@ -1,3 +1,4 @@
+
 /*
  * Thanks to MiamiCoder for the tutorial!
  * http://miamicoder.com/2015/user-authentication-in-a-jquery-mobile-and-phonegap-application/
