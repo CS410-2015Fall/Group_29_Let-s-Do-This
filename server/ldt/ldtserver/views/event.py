@@ -167,7 +167,6 @@ def rsvp(event=None, replies=None):
         new_iad[dest_list].sort(key=int)
 
     return new_iad
-    # return replies    # stub; original functionality
 
 
 @api_view(['GET', 'PUT', 'DELETE'])

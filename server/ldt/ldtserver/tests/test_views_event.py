@@ -12,10 +12,9 @@ import json
 
 from django.test import TestCase
 from django.contrib.auth.models import User
-
 from django.core.urlresolvers import reverse
+
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from ..models import Event
 from ..views.event import rsvp
@@ -42,6 +41,7 @@ class EventViewTests(TestCase):
         User.objects._create_user(username=U6, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
 
     def test_event_list(self):
+        # vars for the following tests
         url = reverse('event_list')
         id1 = User.objects.get_by_natural_key(U1).id
         id2 = User.objects.get_by_natural_key(U2).id
@@ -50,7 +50,7 @@ class EventViewTests(TestCase):
         # Test GET all events before POST
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Event.objects.count(), 0)
+        self.assertEqual(len(response.data), 0)
         # Test POST basic new event
         data = {'display_name': 'test event'}
         response = self.client.post(url, data, format='json')
@@ -95,12 +95,91 @@ class EventViewTests(TestCase):
         self.assertEqual(response.data['declines'], [User.objects.get_by_natural_key(U4).id])
         self.assertIsNotNone(response.data['shopping_list'])
         self.assertIsNotNone(response.data['contributions'])
+        # Test POST basic new event, with extra (benign) field not recognized by serializer
+        data = {'display_name': 'test event with extra', 'extra': 'abc123'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Event.objects.count(), 3)
         # Test POST without display_name (invalid)
         data = {'not_display_name': 'test event error'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, 'KeyError: event display_name required.')
-        self.assertEqual(Event.objects.count(), 2)
+        self.assertEqual(Event.objects.count(), 3)
+        # Test POST with invalid date format
+        data = {'display_name': 'test event error', 'start_date': "May 4 2016"}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Event.objects.count(), 3)
+        # Test POST with invalid budget format
+        data = {'display_name': 'test event error', 'budget': 100.123}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Event.objects.count(), 3)
+        # Test POST with invalid hosts format
+        data = {"display_name": "test event error", "hosts": ["sammy", "sosa"]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Event.objects.count(), 3)
+        # Test POST with host user that does not exist
+        data = {"display_name": "test event error", "hosts": [9999]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Event.objects.count(), 3)
+        # Test GET all events after POST
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Event.objects.count(), 3)
+
+    def test_event_detail(self):
+        # vars for the following tests
+        u1 = User.objects.get_by_natural_key(U1)
+        u2 = User.objects.get_by_natural_key(U2)
+        u3 = User.objects.get_by_natural_key(U3)
+        u4 = User.objects.get_by_natural_key(U4)
+        u1o = {"id": u1.id, "username": u1.username}
+        u2o = {"id": u2.id, "username": u2.username}
+        u3o = {"id": u3.id, "username": u3.username}
+        u4o = {"id": u4.id, "username": u4.username}
+        # Setup by POST detailed new event, all fields correct
+        data = {
+            "display_name": "test event",
+            "start_date": "2015-01-01T00:00:00Z",
+            "end_date": "2015-12-31T23:59:00Z",
+            "budget": "12345678.90",
+            "location": "21 jump street",
+            "hosts": [u1.id],
+            "invites": [u2.id],
+            "accepts": [u3.id],
+            "declines": [u4.id]
+        }
+        url = reverse('event_list')
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        eid1 = response.data["id"]
+        # GET event that exists
+        url = reverse('event_detail', kwargs={"pk": eid1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(Event.objects.get(pk=response.data["id"]).display_name, 'test event')
+        self.assertEqual(response.data['display_name'], 'test event')
+        self.assertEqual(response.data['start_date'], "2015-01-01T00:00:00Z")
+        self.assertEqual(response.data['end_date'], "2015-12-31T23:59:00Z")
+        self.assertEqual(response.data['budget'], "12345678.90")
+        self.assertEqual(response.data['location'], "21 jump street")
+        self.assertEqual(response.data['hosts'], [u1o])
+        self.assertEqual(response.data['invites'], [u2o])
+        self.assertEqual(response.data['accepts'], [u3o])
+        self.assertEqual(response.data['declines'], [u4o])
+        self.assertIsNotNone(response.data['shopping_list'])
+        self.assertIsNotNone(response.data['contributions'])
+        # GET event that does not exist
+        url = reverse('event_detail', kwargs={"pk": 9999})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # !!!
+
+
 
     def test_rsvp_helper(self):
         # Set up event1 before applying replies
