@@ -7,3 +7,6 @@
 *.swp
 *.class
 *.jar
+
+#IDE
+.idea

@@ -46,6 +46,7 @@ function bindHomeUIActions() {
 	});
 
 	$("#profileButton").click(function(){
+		window.location="profile.html";
 	});
 	$("#friendsButton").click(function(){
 	});

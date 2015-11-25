@@ -1,75 +1,84 @@
 $.getScript("js/global.js", function() {
-	$(document).ready(function() {
-		var eventData = JSON.parse( localStorage.getItem("eventObj") );
-		console.log(eventData);
+$(document).ready(function() {
+	var eventData = JSON.parse( localStorage.getItem("eventObj") );
+	console.log(eventData);
 
-		loadEventData(eventData);
+	$("#eventName").html("<strong>" + eventData.display_name + "</strong>");
+	$("#dateTime").html(convertDate(eventData.start_date,eventData.end_date));
+	$("#location").html("Location: " + eventData.location);
 
-		GuestListModule.init(eventData);
-		$("#inviteButton").click(function(){
-			GuestListModule.handleInviteButton();
-		});
-		$("#rsvpButton").click(function(){
-			GuestListModule.handleRsvpButton();
-		});
+	// Guest list
+	GuestListModule.init(eventData,$("fieldset#friendsPopup"));
+	$("#inviteButton").click(function(){
+		GuestListModule.handleInviteButton($("#friendsPopup"));
+	});
+	$("#rsvpButton").click(function(){
+		GuestListModule.handleRsvpButton($("#rsvpButton"),$("#rsvpPopup"));
+	});
+	if (GuestListModule.guestList[GuestListModule.userId].status == 0) {
+		// disable RSVP button if you're already attending
+		$("#rsvpButton").attr('disabled','true');
+	}
 
-		CommentModule.init(eventData);
-		$("#commentForm").submit(function(event) {
-			event.preventDefault(); // do not redirect
-			CommentModule.postComment();
-		});
+	// Comments
+	CommentModule.init(eventData,$('#comments'));
+	$("#commentForm").submit(function(event) {
+		event.preventDefault(); // do not redirect
+		CommentModule.postComment($('textarea#commentTextArea'));
+	});
 
-		ShoppingListModule.init(eventData);
-		$("#newClaimedItemButton").click(function() {
-			ShoppingListModule.newItem(true);
-		});
-		$("#newUnclaimedItemButton").click(function() {
-			ShoppingListModule.newItem(false);
-		});
-		$(document).on("click",'#shoppingList button',function(e) {
-			var itemId = $(this).attr("id");
-			ShoppingListModule.claimItem(itemId);
-		});
+	// Shopping list
+	ShoppingListModule.init(eventData,$("#shoppingList"));
+	$("#newClaimedItemButton").click(function() {
+		ShoppingListModule.newItem(true,$('#newItemName'),$('#newItemCost'));
+	});
+	$("#newUnclaimedItemButton").click(function() {
+		ShoppingListModule.newItem(false,$('#newItemName'),$('#newItemCost'));
+	});
+	$(document).on("click",'#shoppingList button',function(e) {
+		var itemId = $(this).attr("id");
+		ShoppingListModule.claimItem(itemId,$('input#' + itemId));
+	});
+	$("#getBalanceButton").click(function() {
+		var guestCount = eventData.accepts.length + eventData.hosts.length;
+		ShoppingListModule.calculateBalance(GuestListModule.userId,guestCount,$("#balancePopup"));
+	})
 
-		$("#homeButton").click(function(){
-			window.location="home.html";
-		});
+	// Other
+	$("#homeButton").click(function(){
+		window.location="home.html";
+	});
 
-		$("#viewMap").click(function(){
-			// TODO Save the location, and name, into the session storage so the map script can pull it up
-			window.location="map.html";
-		});
+	$("#viewMap").click(function(){
+		// TODO Save the location, and name, into the session storage so the map script can pull it up
+		window.location="map.html";
 	});
 });
-
-function loadEventData(e) {
-	$("#eventName").html("<strong>" + e.display_name + "</strong>");
-	var dateString = convertDate(e.start_date,e.end_date);
-	$("#dateTime").html(dateString);
-	$("#location").html("Location: " + e.location);
-}
+});
 
 var CommentModule = {
-	// comment = { id:Int, author:String, post_date: YYYY-MM-DDTHH:MM:SS.446000Z, content:String, event:Int }
+	// comment = { id:Int, author:{User}, post_date: YYYY-MM-DDTHH:MM:SS.446000Z, content:String, event:Int }
 	comments: [],
+	commentDiv: {},
 	eventId: -1,
 
-	init: function(e) {
+	init: function(e,commentDiv) {
 		this.eventId = e.id;
 		this.comments = e.comments;
+		this.commentDiv = commentDiv;
 
 		this.updateUI();
 	},
 
-	postComment: function() {
+	postComment: function(commentField) {
 		var newComment = {
 			author: LetsDoThis.Session.getInstance().getUserInfo(),
 			post_date: currentDate(),
-			content: $('textarea#commentTextArea').val()
+			content: commentField.val()
 		};
 		this.comments.push(newComment);
 
-		$('textarea#commentTextArea').val("");
+		commentField.val("");
 
 		this.updateUI();
 		this.updateServer(newComment);
@@ -82,7 +91,7 @@ var CommentModule = {
 			var c = new Box(h,comment.content,"");
 			formattedComments.push(c);
 		});
-		displayBoxes(formattedComments,$('#comments'));
+		displayBoxes(formattedComments,this.commentDiv);
 	},
 
 	updateServer: function(comment) {
@@ -99,12 +108,14 @@ var GuestListModule = {
 	// status 3 == declined
 	// gustList is a dict, not an array, guests are indexed by id
 	guestList: {},
+	guestsPopupFieldDiv: {},
 	userId: -1,
 	eventId: -1,
 
-	init: function(e) {
+	init: function(e,guestsDiv) {
 		this.userId = LetsDoThis.Session.getInstance().getUserId();
 		this.eventId = e.id;
+		this.guestsPopupFieldDiv = guestsDiv;
 
 		var invites = e.invites;
 		var accepts = e.accepts;
@@ -168,67 +179,66 @@ var GuestListModule = {
 		$.each(this.guestList, function(i, guest) {
 			write(guest);
 		});
-		$("fieldset#friendsPopup").html(str);
-		$("#friendsPopup").trigger('create');
-
-		// disable RSVP button if you're already confirmed as attending
-		if (this.guestList[this.userId].status == 0) {
-			$("#rsvpButton").attr('disabled','true');
-		}
+		this.guestsPopupFieldDiv.html(str);
+		this.guestsPopupFieldDiv.trigger('create');
 	},
 
-	handleRsvpButton: function() {
+	handleRsvpButton: function(rsvpButtonDiv,rsvpPopupDiv) {
 		var yourself = this.guestList[this.userId];
 		yourself.status = 0;
-		this.updateServer(yourself);
-		$("#rsvpButton").attr('disabled', 'true');
-		$("#rsvpPopup").popup( "open" )
+
+		rsvpToEvent(this.eventId, true, function(){}); // update server
+		removeFromInvite(this.eventId,[this.userId]);
+
+		rsvpButtonDiv.attr('disabled', 'true');
+		rsvpPopupDiv.popup( "open" )
 		this.updateUI();
 	},
 
-	handleInviteButton: function() {
+	handleInviteButton: function(friendsPopupDiv) {
 		// get checkbox data and compare it to guestList
 		var ancestor = document.getElementById('friendsPopup'),
 		descendents = ancestor.getElementsByTagName('input');
-		var i, e;
+		var i, e, invites = [], removes = [];
 		for (i = 0; i < descendents.length; ++i) {
 			var guest = this.guestList[descendents[i].id];
 			if (descendents[i].checked) {
 				if (guest.status == 2) { // uninvited -> invited
-					guest.status = 1;
-					this.updateServer(guest);
+					invites.push(guest.id);
+					guest.status = 1
 				}
 			} else {
 				if (guest.status == 1) { // invited -> uninvited
 					guest.status = 2;
-					this.updateServer(guest)
+					removes.push(guest.id);
 				}
 			}
 		}
-		$("#friendsPopup").popup("close");
+		friendsPopupDiv.popup("close");
 		this.updateUI();
-	},
 
-	updateServer: function(guest) {
-		//TODO figure out how the server calls are supposed to work, and why this isn't working
-		if (guest.status == 0) { // accepted
-			rsvpToEvent(this.eventId, "accepts", function(){});
-		} else if (guest.status == 1) { // invited
-			inviteToEvent(this.eventId, [guest.id], function() {});
-		} else if (guest.status == 2) { // uninvited
-			alert("TODO implement uninviting");
+		// update server
+		if (removes.length > 0) {
+			removeFromInvite(this.eventId,removes);
+			alert("removed");
+		}
+		if (invites.length > 0) {
+			inviteToEvent(this.eventId, invites, function() {});
+			alert("invited");
 		}
 	}
 };
 
 var ShoppingListModule = {
-	// shoppingItem = {id:Int, display_name:String, cost:Float, supplier:User, ready:Bool}
+	// shoppingItem = {id:Int, display_name:String, cost:Float, supplier:{User}, ready:Bool}
 	// choppinglist is a dict, not an array
 	shoppingList: {},
+	shoppingListDiv: {},
 	eventId: -1,
 
-	init: function(e) {
+	init: function(e,shoppingDiv) {
 		this.eventId = e.id;
+		this.shoppingListDiv = shoppingDiv;
 
 		var esli = e.shopping_list.items;
 		for (i = 0; i < esli.length; i++) {
@@ -240,7 +250,7 @@ var ShoppingListModule = {
 	},
 
 	updateUI: function() {
-		var str = '<h2>Shopping List</h2>';
+		var str = '';
 
 		$.each(this.shoppingList,function(i,v){
 			str += '<div data-role="collapsible"';
@@ -270,31 +280,59 @@ var ShoppingListModule = {
 			str += '</div>';
 		});
 
-		$("#shoppingList").html(str);
-		$("#shoppingList").trigger('create');
+		this.shoppingListDiv.html(str);
+		this.shoppingListDiv.trigger('create');
 	},
 
-	newItem: function(isClaimed) {
-		var name = $('#newItemName').val();
-		var cost = $('#newItemCost').val();
+	newItem: function(isClaimed,nameField,costField) {
+		var name = nameField.val();
+		var cost = costField.val();
 		var yourself = LetsDoThis.Session.getInstance().getUserInfo();
 
-		$('#newItemName').val("");
-		$('#newItemCost').val("");
+		nameField.val("");
+		costField.val("");
 		// Sometimes when I'm writing Javascript I want to throw up my hands and say "this is bullshit!" but I can never remember what "this" refers to.
-		addShoppingListItem(this.eventId, name, 1, cost, yourself.id, isClaimed, function(resp){
+		addShoppingListItem(this.eventId, name, 1, cost, yourself.id, isClaimed, function(resp){ // update server
 			ShoppingListModule.shoppingList[resp[0].id] = resp[0];
 			ShoppingListModule.updateUI();
 		});
 	},
 
-	claimItem: function(itemId) {
-		var cost = $('input#' + itemId).val();
+	claimItem: function(itemId,itemDiv) {
+		var cost = itemDiv.val();
 		this.shoppingList[itemId].ready = true;
 		this.shoppingList[itemId].cost = cost;
 		this.shoppingList[itemId].supplier = LetsDoThis.Session.getInstance().getUserInfo();
 		this.updateUI();
 		var item = this.shoppingList[itemId];
-		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready);
+		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready); // update server
+	},
+
+	calculateBalance: function(userId,guestCount,popupDiv) {
+		// balance is the sum cost of items claimed by user
+		// minus the total sum cost of all claimed items
+		// divided by the number of attending guests
+		var userSpent = 0.0;
+		var totalSpent = 0.0;
+		$.each(this.shoppingList, function(i,v) {
+			if (v.ready) {
+				totalSpent += parseFloat(v.cost);
+				if (v.supplier.id == userId) {
+					userSpent += parseFloat(v.cost);
+				}
+			}
+		});
+		var balance = userSpent - (totalSpent/guestCount);
+		var balance = balance.toFixed(2); // round to two decimals
+		var message = "";
+		if (balance == 0) {
+			message = "<p>Nothing owed</p>";
+		} else if (balance > 0) {
+			message = "<p>You are owed $" + balance + "</p>";
+		} else {
+			message = "<p>You owe $" + balance + "</p>";
+		}
+		popupDiv.html(message);
+		popupDiv.popup("open");
 	}
 };

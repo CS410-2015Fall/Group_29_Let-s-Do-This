@@ -1,0 +1,24 @@
+# Mac
+.DS_Store
+
+# IDE
+.idea
+__old
+
+# Compiled python
+*.pyc
+*.pyo
+
+# Virtual env
+venv
+
+# Database & Private
+settings.py
+migrations
+
+# General
+*.tmp
+*.bak
+*.swp
+*.class
+*.jar

@@ -25,8 +25,10 @@
 		</form>
 	</div>
 
-	<!-- <div id="shoppingDiv"> -->
-
+	<fieldset class="ui-grid-a">
+		<div class="ui-block-a"><h2>Shopping List</h2></div>
+		<div class="ui-block-b"><button id="getBalanceButton" data-inline="true" type="submit">Get Balance</button></div>
+	</fieldset>
 	<div id="shoppingList" data-role="collapsibleset" data-collapsed-icon="check" data-expanded-icon="check">
 	</div>
 
@@ -49,7 +51,6 @@
 
 		</div>
 	</div>
-
 </div>
 
 <div id="friendsPopup" data-role="popup">
@@ -63,6 +64,8 @@
 <div data-role="popup" id="rsvpPopup">
 	<p>You are marked as attending.</p>
 </div>
+
+<div data-role="popup" id="balancePopup"></div>
 
 <div data-role="header" id="header">
 	<fieldset class="ui-grid-a">
