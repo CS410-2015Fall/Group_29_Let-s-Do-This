@@ -315,6 +315,11 @@ class EventViewTests(TestCase):
         data = {"changed": []}
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # POST without 'changed' list provided
+        url = reverse('event_changed_remove', kwargs={"pk": eid1})
+        data = {"abcdef": []}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # POST to remove non-existent user from existing event
         url = reverse('event_changed_remove', kwargs={"pk": eid1})
         data = {"changed": [9999]}
@@ -342,17 +347,72 @@ class EventViewTests(TestCase):
         u2 = User.objects.get_by_natural_key(U2)
         u3 = User.objects.get_by_natural_key(U3)
         u4 = User.objects.get_by_natural_key(U4)
-        u5 = User.objects.get_by_natural_key(U5)
-        u6 = User.objects.get_by_natural_key(U6)
-        # u1o = {"id": u1.id, "username": u1.username}
-        # u2o = {"id": u2.id, "username": u2.username}
-        # u3o = {"id": u3.id, "username": u3.username}
-        # u4o = {"id": u4.id, "username": u4.username}
+        u1o = {"id": u1.id, "username": u1.username}
+        u2o = {"id": u2.id, "username": u2.username}
+        u3o = {"id": u3.id, "username": u3.username}
         # Setup by POST new event
         data = {"display_name": "test event"}
         url = reverse('event_list')
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         eid1 = response.data["id"]
+        # PUT event's 'hosts' list
+        url = reverse('event_detail', kwargs={"pk": eid1})
+        data = {"hosts": [u1.id, u2.id, u3.id]}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(response.data['hosts'], [u1.id, u2.id, u3.id])
+        # POST to remove one from 'hosts'
+        url = reverse('event_hosts_remove', kwargs={"pk": eid1})
+        data = {"hosts": [u2.id]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(response.data["hosts"], [u1.id, u3.id])
+        # POST to remove rest from 'hosts'
+        url = reverse('event_hosts_remove', kwargs={"pk": eid1})
+        data = {"hosts": [u1.id, u3.id]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(response.data["hosts"], [])
+        # PUT event's 'changed' list - should not duplicate U1
+        url = reverse('event_detail', kwargs={"pk": eid1})
+        data = {"hosts": [u1.id, u2.id, u3.id]}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(response.data["hosts"], [u1.id, u2.id, u3.id])
+        # POST to remove one from event that does not exist
+        url = reverse('event_hosts_remove', kwargs={"pk": 9999})
+        data = {"hosts": []}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # POST without 'hosts' list provided
+        url = reverse('event_hosts_remove', kwargs={"pk": eid1})
+        data = {"abcdef": []}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # POST to remove non-existent user from existing event
+        url = reverse('event_hosts_remove', kwargs={"pk": eid1})
+        data = {"hosts": [9999]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        url = reverse('event_detail', kwargs={"pk": eid1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(response.data["hosts"], [u1o, u2o, u3o])
+        # POST to remove existent user from existing event, but isn't on "hosts" list
+        url = reverse('event_hosts_remove', kwargs={"pk": eid1})
+        data = {"hosts": [u4.id]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        url = reverse('event_detail', kwargs={"pk": eid1})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(response.data["hosts"], [u1o, u2o, u3o])
 
     def test_event_invites_remove(self):
         return  # !!!stub

@@ -310,7 +310,7 @@ def event_changed_remove(request, pk):
         return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
 
     if "changed" not in request.data:
-        return Response({"error": "'changed' must be provided as list of user IDs"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "'changed' must be provided as list of user IDs"}, status=status.HTTP_400_BAD_REQUEST)
 
     # Error if trying to remove non-existent user from changed list
     try:
@@ -359,8 +359,26 @@ def event_hosts_remove(request, pk):
     except Event.DoesNotExist:
         return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
 
+    if "hosts" not in request.data:
+        return Response({"error": "'hosts' must be provided as list of user IDs"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # "display_name" is mandatory for any Event serializer updates
     data = {}
     data.update({"display_name": event.display_name})
+
+    # Error if trying to remove non-existent user from changed list
+    try:
+        [User.objects.get(pk=uid) for uid in request.data["hosts"]]
+    except:
+        return Response({"error": "no user exists for one or more IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove user who isn't already on changed list
+    try:
+        for uid in request.data["hosts"]:
+            if uid not in hosts:
+                raise Exception
+    except:
+        return Response({"error": "user(s) is not on 'hosts' list and cannot be removed"}, status=status.HTTP_400_BAD_REQUEST)
 
     newhosts = [h for h in hosts if h not in request.data["hosts"]]
     data.update({"hosts": newhosts})
