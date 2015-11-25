@@ -38,10 +38,10 @@ searchYelp(city, radius, term, sort, function(results){
 });
 
 //This function will return the selected name and address to the createEvent page
-function returnToCreateEvent(name, address){
+function returnToCreateEvent(name, address, city){
   console.log("Saving: " + name + ": " + address + "to storage");
   localStorage.setItem("yelpLocationName", name);
-  localStorage.setItem("yelpLocationAddress", address);
+  localStorage.setItem("yelpLocationAddress", address + ", " + city);
   localStorage.setItem("arrivingFromYelp", 1);
   window.location = "createEvent.html";
 }

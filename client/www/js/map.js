@@ -19,7 +19,14 @@ function prepEventMarker(){
 	var location = eventDetails[0];
 	var title = eventDetails[1];
 
-	console.log('Initing with: Tit: ' + title + " Loc: " + location);
+	//We need to be careful with the location. When we store it, the location name usually comes before the address
+	//ie Vancouver Pizza: 225 Main St.
+	var locationSplit = location.split(':'); //This assumes a colon isn't used in an address (which I belive is safe to assume)
+	if(locationSplit.length>1){ //The name was in there
+		location = locationSplit[1]; //Set the location to just the address
+	}
+
+	console.log('Initing with: Title: ' + title + " Loc: " + location);
 	initEventData(title, location);
 }
 
