@@ -137,6 +137,8 @@ class EventViewTests(TestCase):
         u2 = User.objects.get_by_natural_key(U2)
         u3 = User.objects.get_by_natural_key(U3)
         u4 = User.objects.get_by_natural_key(U4)
+        u5 = User.objects.get_by_natural_key(U5)
+        u6 = User.objects.get_by_natural_key(U6)
         u1o = {"id": u1.id, "username": u1.username}
         u2o = {"id": u2.id, "username": u2.username}
         u3o = {"id": u3.id, "username": u3.username}
@@ -177,7 +179,111 @@ class EventViewTests(TestCase):
         url = reverse('event_detail', kwargs={"pk": 9999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        # !!!
+        # PUT event that does not exist
+        url = reverse('event_detail', kwargs={"pk": 9999})
+        data = {}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # PUT event that exists (id = eid1), with no fields (returns event, unchanged)
+        url = reverse('event_detail', kwargs={"pk": eid1})
+        data = {}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(Event.objects.get(pk=response.data["id"]).display_name, 'test event')
+        self.assertEqual(response.data['display_name'], 'test event')
+        self.assertEqual(response.data['start_date'], "2015-01-01T00:00:00Z")
+        self.assertEqual(response.data['end_date'], "2015-12-31T23:59:00Z")
+        self.assertEqual(response.data['budget'], "12345678.90")
+        self.assertEqual(response.data['location'], "21 jump street")
+        self.assertEqual(response.data['hosts'], [u1.id])
+        self.assertEqual(response.data['invites'], [u2.id])
+        self.assertEqual(response.data['accepts'], [u3.id])
+        self.assertEqual(response.data['declines'], [u4.id])
+        self.assertIsNotNone(response.data['shopping_list'])
+        self.assertIsNotNone(response.data['contributions'])
+        # PUT event that exists, with valid fields
+        # Note that the rsvp and insert_hosts helpers will manage I/A/D and H lists
+        data = {
+            "display_name": "updated event",
+            "start_date": "2016-02-02T05:55:00Z",
+            "end_date": "2017-02-01T04:59:00Z",
+            "budget": "1.00",
+            "location": "the most northern I-5 Rest stop",
+            "hosts": [u2.id],               # add U2, with U1
+            "invites": [u5.id],             # add U5, with U2
+            "accepts": [u4.id, u6.id],      # add U4 (rm from D) and U6
+            "declines": [u3.id]             # add U3 (rm from A)
+        }
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(Event.objects.get(pk=response.data["id"]).display_name, 'updated event')
+        self.assertEqual(response.data['display_name'], 'updated event')
+        self.assertEqual(response.data['start_date'], "2016-02-02T05:55:00Z")
+        self.assertEqual(response.data['end_date'], "2017-02-01T04:59:00Z")
+        self.assertEqual(response.data['budget'], "1.00")
+        self.assertEqual(response.data['location'], "the most northern I-5 Rest stop")
+        self.assertEqual(response.data['hosts'], [u1.id, u2.id])
+        self.assertEqual(response.data['invites'], [u2.id, u5.id])
+        self.assertEqual(response.data['accepts'], [u4.id, u6.id])
+        self.assertEqual(response.data['declines'], [u3.id])
+        # PUT event that exists, with extra (benign) field not recognized by serializer
+        data = {
+            "display_name": "updated the event again",
+            "non_existent": "field"
+        }
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], eid1)
+        self.assertEqual(Event.objects.get(pk=response.data["id"]).display_name, 'updated the event again')
+        self.assertEqual(response.data['display_name'], 'updated the event again')
+        # PUT event that exists, with invalid date format
+        data = {
+            "start_date": "May 4 2016"
+        }
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # PUT event that exists, with invalid budget format
+        data = {
+            "budget": "100.123"
+        }
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # PUT event that exists, with invalid hosts format
+        data = {
+            "hosts": ["sammy", "sosa"]
+        }
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # PUT event that exists, with host user that does not exist
+        data = {
+            "hosts": [9999]
+        }
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # DELETE event that exists
+        url = reverse('event_detail', kwargs={"pk": eid1})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # DELETE event that does not exist
+        url = reverse('event_detail', kwargs={"pk": 9999})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_changed_remove(self):
+        return  # !!! stub
+
+    def test_event_hosts_remove(self):
+        return  # !!! stub
+
+    def test_event_invites_remove(self):
+        return  # !!!stub
+
+    def test_insert_hosts_helper(self):
+        return  # !!! stub
+
+
 
 
 

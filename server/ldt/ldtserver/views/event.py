@@ -246,7 +246,6 @@ def event_detail(request, pk):
                     udict = {
                         "id": user.id,
                         "username": user.username,
-                        # "password": user.password,
                         "phone": profile.phone,
                         "email": profile.email,
                     }
@@ -255,7 +254,6 @@ def event_detail(request, pk):
                     udict = {
                         "id": user.id,
                         "username": user.username,
-                        # "password": user.password,
                     }
                 detailed_ulist.append(udict)
             res[f] = detailed_ulist
