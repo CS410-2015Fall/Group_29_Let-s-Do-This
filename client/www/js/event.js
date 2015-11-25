@@ -39,6 +39,10 @@ $(document).ready(function() {
 		var itemId = $(this).attr("id");
 		ShoppingListModule.claimItem(itemId,$('input#' + itemId));
 	});
+	$("#getBalanceButton").click(function() {
+		var guestCount = eventData.accepts.length + eventData.hosts.length;
+		ShoppingListModule.calculateBalance(GuestListModule.userId,guestCount,$("#balancePopup"));
+	})
 
 	// Other
 	$("#homeButton").click(function(){
@@ -246,7 +250,7 @@ var ShoppingListModule = {
 	},
 
 	updateUI: function() {
-		var str = '<h2>Shopping List</h2>';
+		var str = '';
 
 		$.each(this.shoppingList,function(i,v){
 			str += '<div data-role="collapsible"';
@@ -302,5 +306,33 @@ var ShoppingListModule = {
 		this.updateUI();
 		var item = this.shoppingList[itemId];
 		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready); // update server
+	},
+
+	calculateBalance: function(userId,guestCount,popupDiv) {
+		// balance is the sum cost of items claimed by user
+		// minus the total sum cost of all claimed items
+		// divided by the number of attending guests
+		var userSpent = 0.0;
+		var totalSpent = 0.0;
+		$.each(this.shoppingList, function(i,v) {
+			if (v.ready) {
+				totalSpent += parseFloat(v.cost);
+				if (v.supplier.id == userId) {
+					userSpent += parseFloat(v.cost);
+				}
+			}
+		});
+		var balance = userSpent - (totalSpent/guestCount);
+		var balance = balance.toFixed(2); // round to two decimals
+		var message = "";
+		if (balance == 0) {
+			message = "<p>Nothing owed</p>";
+		} else if (balance > 0) {
+			message = "<p>You are owed $" + balance + "</p>";
+		} else {
+			message = "<p>You owe $" + balance + "</p>";
+		}
+		popupDiv.html(message);
+		popupDiv.popup("open");
 	}
 };
