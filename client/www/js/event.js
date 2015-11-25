@@ -220,11 +220,9 @@ var GuestListModule = {
 		// update server
 		if (removes.length > 0) {
 			removeFromInvite(this.eventId,removes);
-			alert("removed");
 		}
 		if (invites.length > 0) {
 			inviteToEvent(this.eventId, invites, function() {});
-			alert("invited");
 		}
 	}
 };
