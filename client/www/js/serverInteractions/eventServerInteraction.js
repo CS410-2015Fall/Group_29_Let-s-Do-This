@@ -66,6 +66,27 @@ function getEvents(callback){
 	});
 }
 
+function getChangedEvents(callback){
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+	$.ajax({
+		type: 'GET',
+		url: "http://159.203.12.88/api/events/",
+		dataType: 'json',
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
+		},
+		success: function (resp) {
+			console.log("Received events");
+			var relevantEvents = sortEvents(resp);
+			var changedEvents = checkForChange(relevantEvents);
+			callback(changedEvents);
+		},
+		error: function(e) {
+			console.log(e);
+		}
+	});
+}
+
 //Sort through all the events and return only the ones of interest to the user
 function sortEvents(events){
 	var userID = LetsDoThis.Session.getInstance().getUserId();
@@ -87,10 +108,6 @@ function sortEvents(events){
 			relevantEvents.push(events[i]);
 		}
 	}
-
-	//Before returning, check if any of these relevantEvents have changed since we last saw it
-	checkForChange(relevantEvents);
-
 	//Send back to the callback function
 	return relevantEvents;
 }
@@ -276,14 +293,14 @@ function editEvent(eventId, display_name, start_date, end_date, budget, location
 
 function deleteEvent(eventId,callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-    var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/";
+	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/";
 
 	$.ajax({
 		type: 'DELETE',
 		url: eventUrl,
 		dataType: 'json',
 		beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "JWT " + authToken);
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
 		success: function (resp) {
 			console.log("Deleted event");
@@ -297,7 +314,7 @@ function deleteEvent(eventId,callback) {
 
 function cancelEvent(eventId,callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-    var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/cancel/";
+	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/cancel/";
 
 	var postData = {"cancelled": true};
 
@@ -306,7 +323,7 @@ function cancelEvent(eventId,callback) {
 		url: eventUrl,
 		dataType: 'json',
 		beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "JWT " + authToken);
+			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
 		data: JSON.stringify(postData),
 		contentType: 'application/json',
@@ -325,6 +342,7 @@ function cancelEvent(eventId,callback) {
 function checkForChange(events){
 	var userID = LetsDoThis.Session.getInstance().getUserId();
 	// console.log("Checking for changes");
+	var changed = [];
 	for(i=0; i<events.length; i++){
 		if($.inArray(userID, events[i].changed) > -1){
 			//User is a part of the changed event
@@ -333,8 +351,11 @@ function checkForChange(events){
 			notifyOfChange(events[i].display_name);
 			//We have dealt with the changed event, now remove this user from it
 			removeFromChanged(events[i].id);
+
+			changed.push(events[i]);
 		}
 	}
+	return changed;
 }
 
 //Remove the current user from the 'changed' list on the given event

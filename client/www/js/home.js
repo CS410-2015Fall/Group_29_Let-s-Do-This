@@ -1,59 +1,67 @@
-$(document).ready(function() {
-	//These scripts all need to be loaded here because they are reliant on the deviceready event, which is fired in the cordova script
-	//Get the script to handle the native calendar
-	$.getScript("js/osInteractions/calendarInteractions.js");
-	//Get the script to handle notifications
-	$.getScript("js/osInteractions/notificationInteractions.js");
+$.getScript("js/global.js", function() {
+	$(document).ready(function() {
+		//These scripts all need to be loaded here because they are reliant on the deviceready event, which is fired in the cordova script
+		//Get the script to handle the native calendar
+		$.getScript("js/osInteractions/calendarInteractions.js");
+		//Get the script to handle notifications
+		$.getScript("js/osInteractions/notificationInteractions.js");
 
-	console.log("Loading home page script");
+		console.log("Loading home page script");
 
-	// TODO load some initial content
-	// createContentBoxes(tempFakeNotificationData,$("#mainContent"));
-	// loadFriends();
+		loadFriends();
 
-	bindHomeUIActions();
-});
+		var notificationBoxes = [];
+		var eventBoxes = [];
+		getChangedEvents(function(notifs) {
+			if (notifs.length > 0) {
+				notificationBoxes = formatNotificationBoxes(notifs);
+				displayBoxes(notificationBoxes, $("#mainContent"));
+			} else {
+				getEvents(function(e) {
+					eventBoxes = formatEventBoxes(e);
+					displayBoxes(eventBoxes, $("#mainContent"));
+				});
+			}
+		});
 
-function bindHomeUIActions() {
-	$("#notificationsButton").click(function(){
-		// TODO
-		// getNotifications(function(resp) {
-		// 	var boxes = formatNotificationBoxes(resp);
-		// 	displayBoxes(boxes, $("#mainContent"));
-		// });
-		var tempFakeNotificationData = [
-		new Box("Christmas Party","Tom is attending","1"),
-		new Box("Trivia Night at The Biltmore","Dick invited you","2"),
-		new Box("Harry's Birthday Party","Is today at 19:30","3"),
-		new Box("Christmas Party","Sally commented","4")
-		];
-		displayBoxes(tempFakeNotificationData, $("#mainContent"));
-	});
+		$("#notificationsButton").click(function() {
+			if (notificationBoxes.length == 0) {
+				$("#mainContent").html("<h2>No new notifications!</h2>");
+			} else {
+				displayBoxes(notificationBoxes, $("#mainContent"));
+			}
+		});
 
-	$("#eventsButton").click(function(){
-		getEvents(function(resp) {
-			var boxes = formatEventBoxes(resp);
-			displayBoxes(boxes, $("#mainContent"));
+		$("#eventsButton").click(function(){
+			if (eventBoxes.length == 0) {
+				getEvents(function(resp) {
+					// TODO don't display cancelled events
+					eventBoxes = formatEventBoxes(resp);
+					displayBoxes(eventBoxes, $("#mainContent"));
+				});
+			} else {
+				displayBoxes(eventBoxes, $("#mainContent"));
+			}
+		});
+
+		$("#createEventButton").click(function(){
+			localStorage.setItem("editEvent", 0);
+			window.location="createEvent.html";
+		});
+
+		$("#profileButton").click(function(){
+			window.location="profile.html";
+		});
+
+		// makes notification and event boxes act as links to their event page
+		$(document).on("click", '#mainContent div', function(e) {
+			if ($(this).attr("id") == "box") {
+				var eventId = $(this).attr("boxId");
+				openEvent(eventId);
+			}
 		});
 	});
-
-	$("#calendarButton").click(function(){
-		$("#mainContent").html("<strong>TODO</strong>");
-	});
-
-	$("#createEventButton").click(function(){
-	    localStorage.setItem("editEvent", 0);
-		window.location="createEvent.html";
-	});
-
-	$("#profileButton").click(function(){
-		window.location="profile.html";
-	});
-	$("#friendsButton").click(function(){
-	});
-
-	handleContentBoxLinks();
-}
+});
 
 function formatEventBoxes(events) {
 	var formattedEvents = [];
@@ -67,20 +75,10 @@ function formatEventBoxes(events) {
 function formatNotificationBoxes(events) {
 	var formattedNotifications = [];
 	$.each( events, function(i, val) {
-		var boxObject = new Box("event name","content of notification","0"); // TODO
-		formattedNotificationsspush(boxObject);
+		var boxObject = new Box(val.display_name,"This event has been modified!",val.id);
+		formattedNotifications.push(boxObject);
 	});
 	return formattedNotifications;
-}
-
-function handleContentBoxLinks() {
-	// makes notification and event boxes act as links to their event page
-	$(document).on("click", '#mainContent div', function(e) {
-		if ($(this).attr("id") == "box") {
-			var eventId = $(this).attr("boxId");
-			openEvent(eventId);
-		}
-	});
 }
 
 function loadFriends() {

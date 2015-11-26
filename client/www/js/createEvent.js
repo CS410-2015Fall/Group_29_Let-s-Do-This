@@ -1,34 +1,34 @@
 $.getScript("js/global.js", function() {
-	$(document).ready(function() {
-		var module;
-		var eventId = localStorage.getItem("editEvent");
-		if(eventId == 0){
-			module = CreateEventModule;
-		} else {
-			module = EditEventModule;
-			getEvent(eventId, function(resp) {
-				module.init(resp,'nameField', 'dateField', 'startTimeField', 'endTimeField', 'locationField',$("#cancelButton"));
-			});
-		}
-
-		if (localStorage.getItem("arrivingFromYelp") != 0) {
-			LocationModule.loadValuesFromStorage();
-			localStorage.setItem("arrivingFromYelp", 0);
-		}
-
-		$("#backButton").click(function(){
-			module.handleBackButton();
+$(document).ready(function() {
+	var module;
+	var eventId = localStorage.getItem("editEvent");
+	if(eventId == 0){
+		module = CreateEventModule;
+	} else {
+		module = EditEventModule;
+		getEvent(eventId, function(resp) {
+			module.init(resp,'nameField', 'dateField', 'startTimeField', 'endTimeField', 'locationField',$("#cancelButton"));
 		});
+	}
 
-		$("#findLocationButton").click(function(){
-			LocationModule.saveValuesToStorage();
-			window.location ="venueSearch.html";
-		});
+	if (localStorage.getItem("arrivingFromYelp") != 0) {
+		LocationModule.loadValuesFromStorage();
+		localStorage.setItem("arrivingFromYelp", 0);
+	}
 
-		$("#saveButton").click(function(){
-			module.handleSaveButton();
-		});
+	$("#backButton").click(function(){
+		module.handleBackButton();
 	});
+
+	$("#findLocationButton").click(function(){
+		LocationModule.saveValuesToStorage();
+		window.location ="venueSearch.html";
+	});
+
+	$("#saveButton").click(function(){
+		module.handleSaveButton();
+	});
+});
 });
 
 var LocationModule = {
@@ -135,7 +135,6 @@ var EditEventModule = {
 	handleCancelButton: function() {
 		cancelEvent(this.eventId, function(resp){
 			window.location="home.html";
-			alert("cancello!");
 		});
 	},
 
@@ -145,11 +144,11 @@ var EditEventModule = {
 
 	handleSaveButton: function() {
 		var e = new BuildEventObj();
-		// if (e.display_name != "" && e.start_date != "") {
+		if (e.display_name != "" && e.start_date != "") {
 			this.updateEvent(e);
-		// } else {
+		} else {
 			// throw up some message? idk.
-		// }
+		}
 
 	},
 
