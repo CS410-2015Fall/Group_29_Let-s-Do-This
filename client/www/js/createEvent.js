@@ -7,7 +7,7 @@ $(document).ready(function() {
 	} else {
 		module = EditEventModule;
 		getEvent(eventId, function(resp) {
-			module.init(resp,'nameField', 'dateField', 'startTimeField', 'endTimeField', 'locationField');
+			module.init(resp,'nameField', 'dateField', 'startTimeField', 'endTimeField', 'locationField',$("#cancelButton"));
 		});
 	}
 
@@ -106,7 +106,11 @@ var CreateEventModule = {
 
 var EditEventModule = {
 
-	init: function(e, nameField, dateField, startTimeField, endTimeField, locationField) {
+	eventId: -1,
+
+	init: function(e, nameField, dateField, startTimeField, endTimeField, locationField,cancelButtonDiv) {
+		this.eventId = e.id;
+
 		document.getElementById(nameField).value = e.display_name;
 		var start = e.start_date.split("T");
 		document.getElementById(dateField).value = start[0];
@@ -114,6 +118,23 @@ var EditEventModule = {
 		var end = e.end_date.split("T");
 		document.getElementById(endTimeField).value = end[1];
 		document.getElementById(locationField).value = e.location;
+
+		this.initCancelButton(cancelButtonDiv);
+	},
+
+	initCancelButton: function(cancelButtonDiv) {
+		var button = $('<button id="cancelEventButton" data-theme="b" onclick="alert("");">Cancel Event</button>');
+
+		cancelButtonDiv.append(button);
+		cancelButtonDiv.trigger('create');
+
+		button.click(function(){
+			EditEventModule.handleCancelButton();
+		});
+	},
+
+	handleCancelButton: function() {
+		alert("TODO cancel the event");
 	},
 
 	handleBackButton: function() {
