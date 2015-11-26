@@ -1,34 +1,34 @@
 $.getScript("js/global.js", function() {
-$(document).ready(function() {
-	var module;
-	var eventId = localStorage.getItem("editEvent");
-	if(eventId == 0){
-		module = CreateEventModule;
-	} else {
-		module = EditEventModule;
-		getEvent(eventId, function(resp) {
-			module.init(resp,'nameField', 'dateField', 'startTimeField', 'endTimeField', 'locationField',$("#cancelButton"));
+	$(document).ready(function() {
+		var module;
+		var eventId = localStorage.getItem("editEvent");
+		if(eventId == 0){
+			module = CreateEventModule;
+		} else {
+			module = EditEventModule;
+			getEvent(eventId, function(resp) {
+				module.init(resp,'nameField', 'dateField', 'startTimeField', 'endTimeField', 'locationField',$("#cancelButton"));
+			});
+		}
+
+		if (localStorage.getItem("arrivingFromYelp") != 0) {
+			LocationModule.loadValuesFromStorage();
+			localStorage.setItem("arrivingFromYelp", 0);
+		}
+
+		$("#backButton").click(function(){
+			module.handleBackButton();
 		});
-	}
 
-	if (localStorage.getItem("arrivingFromYelp") != 0) {
-		LocationModule.loadValuesFromStorage();
-		localStorage.setItem("arrivingFromYelp", 0);
-	}
+		$("#findLocationButton").click(function(){
+			LocationModule.saveValuesToStorage();
+			window.location ="venueSearch.html";
+		});
 
-	$("#backButton").click(function(){
-		module.handleBackButton();
+		$("#saveButton").click(function(){
+			module.handleSaveButton();
+		});
 	});
-
-	$("#findLocationButton").click(function(){
-		LocationModule.saveValuesToStorage();
-		window.location ="venueSearch.html";
-	});
-
-	$("#saveButton").click(function(){
-		module.handleSaveButton();
-	});
-});
 });
 
 var LocationModule = {
@@ -80,7 +80,6 @@ var LocationModule = {
 		}
 	}
 };
-
 
 var CreateEventModule = {
 
@@ -134,7 +133,10 @@ var EditEventModule = {
 	},
 
 	handleCancelButton: function() {
-		alert("TODO cancel the event");
+		cancelEvent(this.eventId, function(resp){
+			window.location="home.html";
+			alert("cancello!");
+		});
 	},
 
 	handleBackButton: function() {
@@ -152,7 +154,9 @@ var EditEventModule = {
 	},
 
 	updateEvent: function(e) {
-
+		editEvent(this.eventId, e.display_name, e.start_date, e.end_date, null, e.location, function(resp) {
+			openEvent(resp.id);
+		});
 	}
 };
 

@@ -266,7 +266,7 @@ function editEvent(eventId, display_name, start_date, end_date, budget, location
 		dataType: 'json',
 		success: function (resp) {
 			console.log("Edited event");
-			callback();
+			callback(resp);
 		},
 		error: function(e) {
 			console.log(e);
@@ -287,6 +287,32 @@ function deleteEvent(eventId,callback) {
 		},
 		success: function (resp) {
 			console.log("Deleted event");
+			callback(resp);
+		},
+		error: function(e) {
+			console.log(e);
+		}
+	});
+}
+
+function cancelEvent(eventId,callback) {
+	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+    var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/cancel/";
+
+	var postData = {"cancelled": true};
+
+	$.ajax({
+		type: 'POST',
+		url: eventUrl,
+		dataType: 'json',
+		beforeSend: function(xhr) {
+				xhr.setRequestHeader("Authorization", "JWT " + authToken);
+		},
+		data: JSON.stringify(postData),
+		contentType: 'application/json',
+		dataType: 'json',
+		success: function (resp) {
+			console.log("Cancelled event");
 			callback(resp);
 		},
 		error: function(e) {
