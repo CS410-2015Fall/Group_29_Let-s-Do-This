@@ -1,22 +1,20 @@
+$.getScript("js/global.js", function() {
 $(document).ready(function() {
 	var module;
-	if(localStorage.getItem("editEvent") == 0){
+	var eventId = localStorage.getItem("editEvent");
+	if(eventId == 0){
 		module = CreateEventModule;
 	} else {
 		module = EditEventModule;
-		module.init(localStorage.getItem("editEvent"));
+		getEvent(eventId, function(resp) {
+			module.init(resp,'nameField', 'dateField', 'startTimeField', 'endTimeField', 'locationField');
+		});
 	}
 
-	if(localStorage.getItem("arrivingFromYelp") != 0){
+	if (localStorage.getItem("arrivingFromYelp") != 0) {
 		LocationModule.loadValuesFromStorage();
 		localStorage.setItem("arrivingFromYelp", 0);
 	}
-
-	//Get scripts for server interaction
-	$.getScript("js/user/session.js", function(){
-		console.log(LetsDoThis.Session.getInstance().getAuthToken());
-	});
-	$.getScript("js/serverInteractions/eventServerInteraction.js"); //Event-Server
 
 	$("#backButton").click(function(){
 		module.handleBackButton();
@@ -30,6 +28,7 @@ $(document).ready(function() {
 	$("#saveButton").click(function(){
 		module.handleSaveButton();
 	});
+});
 });
 
 var LocationModule = {
@@ -69,12 +68,13 @@ var LocationModule = {
 		document.getElementById('endTimeField').value = localStorage.getItem("currentEventEnd");
 
 		//Do we have a new location due to venueSearch?
-		if(localStorage.getItem("arrivingFromYelp") == 1){
+		if (localStorage.getItem("arrivingFromYelp") == 1){
 			//came from the venueSearch with new location, load stored values
 			document.getElementById('locationField').value =
 			localStorage.getItem("yelpLocationName") + ": " +
 			localStorage.getItem("yelpLocationAddress");
-		} else { // if arrivingFromYelp == -1 we didn't choose a new location
+		} else {
+			// if arrivingFromYelp == -1 we didn't choose a new location
 			document.getElementById('locationField').value =
 			localStorage.getItem("currentEventLocation");
 		}
@@ -106,8 +106,14 @@ var CreateEventModule = {
 
 var EditEventModule = {
 
-	init: function(eventId) {
-
+	init: function(e, nameField, dateField, startTimeField, endTimeField, locationField) {
+		document.getElementById(nameField).value = e.display_name;
+		var start = e.start_date.split("T");
+		document.getElementById(dateField).value = start[0];
+		document.getElementById(startTimeField).value = start[1];
+		var end = e.end_date.split("T");
+		document.getElementById(endTimeField).value = end[1];
+		document.getElementById(locationField).value = e.location;
 	},
 
 	handleBackButton: function() {
@@ -116,8 +122,12 @@ var EditEventModule = {
 
 	handleSaveButton: function() {
 		var e = new BuildEventObj();
-		// check that e is good
-		updateEvent(e);
+		// if (e.display_name != "" && e.start_date != "") {
+			this.updateEvent(e);
+		// } else {
+			// throw up some message? idk.
+		// }
+
 	},
 
 	updateEvent: function(e) {
