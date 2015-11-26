@@ -248,3 +248,31 @@ class EventMethodTests(TestCase):
             }
         ]
         self.assertEqual(event.get_contributions(), expected_contributions_2)
+
+    def test_event_cancel_functions(self):
+        uid1 = User.objects.get_by_natural_key(U1).id
+        uid2 = User.objects.get_by_natural_key(U2).id
+        uid3 = User.objects.get_by_natural_key(U3).id
+        event = Event.objects.create(display_name="test event")
+        event.save()  # Cannot use ManyToMany relation until all pks saved
+        # Not realistic lists for real events, but here to test the cancel function
+        event.hosts.add(User.objects.get_by_natural_key(U1))
+        event.invites.add(User.objects.get_by_natural_key(U1))
+        event.invites.add(User.objects.get_by_natural_key(U2))
+        event.accepts.add(User.objects.get_by_natural_key(U2))
+        event.accepts.add(User.objects.get_by_natural_key(U3))
+        event.declines.add(User.objects.get_by_natural_key(U1))
+        event.declines.add(User.objects.get_by_natural_key(U3))
+        # Test is_cancelled() and make sure event set up correctly
+        self.assertFalse(event.is_cancelled())
+        self.assertEqual(event.get_hosts(), [uid1])
+        self.assertEqual(event.get_invites(), [uid1, uid2])
+        self.assertEqual(event.get_accepts(), [uid2, uid3])
+        self.assertEqual(event.get_declines(), [uid1, uid3])
+        self.assertEqual(event.get_changed(), [])
+        # Test cancel()
+        event.cancel()
+        self.assertTrue(event.is_cancelled())
+        # Test uncancel()
+        event.uncancel()
+        self.assertFalse(event.is_cancelled())

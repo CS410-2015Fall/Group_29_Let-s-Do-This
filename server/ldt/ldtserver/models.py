@@ -110,6 +110,11 @@ class Event(models.Model):
         self.cancelled = True
         return self.cancelled
 
+    def uncancel(self):
+        """ Set Event's cancelled status to False, returns self.cancelled """
+        self.cancelled = False
+        return self.cancelled
+
     def get_hosts(self):
         """ Return list of User IDs of Event's hosts """
         return [h.id for h in self.hosts.all()]

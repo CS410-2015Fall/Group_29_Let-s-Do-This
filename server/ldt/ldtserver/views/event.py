@@ -410,10 +410,6 @@ def event_hosts_remove(request, pk):
     if "hosts" not in request.data:
         return Response({"error": "'hosts' must be provided as list of user IDs"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # "display_name" is mandatory for any Event serializer updates
-    data = {}
-    data.update({"display_name": event.display_name})
-
     # Error if trying to remove non-existent user from changed list
     try:
         [User.objects.get(pk=uid) for uid in request.data["hosts"]]
@@ -427,6 +423,10 @@ def event_hosts_remove(request, pk):
                 raise Exception
     except:
         return Response({"error": "user(s) is not on 'hosts' list and cannot be removed"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # "display_name" is mandatory for any Event serializer updates
+    data = {}
+    data.update({"display_name": event.display_name})
 
     newhosts = [h for h in hosts if h not in request.data["hosts"]]
     data.update({"hosts": newhosts})
@@ -463,6 +463,24 @@ def event_invites_remove(request, pk):
     except Event.DoesNotExist:
         return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
 
+    if "invites" not in request.data:
+        return Response({"error": "'hosts' must be provided as list of user IDs"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove non-existent user from changed list
+    try:
+        [User.objects.get(pk=uid) for uid in request.data["invites"]]
+    except:
+        return Response({"error": "no user exists for one or more IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove user who isn't already on changed list
+    try:
+        for uid in request.data["invites"]:
+            if uid not in invites:
+                raise Exception
+    except:
+        return Response({"error": "user(s) is not on 'invites' list and cannot be removed"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # "display_name" is mandatory for any Event serializer updates
     data = {}
     data.update({"display_name": event.display_name})
 
