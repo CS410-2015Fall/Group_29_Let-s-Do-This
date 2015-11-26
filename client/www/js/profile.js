@@ -1,3 +1,4 @@
+
 $.getScript("js/global.js", function () {
   $(document).ready( function(){
 	// Temp code!
@@ -12,7 +13,7 @@ $.getScript("js/global.js", function () {
 	// if on profile page, display the profile appropriately
 	if (window.location.pathname == "/www/profile.html" || window.location.pathname == "/android_asset/www/profile.html") {
         profileToDisplay(profileId, userId);
-    }else if (window.location.pathname == "/www/editProfile.html") {
+    } else if (window.location.pathname == "/www/editProfile.html") {
         loadCurrentData();
     }
 

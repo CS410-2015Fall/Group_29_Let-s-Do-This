@@ -1,8 +1,6 @@
 $.getScript("js/global.js", function() {
 $(document).ready(function() {
-
-var eventId = JSON.parse(localStorage.getItem("eventId"));
-getEvent(eventId, function(resp) {
+getEvent(JSON.parse(localStorage.getItem("eventId")), function(resp) {
 	var eventData = resp;
 	console.log(eventData);
 
@@ -52,7 +50,7 @@ getEvent(eventId, function(resp) {
 		window.location="home.html";
 	});
 	$("#editButton").click(function(){
-	    localStorage.setItem("editEvent", eventId);
+	    localStorage.setItem("editEvent", eventData.id);
 		window.location="createEvent.html";
 	});
 

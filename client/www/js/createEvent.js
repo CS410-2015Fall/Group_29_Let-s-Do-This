@@ -122,7 +122,7 @@ var EditEventModule = {
 	},
 
 	initCancelButton: function(cancelButtonDiv) {
-		var button = $('<button id="cancelEventButton" data-theme="b" onclick="alert("");">Cancel Event</button>');
+		var button = $('<button id="cancelEventButton" data-theme="b">Cancel Event</button>');
 
 		cancelButtonDiv.append(button);
 		cancelButtonDiv.trigger('create');

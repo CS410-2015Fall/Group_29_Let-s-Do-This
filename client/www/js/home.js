@@ -85,11 +85,14 @@ function loadFriends() {
 	var friends = LetsDoThis.Session.getInstance().getUserFriends();
 	$("#friends").html();
 	$.each( friends, function( index, value ){
-		$("#friendList").append(
-			'<li><a href="">'
+		var friend = $('<li><a href="#">'
 			+ value.username
-			+'</a></li>'
-			);
+			+'</a></li>');
+		friend.click(function(){
+			localStorage.setItem("profileId", JSON.stringify({"id":value.id}));
+			window.location="profile.html";
+		});
+		$("#friendList").append(friend);
 	});
 	$("#friendList").listview("refresh");
 }
