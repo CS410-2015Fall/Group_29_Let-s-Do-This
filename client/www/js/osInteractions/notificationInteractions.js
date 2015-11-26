@@ -1,4 +1,5 @@
 var notManager;
+var isCordovaApp = !!window.cordova;
 
 document.addEventListener("deviceready", function(){
 	notManager = cordova.plugins.notification.local;
@@ -6,6 +7,9 @@ document.addEventListener("deviceready", function(){
 }, false);
 
 function notifyOfChange(eventName){
+	if(!isCordovaApp){
+		return;
+	}
 	var title = 'A Lets Do This event has changed!';
 	var message = 'Be sure to check ' + eventName + ' to stay up to date!';
 	makeNotification(title, message);
