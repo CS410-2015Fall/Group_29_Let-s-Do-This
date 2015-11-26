@@ -15,7 +15,14 @@ function notifyOfChange(eventName){
 	makeNotification(title, message);
 }
 
-
+function notifyOfNewFriend(friendsName){
+	if(!isCordovaApp){
+		return;
+	}
+	var title = 'New Lets Do This friend!';
+	var message = friendsName + ' added you as a friend on Lets Do This';
+	makeNotification(title, message);
+}
 
 
 
