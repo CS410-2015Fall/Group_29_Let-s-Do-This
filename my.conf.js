@@ -1,5 +1,7 @@
 // Karma configuration
 // Generated on Wed Nov 18 2015 02:11:57 GMT-0800 (Pacific Standard Time)
+// Thanks to Tim Evko for the tutorial on how to set up!
+// http://www.sitepoint.com/testing-javascript-jasmine-travis-karma/
 
 module.exports = function(config) {
   config.set({

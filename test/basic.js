@@ -132,3 +132,44 @@ describe("test retrieving user ID", function(){
     })
   })
 })
+
+describe("test retrieving user info", function() {
+  var request;
+  var logInController;
+  var callback;
+  var userId;
+  beforeEach(function() {
+    userId = 123;
+    logInController = new LetsDoThis.LogInController();
+    callback = jasmine.createSpy('success');
+    logInController.getUserInfo(userId,callback);
+
+    // confirm that request sent is correct
+    request = jasmine.Ajax.requests.mostRecent();
+    expect(request.url).toBe("http://159.203.12.88/api/users/"+userId+"/");
+    expect(request.method).toBe("GET");
+    
+  });
+  describe("on success", function() {
+    beforeEach(function() {
+      request.respondWith(testResponses.userInfoStampy.success);
+    });
+    it("calls callback with resp as default argument", function() {
+      // callback is a function that redirects user to home page
+      expect(callback).toHaveBeenCalled();
+      var resp = callback.calls.mostRecent().args[0];
+      expect(resp.username).toEqual("Stampy");
+      expect(resp.email).toEqual("bawoo@test.com");
+      expect(resp.phone).toEqual("6045555555");
+      expect(resp.friends).toEqual([]);
+    })
+  });
+  describe("on error - no auth token set", function() {
+    beforeEach(function() {
+      request.respondWith(testResponses.userInfoStampy.error);
+    });
+    it("should not call callback", function() {
+      expect(callback.calls.count()).toEqual(0);
+    })
+  });
+})

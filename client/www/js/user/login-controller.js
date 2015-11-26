@@ -25,7 +25,12 @@ LetsDoThis.LogInController.prototype.resetLogInForm = function() {
     this.$password.val("");
 };
 
-LetsDoThis.LogInController.prototype.getUserInfo = function(id) {
+LetsDoThis.LogInController.prototype.redirectToHome = function(resp) {
+    
+    window.location = "home.html";
+}
+
+LetsDoThis.LogInController.prototype.getUserInfo = function(id, callback) {
 
     var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 
@@ -51,7 +56,7 @@ LetsDoThis.LogInController.prototype.getUserInfo = function(id) {
                 "friends":resp.friends
             });
             console.log("Woohoo!");
-            window.location="home.html";
+            callback(resp);
         },
         error: function(e) {
             console.log(e.message);
@@ -59,7 +64,7 @@ LetsDoThis.LogInController.prototype.getUserInfo = function(id) {
     })
 }
 
-LetsDoThis.LogInController.prototype.getUserId = function(username, callback) {
+LetsDoThis.LogInController.prototype.getUserId = function(username, callback, callbackToRedirect) {
 
     console.log("call to getUserId was successful");
 
@@ -84,7 +89,7 @@ LetsDoThis.LogInController.prototype.getUserId = function(username, callback) {
                 userId: resp.id
             });
             console.log("User ID is "+resp.id);
-            callback(resp.id);
+            callback(resp.id, callbackToRedirect);
 
         },
         error: function(e) {
@@ -111,7 +116,6 @@ LetsDoThis.LogInController.prototype.onLogInCommand = function() {
 
     // Make sure that all the required fields have values.
     if (!invalidInput) {
-        console.log(this);
         this.logIn(username, password, this.getUserId);
     }
 
@@ -125,7 +129,9 @@ LetsDoThis.LogInController.prototype.logIn = function(username, password, callba
         "username": username,
         "password": password
     }
-    var callbackFn = this.getUserInfo;
+    var callbackToInfo = this.getUserInfo;
+    var callbackToRedirect = this.redirectToHome;
+    console.log(this);
 
     $.ajax({
         type: 'POST',
@@ -140,7 +146,7 @@ LetsDoThis.LogInController.prototype.logIn = function(username, password, callba
             });
             console.log("auth token returned: "+resp.token);
             console.log("try to get user ID now");
-            callback(username, callbackFn);
+            callback(username, callbackToInfo, callbackToRedirect);
         },
         error: function(e) {
             console.log(e.message);

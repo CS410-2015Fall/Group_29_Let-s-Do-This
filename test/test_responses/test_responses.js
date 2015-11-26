@@ -24,5 +24,14 @@ var testResponses = {
         error: {
             status: 401
         }
+    },
+    userInfoStampy: {
+        success: {
+            status: 200,
+            responseText: '{"username": "Stampy", "email": "bawoo@test.com", "phone": "6045555555", "friends": []}'
+        },
+        error: {
+            status: 401
+        }
     }
 };
