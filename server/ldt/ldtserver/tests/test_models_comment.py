@@ -16,6 +16,7 @@ U3 = "JessieTest"
 PWD = "test"
 EMAIL = "test@test.com"
 
+
 class CommentMethodTests(TestCase):
 
     def setUp(self):
