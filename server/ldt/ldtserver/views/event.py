@@ -14,7 +14,7 @@ from ..serializers import EventSerializer, ShoppingListSerializer
 OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments", "changed"]
 EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
 USERLIST_FIELDS = ["hosts", "invites", "accepts", "declines"]
-ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + USERLIST_FIELDS + ["display_name"] + ["id"]
+ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + USERLIST_FIELDS + ["display_name"] + ["id"] + ["cancelled"]
 
 
 @api_view(['GET', 'POST'])
@@ -298,7 +298,7 @@ def event_cancel(request, pk):
     """
     Cancels a given event, puts all users on 'changed' list, and returns event.
 
-    Data needs to be: {"cancelled": true}
+    Data needs to be: {"cancelled": true} or {"cancelled": false}
     """
     try:
         event = Event.objects.get(pk=pk)
@@ -306,15 +306,26 @@ def event_cancel(request, pk):
     except Event.DoesNotExist:
         return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
 
-    # Error if event already cancelled
-    if event.is_cancelled():
-        return Response({"error": "Event has already been cancelled"}, status=status.HTTP_400_BAD_REQUEST)
+    # # Error if event already cancelled
+    # if event.is_cancelled():
+    #     return Response({"error": "Event has already been cancelled"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Set 'cancelled' to True
-    try:
-        event.cancel()
-    except Exception as e:
-        return Response({"error": "Could not cancel event. " + e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if "cancelled" not in request.data:
+        return Response({"error": "'cancelled' must be provided as true or false"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Cancel or uncancel, depending on input data
+    if request.data["cancelled"] is True:
+        try:
+            event.cancel()
+        except Exception as e:
+            return Response({"error": "Could not cancel event. " + e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    elif request.data["cancelled"] is False:
+        try:
+            event.uncancel()
+        except Exception as e:
+            return Response({"error": "Could not uncancel event. " + e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return Response({"error": "'cancelled' must be provided as true or false"}, status=status.HTTP_400_BAD_REQUEST)
 
     # Prepare data with updated changed list
     data = {}

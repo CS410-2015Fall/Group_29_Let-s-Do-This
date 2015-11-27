@@ -485,10 +485,100 @@ class EventViewTests(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], eid1)
-        self.assertEqual(response.data["hosts"], [u1o, u2o, u3o])
+        self.assertEqual(response.data["invites"], [u1o, u2o, u3o])
 
     def test_event_cancel(self):
-        return  # !!! stub
+        # vars for the following tests
+        u1 = User.objects.get_by_natural_key(U1)
+        u2 = User.objects.get_by_natural_key(U2)
+        u3 = User.objects.get_by_natural_key(U3)
+        u4 = User.objects.get_by_natural_key(U4)
+        u5 = User.objects.get_by_natural_key(U5)
+        u6 = User.objects.get_by_natural_key(U6)
+        u1o = {"id": u1.id, "username": u1.username}
+        u2o = {"id": u2.id, "username": u2.username}
+        u3o = {"id": u3.id, "username": u3.username}
+        # Setup by POST new event
+        data = {"display_name": "test event"}
+        url = reverse('event_list')
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        eid1 = response.data["id"]
+        event = Event.objects.get(pk=eid1)
+        self.assertIsNone(response.data["cancelled"])
+        self.assertFalse(event.is_cancelled())
+        self.assertEqual(response.data["changed"], [])
+        self.assertEqual(event.get_changed(), [])
+        # POST to cancel, if nobody is host/invited/accepted/declined
+        data = {"cancelled": True}
+        url = reverse('event_cancel', kwargs={"pk": eid1})
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertTrue(response.data["cancelled"])
+        event = Event.objects.get(pk=eid1)
+        self.assertTrue(event.is_cancelled())   # !!!
+        self.assertEqual(response.data["changed"], [])
+        self.assertEqual(event.get_changed(), [])
+        # Set back to uncancelled
+        event = Event.objects.get(pk=eid1)
+        event.uncancel()
+        event.save()
+        # POST to cancel, if some are host/invited/accepted/declined
+        data = {
+            "hosts": [u1.id],
+            "invites": [u2.id],
+            "accepts": [u3.id],
+            "declines": [u4.id]
+        }
+        url = reverse('event_detail', kwargs={"pk": eid1})
+        self.client.put(url, json.dumps(data), content_type='application/json')
+        data = {"cancelled": True}
+        url = reverse('event_cancel', kwargs={"pk": eid1})
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        event = Event.objects.get(pk=eid1)
+        self.assertTrue(response.data["cancelled"])
+        self.assertTrue(event.is_cancelled())
+        self.assertEqual(response.data["changed"], [u1.id, u2.id, u3.id, u4.id])
+        self.assertEqual(event.get_changed(), [u1.id, u2.id, u3.id, u4.id])
+        # Reset 'changed' list but keep as cancelled
+        data = {"changed": [u1.id, u2.id, u3.id, u4.id]}
+        url = reverse('event_changed_remove', kwargs={"pk": eid1})
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        event = Event.objects.get(pk=eid1)
+        self.assertEqual(response.data["changed"], [])
+        self.assertEqual(event.get_changed(), [])
+        self.assertTrue(response.data["cancelled"])
+        self.assertTrue(event.is_cancelled())
+        # POST to uncancel and add all to changed
+        data = {"cancelled": False}
+        url = reverse('event_cancel', kwargs={"pk": eid1})
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        event = Event.objects.get(pk=eid1)
+        self.assertFalse(response.data["cancelled"])
+        self.assertFalse(event.is_cancelled())
+        self.assertEqual(response.data["changed"], [u1.id, u2.id, u3.id, u4.id])
+        self.assertEqual(event.get_changed(), [u1.id, u2.id, u3.id, u4.id])
+        # POST to cancel nonexistent event
+        data = {"cancelled": True}
+        url = reverse('event_cancel', kwargs={"pk": 9999})
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # POST without "cancelled" key
+        data = {"abcdef": False}
+        url = reverse('event_cancel', kwargs={"pk": eid1})
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # POST with "cancelled" as not True or False
+        data = {"cancelled": 123}
+        url = reverse('event_cancel', kwargs={"pk": eid1})
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = {"cancelled": []}
+        url = reverse('event_cancel', kwargs={"pk": eid1})
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = {"cancelled": None}
+        url = reverse('event_cancel', kwargs={"pk": eid1})
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_insert_hosts_helper(self):
         return  # !!! stub
