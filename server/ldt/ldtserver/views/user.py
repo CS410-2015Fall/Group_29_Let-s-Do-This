@@ -88,6 +88,9 @@ def user_new(request):
             "friends": ser2.data["friends"]
         }
     else:
+        # Delete newly created user because shouldn't be used without ldtuser profile
+        user = User.objects.get(pk=ser1.data["id"])
+        user.delete()
         return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
@@ -168,7 +171,7 @@ def user_list(request):
             userdict = {
                 "id": user.id,
                 "username": user.username,
-                "password": user.password,
+                # "password": user.password,
                 "phone": profile.phone,
                 "email": profile.email,
                 "friends": friends
@@ -220,6 +223,8 @@ def user_search(request):
     POST request data must be formatted as follows.
     { "username": "testyuser" }
     """
+    if "username" not in request.data:
+        return Response("Please provide a 'username' string value", status=status.HTTP_400_BAD_REQUEST)
     users = User.objects.all()
     userid = None
     for user in users:
@@ -274,7 +279,7 @@ def user_detail(request, pk):
             res = {
                 "id": user.id,
                 "username": user.username,
-                "password": user.password,
+                # "password": user.password,
                 "phone": profile.phone,
                 "email": profile.email,
                 "friends": friends
@@ -284,7 +289,7 @@ def user_detail(request, pk):
             res = {
                 "id": user.id,
                 "username": user.username,
-                "password": user.password,
+                # "password": user.password,
             }
         # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
         if "friends" in res:
