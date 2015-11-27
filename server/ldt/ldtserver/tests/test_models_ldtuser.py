@@ -23,7 +23,7 @@ class LdtUserMethodTests(TestCase):
         User.objects._create_user(username=U2, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
         User.objects._create_user(username=U3, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
 
-    def test___str__(self):
+    def test_ldtuser___str__(self):
         user1 = User.objects.get_by_natural_key(U1)
         ldtuser1 = LdtUser(user=user1)
         ldtuser1.save()

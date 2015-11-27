@@ -18,18 +18,6 @@ PWD = "test"
 EMAIL = "test@test.com"
 
 
-# class LdtUserMethodTests(TestCase):
-#
-#     def setUp(self):
-#         User.objects._create_user(username=U1, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
-#
-#     def test___str__(self):
-#         user = User.objects.get_by_natural_key(U1)
-#         ldtuser = LdtUser(user=user)
-#         ldtuser.save()                                # str(ldtuser) is None unless this saved
-#         self.assertEqual(str(ldtuser), str(user.id))  # !!! '1' != '7'
-
-
 class EventMethodTests(TestCase):
 
     def setUp(self):
