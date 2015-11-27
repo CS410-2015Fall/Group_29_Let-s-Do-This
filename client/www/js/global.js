@@ -1,10 +1,21 @@
-$.getScript("js/user/login-controller.js");
-$.getScript("js/user/session.js");
-$.getScript("js/serverInteractions/eventServerInteraction.js");
-$.getScript("js/serverInteractions/commentServerInteraction.js");
-$.getScript("js/serverInteractions/userServerInteraction.js");
-$.getScript("js/serverInteractions/shoppinglistServerInteraction.js");
-
+function initializeScripts(callback){
+	$.when(
+		$.getScript("js/user/login-controller.js"),
+		$.getScript("js/user/session.js"),
+		$.getScript("js/serverInteractions/eventServerInteraction.js"),
+		$.getScript("js/serverInteractions/commentServerInteraction.js"),
+		$.getScript("js/serverInteractions/userServerInteraction.js"),
+		$.getScript("js/serverInteractions/shoppinglistServerInteraction.js"),
+		//Get the script to handle the native calendar
+		$.getScript("js/osInteractions/calendarInteractions.js"),
+		//Get the script to handle notifications
+		$.getScript("js/osInteractions/notificationInteractions.js", function(){
+			console.log("notificationInteractions done");
+		})
+	).done(function(){
+		callback();
+	});
+}
 
 //UI
 function Box(head, body, id) {

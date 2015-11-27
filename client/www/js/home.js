@@ -1,28 +1,117 @@
+var notificationBoxes = [];
+var eventBoxes = [];
+
+//Once we have the global script we need to initialize all scripts in it by
+//calling initializeScripts which itself has a callback when all scripts are loaded
 $.getScript("js/global.js", function() {
+	initializeScripts(globalCallback);
+});
+
+document.addEventListener("deviceready", function(){
+	//Both notifications and the calendar are dependant on this deviceready being called
+	loadFriends();
+	checkForNewFriends();
+
+	getChangedEvents(function(notifs) {
+		if (notifs.length > 0) {
+			notificationBoxes = formatNotificationBoxes(notifs);
+			displayBoxes(notificationBoxes, $("#mainContent"));
+		} else {
+			getEvents(function(e) {
+				eventBoxes = formatEventBoxes(e);
+				displayBoxes(eventBoxes, $("#mainContent"));
+			});
+		}
+	});
+}, false);
+
+function formatEventBoxes(events) {
+	var formattedEvents = [];
+	$.each( events, function(i, val) {
+		var boxObject = new Box(val.display_name, convertDate(val.start_date,val.end_date), val.id);
+		formattedEvents.push(boxObject);
+	});
+	return formattedEvents;
+}
+
+function formatNotificationBoxes(events) {
+	var formattedNotifications = [];
+	$.each( events, function(i, val) {
+		var boxObject = new Box(val.display_name,"This event has been modified!",val.id);
+		formattedNotifications.push(boxObject);
+	});
+	return formattedNotifications;
+}
+
+function loadFriends() {
+	var friends = LetsDoThis.Session.getInstance().getUserFriends();
+	$("#friends").html();
+	$.each( friends, function( index, value ){
+		var friend = $('<li><a href="#">'
+		+ value.username
+		+'</a></li>');
+		friend.click(function(){
+			localStorage.setItem("profileId", JSON.stringify({"id":value.id}));
+			window.location="profile.html";
+		});
+		$("#friendList").append(friend);
+	});
+	$("#friendList").listview("refresh");
+}
+
+function checkForNewFriends(){
+	console.log("Checking for new friends");
+	var userID = LetsDoThis.Session.getInstance().getUserId();
+	//Get our current friends
+	var currentFriends = LetsDoThis.Session.getInstance().getUserFriends();
+
+	//Load the friends we had last time we checked
+	var oldFriends = JSON.parse(window.localStorage.getItem('previousFriends' + userID));
+
+	//Check if we even had friends previously
+	if(oldFriends==null){
+		//Save the friends we have now so we have friends next time we look
+		window.localStorage.setItem('previousFriends' + userID, JSON.stringify(currentFriends));
+		return;
+	}
+
+	console.log("old:");
+	console.log(oldFriends);
+	console.log("new:");
+	console.log(currentFriends);
+	//Loop through each of our current friends to check if they existed previously
+	for(var i = 0; i<currentFriends.length; i++){
+		//Get the friends id
+		var friendsID = currentFriends[i].id;
+
+		//Set a flag if they existed previously;
+		var existedPreviously = 0; //Typical boolean values
+
+		//Loop through the old friends and look for this id
+		for(var i = 0; i<oldFriends.length; i++){
+			//Get the friends id
+			var oldFriendsID = oldFriends[i].id;
+			if(oldFriendsID==friendsID){
+				existedPreviously = 1;
+			}
+		}
+
+		//Notify if this is a new friend
+		if(!existedPreviously){
+			console.log(currentFriends[i].username + " is a new friend!");
+			notifyOfNewFriend(currentFriends[i].username);
+		}
+	}
+
+	//Now save these current friends so we can check next time
+	window.localStorage.setItem('previousFriends' + userID, JSON.stringify(currentFriends));
+}
+
+function globalCallback(){
 	$(document).ready(function() {
 		//These scripts all need to be loaded here because they are reliant on the deviceready event, which is fired in the cordova script
-		//Get the script to handle the native calendar
-		$.getScript("js/osInteractions/calendarInteractions.js");
-		//Get the script to handle notifications
-		$.getScript("js/osInteractions/notificationInteractions.js");
 
 		console.log("Loading home page script");
-
-		loadFriends();
-
-		var notificationBoxes = [];
-		var eventBoxes = [];
-		getChangedEvents(function(notifs) {
-			if (notifs.length > 0) {
-				notificationBoxes = formatNotificationBoxes(notifs);
-				displayBoxes(notificationBoxes, $("#mainContent"));
-			} else {
-				getEvents(function(e) {
-					eventBoxes = formatEventBoxes(e);
-					displayBoxes(eventBoxes, $("#mainContent"));
-				});
-			}
-		});
 
 		$("#notificationsButton").click(function() {
 			if (notificationBoxes.length == 0) {
@@ -61,38 +150,4 @@ $.getScript("js/global.js", function() {
 			}
 		});
 	});
-});
-
-function formatEventBoxes(events) {
-	var formattedEvents = [];
-	$.each( events, function(i, val) {
-		var boxObject = new Box(val.display_name, convertDate(val.start_date,val.end_date), val.id);
-		formattedEvents.push(boxObject);
-	});
-	return formattedEvents;
-}
-
-function formatNotificationBoxes(events) {
-	var formattedNotifications = [];
-	$.each( events, function(i, val) {
-		var boxObject = new Box(val.display_name,"This event has been modified!",val.id);
-		formattedNotifications.push(boxObject);
-	});
-	return formattedNotifications;
-}
-
-function loadFriends() {
-	var friends = LetsDoThis.Session.getInstance().getUserFriends();
-	$("#friends").html();
-	$.each( friends, function( index, value ){
-		var friend = $('<li><a href="#">'
-			+ value.username
-			+'</a></li>');
-		friend.click(function(){
-			localStorage.setItem("profileId", JSON.stringify({"id":value.id}));
-			window.location="profile.html";
-		});
-		$("#friendList").append(friend);
-	});
-	$("#friendList").listview("refresh");
 }
