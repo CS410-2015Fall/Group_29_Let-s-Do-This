@@ -267,7 +267,7 @@ def event_detail(request, pk):
             if key in request.data:
                 # Add host(s) to current list instead of overwriting list
                 if key == "hosts":
-                    data.update({key: insert_hosts(event=event, newhosts=request.data[key])})
+                    data.update({key: old_and_new_hosts_no_duplicates(event=event, newhosts=request.data[key])})
                 else:
                     data.update({key: request.data[key]})
 
@@ -450,8 +450,8 @@ def event_hosts_remove(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def insert_hosts(event=None, newhosts=None):
-    """ Return list of hosts (User Ids): event's hosts with newhosts inserted """
+def old_and_new_hosts_no_duplicates(event=None, newhosts=None):
+    """ Return list of new hosts (User Ids): only the newhosts to be inserted """
     hosts = []
     hosts.extend(event.get_hosts())
     for n in newhosts:

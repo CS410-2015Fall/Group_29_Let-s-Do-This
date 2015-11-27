@@ -17,7 +17,7 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 
 from ..models import Event
-from ..views.event import rsvp
+from ..views.event import rsvp, old_and_new_hosts_no_duplicates
 
 # Test db Constants
 U1 = "JohnnyTest"
@@ -203,7 +203,7 @@ class EventViewTests(TestCase):
         self.assertIsNotNone(response.data['shopping_list'])
         self.assertIsNotNone(response.data['contributions'])
         # PUT event that exists, with valid fields
-        # Note that the rsvp and insert_hosts helpers will manage I/A/D and H lists
+        # Note that the rsvp and old_and_new_hosts helpers will manage I/A/D and H lists
         data = {
             "display_name": "updated event",
             "start_date": "2016-02-02T05:55:00Z",
@@ -493,11 +493,6 @@ class EventViewTests(TestCase):
         u2 = User.objects.get_by_natural_key(U2)
         u3 = User.objects.get_by_natural_key(U3)
         u4 = User.objects.get_by_natural_key(U4)
-        u5 = User.objects.get_by_natural_key(U5)
-        u6 = User.objects.get_by_natural_key(U6)
-        u1o = {"id": u1.id, "username": u1.username}
-        u2o = {"id": u2.id, "username": u2.username}
-        u3o = {"id": u3.id, "username": u3.username}
         # Setup by POST new event
         data = {"display_name": "test event"}
         url = reverse('event_list')
@@ -580,9 +575,29 @@ class EventViewTests(TestCase):
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_insert_hosts_helper(self):
-        return  # !!! stub
-
+    def test_old_and_new_hosts_helper(self):
+        # vars for the following tests
+        u1 = User.objects.get_by_natural_key(U1)
+        u2 = User.objects.get_by_natural_key(U2)
+        u3 = User.objects.get_by_natural_key(U3)
+        u4 = User.objects.get_by_natural_key(U4)
+        u5 = User.objects.get_by_natural_key(U5)
+        u6 = User.objects.get_by_natural_key(U6)
+        # Setup by POST new event
+        data = {"display_name": "test event"}
+        url = reverse('event_list')
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        eid1 = response.data["id"]
+        # All are new
+        event = Event.objects.get(pk=eid1)
+        res = old_and_new_hosts_no_duplicates(event, [u1.id, u2.id])
+        self.assertEqual(res, [u1.id, u2.id])
+        event.save()
+        # One new + one duplicate
+        event = Event.objects.get(pk=eid1)
+        res = old_and_new_hosts_no_duplicates(event, [u2.id, u3.id])
+        self.assertEqual(res, [u2.id, u3.id])
+        event.save()
 
     def test_rsvp_helper(self):
         # Set up event1 before applying replies
@@ -594,14 +609,12 @@ class EventViewTests(TestCase):
         id2 = User.objects.get_by_natural_key(U2).id
         self.assertEqual(Event.get_invites(event1), [id1])
         self.assertEqual(Event.get_accepts(event1), [id2])
-
         # Apply replies to rsvp function on event1
         replies = {"accepts": [id1]}
         res = rsvp(event=event1, replies=replies)
         self.assertEqual(res["invites"], [])
         self.assertEqual(res["accepts"], [id1, id2])
         self.assertEqual(res["declines"], [])
-
         # Set up event2 before applying replies
         event2 = Event.objects.create(display_name="test event")
         event2.save()  # Cannot use ManyToMany relation until all pks saved
@@ -620,7 +633,6 @@ class EventViewTests(TestCase):
         self.assertEqual(Event.get_invites(event2), [id1, id2])
         self.assertEqual(Event.get_accepts(event2), [id3, id4])
         self.assertEqual(Event.get_declines(event2), [id5, id6])
-
         # Apply replies to rsvp function on event1
         replies = {
             "invites": [id6],
@@ -631,7 +643,6 @@ class EventViewTests(TestCase):
         self.assertEqual(res["invites"], [id6])
         self.assertEqual(res["accepts"], [id1, id2, id4])
         self.assertEqual(res["declines"], [id3, id5])
-
         # Set up event3 before applying replies
         event3 = Event.objects.create(display_name="test event")
         event3.save()  # Cannot use ManyToMany relation until all pks saved
@@ -650,7 +661,6 @@ class EventViewTests(TestCase):
         self.assertEqual(Event.get_invites(event3), [id1, id2])
         self.assertEqual(Event.get_accepts(event3), [id3, id4])
         self.assertEqual(Event.get_declines(event3), [id5, id6])
-
         # Apply replies to rsvp function on event1
         replies_again = {
             "declines": [id4]
