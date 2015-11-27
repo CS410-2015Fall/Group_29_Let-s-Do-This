@@ -299,9 +299,9 @@ class PollChoice(models.Model):
         """
         try:
             if not isinstance(n, int):
-                raise Exception("n must be an integer")
-        except Exception as e:
-            return Exception
+                raise TypeError("n must be an integer")
+        except TypeError as e:
+            return e
         self.votes += n
         self.save()
         return self.votes

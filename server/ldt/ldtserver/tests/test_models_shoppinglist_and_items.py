@@ -16,7 +16,7 @@ PWD = "test"
 EMAIL = "test@test.com"
 
 
-class CommentMethodTests(TestCase):
+class ShoppingListAndItemMethodTests(TestCase):
 
     def setUp(self):
         User.objects._create_user(username=U1, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
@@ -51,3 +51,4 @@ class CommentMethodTests(TestCase):
         self.assertTrue(i1 in actual_items)
         self.assertTrue(i2 in actual_items)
         self.assertTrue(i3 in actual_items)
+        self.assertEqual(len(actual_items), 3)
