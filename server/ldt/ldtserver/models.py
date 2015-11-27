@@ -31,6 +31,8 @@ class LdtUser(models.Model):
     """
     LdtUser, a profile associated with Django built-in user.
     Note: This is only accessible to admin. Not directly accessible through API.
+
+    At this point it is possible for a user to have themselves as a friend.
     """
     # Required
     user = models.OneToOneField(User, related_name="userlink", on_delete=models.CASCADE)
