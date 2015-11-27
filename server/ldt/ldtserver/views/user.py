@@ -43,9 +43,6 @@ def user_new(request):
         "phone": "6045554321",
         "email": "back@future.com"
     }
-
-    Note: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
-    shown. They will NOT have a phone or email.
     """
     # First create new User object
     # !!! refactor to use USER_FIELDS
@@ -474,13 +471,12 @@ def user_friends_remove(request, pk):
                     }
                 detailed_ulist.append(udict)
             res["friends"] = detailed_ulist
-        return Response(res, status=status.HTTP_200_OK)                # friends as list of detailed udicts
-        # return Response(serializer.data, status=status.HTTP_200_OK)  # original - friends as list of user ID
+        return Response(res, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET'])
 def user_events(request, pk):
     """
     Get all event IDs associated with given user: all that are hosted/invited/attending/declined
@@ -530,91 +526,4 @@ def user_events(request, pk):
 
         return Response(user_events, status=status.HTTP_200_OK)
 
-    elif request.method == 'PUT':
-
-        # !!! need to implement - do we actually need this function?
-
-        return Response({"test": "abc123"}, status=status.HTTP_200_OK)
-
-
-# # BELOW are four alternative calls to replace user_events
-#
-# @api_view(['GET'])
-# def user_hosting(request, pk):
-#     """
-#     Get all events where specific user is host
-#     """
-#     try:
-#         user = User.objects.get(pk=pk)
-#     except User.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     all_events = Event.objects.all()
-#     hosting_events = []
-#     for event in all_events:
-#         if event.hosts.all():
-#             for host in event.hosts.all():
-#                 if host.id == user.id:
-#                     hosting_events.append(event.id)
-#     return Response(hosting_events, status=status.HTTP_200_OK)
-#
-#
-# @api_view(['GET'])
-# def user_invited(request, pk):
-#     """
-#     Get all events where specific user is invited
-#     """
-#     try:
-#         user = User.objects.get(pk=pk)
-#     except User.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     all_events = Event.objects.all()
-#     invited_events = []
-#     for event in all_events:
-#         if event.invites.all():
-#             for inv in event.invites.all():
-#                 if inv.id == user.id:
-#                     invited_events.append(event.id)
-#     return Response(invited_events, status=status.HTTP_200_OK)
-#
-#
-# @api_view(['GET'])
-# def user_attending(request, pk):
-#     """
-#     Get all events where specific user is attending
-#     """
-#     try:
-#         user = User.objects.get(pk=pk)
-#     except User.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     all_events = Event.objects.all()
-#     accepted_events = []
-#     for event in all_events:
-#         if event.accepts.all():
-#             for acc in event.accepts.all():
-#                 if acc.id == user.id:
-#                     accepted_events.append(event.id)
-#     return Response(accepted_events, status=status.HTTP_200_OK)
-#
-#
-# @api_view(['GET'])
-# def user_declined(request, pk):
-#     """
-#     Get all events where specific user is declined
-#     """
-#     try:
-#         user = User.objects.get(pk=pk)
-#     except User.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     all_events = Event.objects.all()
-#     decline_events = []
-#     for event in all_events:
-#         if event.declines.all():
-#             for dec in event.declines.all():
-#                 if dec.id == user.id:
-#                     decline_events.append(event.id)
-#     return Response(decline_events, status=status.HTTP_200_OK)
-
+    # Django REST framework handles PUT/POST/DELETE not allowed
