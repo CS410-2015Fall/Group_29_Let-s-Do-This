@@ -37,7 +37,7 @@ class EventMethodTests(TestCase):
         User.objects._create_user(username=U2, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
         User.objects._create_user(username=U3, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
 
-    def test_get_hosts(self):
+    def test_event_get_hosts(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
         self.assertEqual(Event.get_hosts(event), [])
@@ -47,7 +47,7 @@ class EventMethodTests(TestCase):
                           User.objects.get_by_natural_key(U2).id]
         self.assertEqual(Event.get_hosts(event), expected_hosts)
 
-    def test_get_invites(self):
+    def test_event_get_invites(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
         self.assertEqual(Event.get_hosts(event), [])
@@ -57,7 +57,7 @@ class EventMethodTests(TestCase):
                             User.objects.get_by_natural_key(U2).id]
         self.assertEqual(Event.get_invites(event), expected_invites)
 
-    def test_get_accepts(self):
+    def test_event_get_accepts(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
         self.assertEqual(Event.get_hosts(event), [])
@@ -67,7 +67,7 @@ class EventMethodTests(TestCase):
                             User.objects.get_by_natural_key(U2).id]
         self.assertEqual(Event.get_accepts(event), expected_accepts)
 
-    def test_get_declines(self):
+    def test_event_get_declines(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
         self.assertEqual(Event.get_hosts(event), [])
@@ -77,7 +77,7 @@ class EventMethodTests(TestCase):
                              User.objects.get_by_natural_key(U2).id]
         self.assertEqual(Event.get_declines(event), expected_declines)
 
-    def test_get_changed(self):
+    def test_event_get_changed(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
         self.assertEqual(Event.get_changed(event), [])
@@ -87,7 +87,7 @@ class EventMethodTests(TestCase):
                             User.objects.get_by_natural_key(U2).id]
         self.assertEqual(Event.get_changed(event), expected_changed)
 
-    def test_get_comments(self):
+    def test_event_get_comments(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
         self.assertEqual(Event.get_hosts(event), [])
@@ -100,7 +100,7 @@ class EventMethodTests(TestCase):
         expected_comments = [c1, c2]
         self.assertEqual(Event.get_comments(event), expected_comments)
 
-    def test_get_polls(self):
+    def test_event_get_polls_and_choices(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
         self.assertEqual(event.get_polls(), [])
@@ -115,7 +115,7 @@ class EventMethodTests(TestCase):
         actual_choices = event.get_polls_choices()[0]
         self.assertEqual(len(actual_choices), 2)
 
-    def test_get_shoppinglist_and_items_and_contributions(self):
+    def test_event_shoppinglist_and_items_and_contributions(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
         self.assertFalse(event.has_shoppinglist())
