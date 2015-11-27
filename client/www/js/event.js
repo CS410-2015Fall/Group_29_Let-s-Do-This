@@ -1,4 +1,7 @@
 $.getScript("js/global.js", function() {
+	initializeScripts(loadEvent);
+});
+function loadEvent(){
 $(document).ready(function() {
 getEvent(JSON.parse(localStorage.getItem("eventId")), function(resp) {
 	var eventData = resp;
@@ -86,7 +89,7 @@ getEvent(JSON.parse(localStorage.getItem("eventId")), function(resp) {
 
 });
 });
-});
+};
 
 var CommentModule = {
 	// comment = { id:Int, author:{User}, post_date: YYYY-MM-DDTHH:MM:SS.446000Z, content:String, event:Int }
@@ -370,5 +373,17 @@ var ShoppingListModule = {
 var PollModule = {
 	init: function(e, pollDiv) {
 
+	},
+
+	updateUI: function() {
+
+	},
+
+	createPoll: function() {
+
+	},
+
+	votePoll: function(pollId,vote) {
+
 	}
-}
+};
