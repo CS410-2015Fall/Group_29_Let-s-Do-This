@@ -45,6 +45,10 @@ getEvent(JSON.parse(localStorage.getItem("eventId")), function(resp) {
 		ShoppingListModule.calculateBalance(GuestListModule.userId,guestCount,$("#balancePopup"));
 	})
 
+	//Polls
+	PollModule.init(eventData,$("#polls"));
+
+
 	// Other
 	$("#homeButton").click(function(){
 		window.location="home.html";
@@ -58,6 +62,28 @@ getEvent(JSON.parse(localStorage.getItem("eventId")), function(resp) {
 		// TODO Save the location, and name, into the session storage so the map script can pull it up
 		window.location="map.html";
 	});
+
+	//Modules
+	var detachedSLM = $("#shoppingListModule").detach();
+	var detachedPM = $("#pollsModule").detach();
+	var detachedCM = $("#commentsModule").detach();
+	$("#modules").append(detachedCM);
+	$("#commentsModuleButton").click(function(){
+		$("#modules").append(detachedCM);
+		$("#shoppingListModule").detach();
+		$("#pollsModule").detach();
+	});
+	$("#pollsModuleButton").click(function(){
+		$("#modules").append(detachedPM);
+		$("#shoppingListModule").detach();
+		$("#commentsModule").detach();
+	});
+	$("#shoppingListModuleButton").click(function(){
+		$("#modules").append(detachedSLM);
+		$("#commentsModule").detach();
+		$("#pollsModule").detach();
+	});
+
 });
 });
 });
@@ -340,3 +366,9 @@ var ShoppingListModule = {
 		popupDiv.popup("open");
 	}
 };
+
+var PollModule = {
+	init: function(e, pollDiv) {
+
+	}
+}
