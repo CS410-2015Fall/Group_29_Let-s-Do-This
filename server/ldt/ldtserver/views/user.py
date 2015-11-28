@@ -251,6 +251,8 @@ def user_detail(request, pk):
         "friends": [123, 789]
     }
 
+    Note1: This ADDS friends to a user's list of friends. To remove friends, see user_friends_remove
+
     For GETs and after successful PUTs, "friends" is returned as a list of dictionaries/objects of user details
     (each formatted as below) instead of lists of IDs (shown above):
     {
@@ -260,7 +262,7 @@ def user_detail(request, pk):
         "email": "back@future.com"
     }
 
-    Note: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
+    Note2: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
     shown. They will NOT have a phone or email.
     """
     try:

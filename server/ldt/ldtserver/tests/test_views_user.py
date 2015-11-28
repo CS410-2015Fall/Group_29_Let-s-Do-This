@@ -20,6 +20,7 @@ U4 = "GeorgieTest"
 U5 = "JimmyTest"
 U6 = "PollyTest"
 PWD = "test"
+PWD2 = "abcd"
 EMAIL = "test@test.com"
 PHONE = "6045554321"
 
@@ -293,30 +294,56 @@ class UserViewTests(TestCase):
         url = reverse('user_detail', kwargs={"pk": 9999})
         response = self.client.get(url, content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-        # PUT existing user with valid fields
+        # PUT existing user with valid fields (User fields)
+        url = reverse('user_detail', kwargs={"pk": uid2})
+        data = {"username": "skippy", "password": PWD2}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.data["id"], uid2)
+        self.assertEqual(response.data["username"], "skippy")
+        # self.assertEqual(User.objects.get(pk=uid2).password, PWD2)  # cannot test; password is hashed
+        # PUT existing user with valid fields (LdtUser fields)
+        url = reverse('user_detail', kwargs={"pk": uid2})
+        data = {"email": "abc@xyz.com", "phone": "7783334444", "friends": [suid]}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.data["id"], uid2)
+        self.assertEqual(response.data["email"], "abc@xyz.com")
+        self.assertEqual(response.data["phone"], "7783334444")
+        self.assertTrue(suobj in response.data["friends"])
+        self.assertTrue(uobj1nf in response.data["friends"])
+        # PUT existing user with no fields (method allowed but user does not change)
         url = reverse('user_detail', kwargs={"pk": uid2})
         data = {}
         response = self.client.put(url, json.dumps(data), content_type='application/json')
-
-        # PUT existing user with no fields
-
+        self.assertEqual(response.data["id"], uid2)
+        self.assertEqual(response.data["email"], "abc@xyz.com")
+        self.assertEqual(response.data["phone"], "7783334444")
+        self.assertTrue(suobj in response.data["friends"])
+        self.assertTrue(uobj1nf in response.data["friends"])
         # PUT existing user with invalid email
-
+        url = reverse('user_detail', kwargs={"pk": uid2})
+        data = {"email": "abc"}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # PUT existing user with invalid phone
-
-        # PUT existing user with invalid email
-
-        # PUT existing user with invalid friends
-
-        # PUT existing user with friends not recognized by serializer
-
-        # # PUT user that does not exist
-        # url = reverse('user_detail', kwargs={"pk": 9999})
-        # response = self.client.PUT(url, json.dumps(data), content_type='application/json')
-        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
+        url = reverse('user_detail', kwargs={"pk": uid2})
+        data = {"phone": "abc"}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # PUT existing user with invalid friends format
+        url = reverse('user_detail', kwargs={"pk": uid2})
+        data = {"friends": "abc"}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # PUT existing user with friends that are nonexistent users
+        url = reverse('user_detail', kwargs={"pk": uid2})
+        data = {"friends": [9999]}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # PUT user that does not exist
+        url = reverse('user_detail', kwargs={"pk": 9999})
+        data = {}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # DELETE user that exists
         url = reverse('user_detail', kwargs={"pk": uid2})
         response = self.client.delete(url)
@@ -327,7 +354,6 @@ class UserViewTests(TestCase):
         url = reverse('user_detail', kwargs={"pk": 9999})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
 
     def test_user_friends_remove(self):
         return  # !!! stub
