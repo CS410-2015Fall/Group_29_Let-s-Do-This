@@ -16,6 +16,9 @@ venv
 settings.py
 migrations
 
+# coverage
+.coverage
+
 # General
 *.tmp
 *.bak

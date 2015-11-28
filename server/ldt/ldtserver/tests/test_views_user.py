@@ -279,6 +279,8 @@ class UserViewTests(TestCase):
             "id": suid,
             "username": superuser.username
         }
+        usercount = len(User.objects.all())
+        self.assertEqual(usercount, 3)
         # GET regular user that exists
         url = reverse('user_detail', kwargs={"pk": uid2})
         response = self.client.get(url, content_type='application/json')
@@ -293,6 +295,11 @@ class UserViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         # PUT existing user with valid fields
+        url = reverse('user_detail', kwargs={"pk": uid2})
+        data = {}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+
+        # PUT existing user with no fields
 
         # PUT existing user with invalid email
 
@@ -302,7 +309,7 @@ class UserViewTests(TestCase):
 
         # PUT existing user with invalid friends
 
-        # PUT existing user with non-existent friends
+        # PUT existing user with friends not recognized by serializer
 
         # # PUT user that does not exist
         # url = reverse('user_detail', kwargs={"pk": 9999})
@@ -314,6 +321,8 @@ class UserViewTests(TestCase):
         url = reverse('user_detail', kwargs={"pk": uid2})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        usercount = len(User.objects.all())
+        self.assertEqual(usercount, 2)
         # DELETE user that does not exist
         url = reverse('user_detail', kwargs={"pk": 9999})
         response = self.client.delete(url)

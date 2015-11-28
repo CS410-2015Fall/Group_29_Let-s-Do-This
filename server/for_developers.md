@@ -107,6 +107,7 @@ Once set up, activate the venv and run the server on your local machine as follo
 
 1. Activate venv [See also](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
 1. Run all unit tests by typing `python manage.py test` from /server/ldt
+1. Running using `python manage.py test --with-coverage --cover-package=ldtserver` will print test coverage.
 
 
 
