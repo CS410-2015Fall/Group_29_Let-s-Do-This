@@ -106,8 +106,7 @@ Once set up, activate the venv and run the server on your local machine as follo
 # Running Django unit tests
 
 1. Activate venv [See also](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
-1. Run all unit tests by typing `python manage.py test` from /server/ldt
-1. Running using `python manage.py test --with-coverage --cover-package=ldtserver` will print test coverage.
+1. Run all unit tests by running `python manage.py test` from /server/ldt. This prints also prints test coverage, using [Coverage.py](http://coverage.readthedocs.org/en/latest/index.html), unless one or more tests fail.
 
 
 
