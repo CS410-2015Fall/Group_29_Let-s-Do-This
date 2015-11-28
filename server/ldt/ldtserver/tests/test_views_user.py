@@ -244,13 +244,6 @@ class UserViewTests(TestCase):
         data = {"username": U1, "password": PWD}
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         uid1 = response.data["id"]
-        uobj1 = {
-            "id": uid1,
-            "username": response.data["username"],
-            "phone": response.data["phone"],
-            "email": response.data["email"],
-            "friends": []
-        }
         uobj1nf = {
             "id": uid1,
             "username": response.data["username"],
@@ -356,7 +349,100 @@ class UserViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_user_friends_remove(self):
-        return  # !!! stub
+        # Set up
+        superuser = User.objects._create_user(username=U3, password=PWD, email=EMAIL, is_staff=True, is_superuser=True)
+        suid = superuser.id
+        suobj = {
+            "id": suid,
+            "username": superuser.username
+        }
+        url = reverse('user_new')
+        data = {"username": U1, "password": PWD}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        uid1 = response.data["id"]
+        uobj1 = {
+            "id": uid1,
+            "username": response.data["username"],
+            "phone": response.data["phone"],
+            "email": response.data["email"],
+            "friends": []
+        }
+        uobj1nf = {
+            "id": uid1,
+            "username": response.data["username"],
+            "phone": response.data["phone"],
+            "email": response.data["email"]
+        }
+        url = reverse('user_new')
+        data = {
+            "username": U2,
+            "password": PWD,
+            "email": EMAIL,
+            "phone": PHONE,
+            "friends": [uid1]
+        }
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        uid2 = response.data["id"]
+        uobj2 = {
+            "id": uid2,
+            "username": response.data["username"],
+            "phone": response.data["phone"],
+            "email": response.data["email"],
+            "friends": [uobj1nf]
+        }
+        uobj2nf = {
+            "id": uid2,
+            "username": response.data["username"],
+            "phone": response.data["phone"],
+            "email": response.data["email"]
+        }
+        url = reverse('user_new')
+        data = {
+            "username": U5,
+            "password": PWD,
+            "email": EMAIL,
+            "phone": PHONE,
+            "friends": [uid1, uid2, suid]
+        }
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        print response
+        uid5 = response.data["id"]
+        uobj5 = {
+            "id": uid5,
+            "username": response.data["username"],
+            "phone": response.data["phone"],
+            "email": response.data["email"],
+            "friends": [uobj1nf, uobj2nf, suobj]
+        }
+
+        usercount = len(User.objects.all())
+        self.assertEqual(usercount, 4)
+        # Remove a friend
+        url = reverse('user_friends_remove', kwargs={"pk": uid2})
+        data = {"friends": [uid1]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.data["friends"], [])
+        # Remove a friend, return remaining friend including admin user
+        url = reverse('user_friends_remove', kwargs={"pk": uid5})
+        data = {"friends": [uid1]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertTrue(uobj2nf in response.data["friends"])
+        self.assertTrue(suobj in response.data["friends"])
+        # Attempt to remove friends from non-existent user
+        url = reverse('user_friends_remove', kwargs={"pk": 9999})
+        data = {"friends": [uid1]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # Attempt to remove friends from admin user (has no friends)
+        url = reverse('user_friends_remove', kwargs={"pk": suid})
+        data = {"friends": [uid1]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # Don't provide list of friends to remove
+        url = reverse('user_friends_remove', kwargs={"pk": uid5})
+        data = {"abc": [uid2]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_events(self):
         return  # !!! stub

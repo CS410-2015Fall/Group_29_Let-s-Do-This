@@ -441,10 +441,16 @@ def user_friends_remove(request, pk):
     except Exception:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    if "friends" not in request.data:
+        return Response({"error": "must provide list of user ids as 'friends'"}, status=status.HTTP_400_BAD_REQUEST)
+
     data = {"user": user.id}
 
-    newfriends = [f for f in friends if f not in request.data["friends"]]
-    data.update({"friends": newfriends})
+    try:
+        newfriends = [f for f in friends if f not in request.data["friends"]]
+        data.update({"friends": newfriends})
+    except:
+        return Response({"error": "must provide list of user ids as 'friends'"}, status=status.HTTP_400_BAD_REQUEST)
 
     serializer = LdtUserSerializer(ldtuser, data=data)
     if serializer.is_valid():
