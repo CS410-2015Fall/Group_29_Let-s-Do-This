@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from rest_framework import status
+from ..models import Event
 
 
 # Test db Constants
@@ -445,4 +446,61 @@ class UserViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_events(self):
-        return  # !!! stub
+        # Set up
+        u1 = User.objects._create_user(username=U1, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
+        u2 = User.objects._create_user(username=U2, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
+        u3 = User.objects._create_user(username=U3, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
+        u4 = User.objects._create_user(username=U4, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
+        u5 = User.objects._create_user(username=U5, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
+        # u6 = User.objects._create_user(username=U6, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
+        e1 = event = Event.objects.create(display_name="test event 1")
+        e1.save()
+        e1.hosts = [u1, u5]
+        e1.save()
+        e2 = event = Event.objects.create(display_name="test event 2")
+        e2.save()
+        e2.invites = [u2, u5]
+        e2.save()
+        e3 = event = Event.objects.create(display_name="test event 3")
+        e3.save()
+        e3.accepts = [u3, u5]
+        e3.save()
+        e4 = event = Event.objects.create(display_name="test event 3")
+        e4.save()
+        e4.declines = [u4, u5]
+        e4.save()
+        # Get only host events
+        url = reverse('user_events', kwargs={"pk": u1.id})
+        response = self.client.get(url, content_type='application/json')
+        self.assertEqual(response.data["hosting"], [e1.id])
+        self.assertEqual(response.data["invited"], [])
+        self.assertEqual(response.data["attending"], [])
+        self.assertEqual(response.data["declined"], [])
+        # Get only invite events
+        url = reverse('user_events', kwargs={"pk": u2.id})
+        response = self.client.get(url, content_type='application/json')
+        self.assertEqual(response.data["hosting"], [])
+        self.assertEqual(response.data["invited"], [e2.id])
+        self.assertEqual(response.data["attending"], [])
+        self.assertEqual(response.data["declined"], [])
+        # Get only accepted events
+        url = reverse('user_events', kwargs={"pk": u3.id})
+        response = self.client.get(url, content_type='application/json')
+        self.assertEqual(response.data["hosting"], [])
+        self.assertEqual(response.data["invited"], [])
+        self.assertEqual(response.data["attending"], [e3.id])
+        self.assertEqual(response.data["declined"], [])
+        # Get only declined events
+        url = reverse('user_events', kwargs={"pk": u4.id})
+        response = self.client.get(url, content_type='application/json')
+        self.assertEqual(response.data["hosting"], [])
+        self.assertEqual(response.data["invited"], [])
+        self.assertEqual(response.data["attending"], [])
+        self.assertEqual(response.data["declined"], [e4.id])
+        # Get all events
+        url = reverse('user_events', kwargs={"pk": u5.id})
+        response = self.client.get(url, content_type='application/json')
+        self.assertEqual(response.data["hosting"], [e1.id])
+        self.assertEqual(response.data["invited"], [e2.id])
+        self.assertEqual(response.data["attending"], [e3.id])
+        self.assertEqual(response.data["declined"], [e4.id])
