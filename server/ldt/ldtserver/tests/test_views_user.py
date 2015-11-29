@@ -406,7 +406,6 @@ class UserViewTests(TestCase):
             "friends": [uid1, uid2, suid]
         }
         response = self.client.post(url, json.dumps(data), content_type='application/json')
-        print response
         uid5 = response.data["id"]
         uobj5 = {
             "id": uid5,
