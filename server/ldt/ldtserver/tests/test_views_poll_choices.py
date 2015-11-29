@@ -79,6 +79,11 @@ class PollAndChoiceViewTests(TestCase):
         }
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # PUT or DELETE - not allowed
+        url = reverse('poll_list', kwargs={"pk": eid1})
+        data = {"question": "Cupcakes?"}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_poll_detail(self):
         # Set up
@@ -143,6 +148,11 @@ class PollAndChoiceViewTests(TestCase):
         # POST without 'vote' choice id
         url = reverse('poll_choice_vote', kwargs={"pk": eid1, "poll_id": pid1})
         data = {"abc": cid1}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # POST with 'vote' as string
+        url = reverse('poll_choice_vote', kwargs={"pk": eid1, "poll_id": pid1})
+        data = {"vote": "abc"}
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # POST event that doesn't exist

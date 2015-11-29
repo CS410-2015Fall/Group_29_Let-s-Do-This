@@ -64,11 +64,7 @@ def shoppinglist_put(request, pk):
     except ShoppingListItem.DoesNotExist:
         return Response({"error": "No ShoppingListItem matching primary key"}, status=status.HTTP_404_NOT_FOUND)
 
-    # Request data should be a list of dicts
     list_of_data = request.data
-    if not isinstance(list_of_data, list):
-        return Response({"error": "Request must be list of ShoppingListItem dicts/objects"},
-                        status=status.HTTP_400_BAD_REQUEST)
 
     # Update each item as specified by corresponding data in list_of_data
     for item in items:
@@ -149,13 +145,9 @@ def shoppinglist_delete(request, pk):
         return Response({"error": "No Event matching primary key"}, status=status.HTTP_404_NOT_FOUND)
     # error if request data not a list
     try:
-        request.data[0]
-    except:
-        return Response({"error": "data must be list of ShoppingListItem to update"}, status=status.HTTP_400_BAD_REQUEST)
-    try:
         items = [ShoppingListItem.objects.get(pk=item_id) for item_id in request.data]
     except ShoppingListItem.DoesNotExist:
-        return Response({"error": "No ShoppingListItem matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "data must be list of ShoppingListItem including valid IDs"}, status=status.HTTP_404_NOT_FOUND)
 
     [item.delete() for item in items]
 

@@ -160,6 +160,15 @@ class CommentViewTests(TestCase):
         self.assertEqual(response.data["content"], "updated content")
         self.assertEqual(response.data["post_date"], post_date)
         self.assertEqual(response.data["author"], uobj2)
+        post_date = "2016-02-14T05:05:05Z"
+        data = {
+            "post_date": post_date,
+            "content": "updated content again"
+        }
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.data["content"], "updated content again")
+        self.assertEqual(response.data["post_date"], post_date)
+        self.assertEqual(response.data["author"], uobj2)
         # PUT invalid post_date, author, content formats
         url = reverse('comment_detail', kwargs={"pk": eid1, "comment_id": cid1})
         data = {

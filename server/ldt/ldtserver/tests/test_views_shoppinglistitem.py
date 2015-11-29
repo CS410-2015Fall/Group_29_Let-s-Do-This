@@ -67,13 +67,12 @@ class ShoppingListTest(TestCase):
             "display_name": "little cold buns",
             "quantity": "1.00",
             "cost": "9.99",
-            "supplier": uid2,
             "ready": True
         }
         data = [sli1, sli2]
         response = self.client.put(url, json.dumps(data), content_type='application/json')
         sli1["supplier"] = uobj1
-        sli2["supplier"] = uobj2
+        sli2["supplier"] = None
         self.assertTrue(sli1 in response.data)
         self.assertTrue(sli2 in response.data)
         # PUT event that does not exist

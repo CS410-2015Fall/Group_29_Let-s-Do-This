@@ -71,13 +71,13 @@ def poll_list(request, pk):
                 if ser2.is_valid():
                     ser2.save()
                 else:
-                    return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(ser2.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 choices.append(ser2.data)
             ser3 = PollSerializer(new_poll)
             res = ser3.data
             return Response(res, status=status.HTTP_201_CREATED)
         else:
-            return Response(ser1.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(ser1.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET', 'DELETE'])
@@ -150,4 +150,4 @@ def poll_choice_vote(request, pk, poll_id):
         serializer = PollSerializer(Poll.objects.get(pk=poll_id))
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Exception as e:
-        return Response({"error": e.message}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
