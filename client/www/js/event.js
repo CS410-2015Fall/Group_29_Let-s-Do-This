@@ -435,14 +435,13 @@ var PollModule = {
 			});
 
 			var voteButton = $("<button>", {
-				id: "someButton",
+				id: "pollButton_" + v.id,
 				'data-inline':"true",
 				text:"Vote"
 			});
 
 			voteButton.click(function(event){
 				event.preventDefault(); // do not redirect
-				voteButton.attr("disabled",true);
 				$.each(inputs,function(i,v){
 					if (v[0].checked) {
 						var pollId = v[0].id.split('_')[1];
@@ -450,6 +449,7 @@ var PollModule = {
 						vote(pollId,choiceId);
 					}
 				});
+				$("#"+ this.id).attr("disabled",true);
 			});
 
 			newPoll.append($("<div>", {
