@@ -14,6 +14,7 @@ function initializeScripts(callback){
 			console.log("notificationInteractions done");
 		})
 	).done(function(){
+		console.log("Global scripts loaded, going callback");
 		callback();
 	});
 }
