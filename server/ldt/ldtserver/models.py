@@ -249,10 +249,7 @@ class ShoppingList(models.Model):
     items = models.ManyToManyField(ShoppingListItem, related_name="items", blank=True)
 
     def __str__(self):
-        if self.event:
-            return self.event.display_name   # display_name of linked Event
-        else:
-            return "(ShoppingList without Event)"
+        return self.event.display_name   # display_name of linked Event
 
     def add_item(self, item):
         """ Add item to items """

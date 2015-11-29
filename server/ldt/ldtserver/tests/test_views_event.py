@@ -13,7 +13,7 @@ from django.core.urlresolvers import reverse
 
 from rest_framework import status
 
-from ..models import Event
+from ..models import Event, LdtUser
 from ..views.event import rsvp, old_and_new_hosts_no_duplicates
 
 # Test db Constants
@@ -136,7 +136,14 @@ class EventViewTests(TestCase):
         u4 = User.objects.get_by_natural_key(U4)
         u5 = User.objects.get_by_natural_key(U5)
         u6 = User.objects.get_by_natural_key(U6)
-        u1o = {"id": u1.id, "username": u1.username}
+        # Give one user a LdtUser profile for branch coverage
+        u1.save()
+        ldtuser1 = LdtUser(user=u1, email=EMAIL, phone="6045554321")
+        ldtuser1.save()
+        u1o = {"id": u1.id,
+               "username": u1.username,
+               "email": EMAIL,
+               "phone": "6045554321"}
         u2o = {"id": u2.id, "username": u2.username}
         u3o = {"id": u3.id, "username": u3.username}
         u4o = {"id": u4.id, "username": u4.username}
@@ -221,10 +228,13 @@ class EventViewTests(TestCase):
         self.assertEqual(response.data['end_date'], "2017-02-01T04:59:00Z")
         self.assertEqual(response.data['budget'], "1.00")
         self.assertEqual(response.data['location'], "the most northern I-5 Rest stop")
-        self.assertEqual(response.data['hosts'], [u1.id, u2.id])
-        self.assertEqual(response.data['invites'], [u2.id, u5.id])
-        self.assertEqual(response.data['accepts'], [u4.id, u6.id])
-        self.assertEqual(response.data['declines'], [u3.id])
+        self.assertTrue(u1.id in response.data['hosts'])
+        self.assertTrue(u2.id in response.data['hosts'])
+        self.assertTrue(u2.id in response.data['invites'])
+        self.assertTrue(u5.id in response.data['invites'])
+        self.assertTrue(u4.id in response.data['accepts'])
+        self.assertTrue(u6.id in response.data['accepts'])
+        self.assertTrue(u3.id in response.data['declines'])
         # PUT event that exists, with extra (benign) field not recognized by serializer
         data = {
             "display_name": "updated the event again",
@@ -315,6 +325,11 @@ class EventViewTests(TestCase):
         # POST without 'changed' list provided
         url = reverse('event_changed_remove', kwargs={"pk": eid1})
         data = {"abcdef": []}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # POST with 'changed' not as list
+        url = reverse('event_hosts_remove', kwargs={"pk": eid1})
+        data = {"changed": "abc"}
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # POST to remove non-existent user from existing event
@@ -583,8 +598,6 @@ class EventViewTests(TestCase):
         u2 = User.objects.get_by_natural_key(U2)
         u3 = User.objects.get_by_natural_key(U3)
         u4 = User.objects.get_by_natural_key(U4)
-        u5 = User.objects.get_by_natural_key(U5)
-        u6 = User.objects.get_by_natural_key(U6)
         # Setup by POST new event
         data = {"display_name": "test event"}
         url = reverse('event_list')
@@ -595,10 +608,14 @@ class EventViewTests(TestCase):
         res = old_and_new_hosts_no_duplicates(event, [u1.id, u2.id])
         self.assertEqual(res, [u1.id, u2.id])
         event.save()
-        # One new + one duplicate
+        # Two new + two duplicate
         event = Event.objects.get(pk=eid1)
-        res = old_and_new_hosts_no_duplicates(event, [u2.id, u3.id])
-        self.assertEqual(res, [u2.id, u3.id])
+        res = old_and_new_hosts_no_duplicates(event, [u1.id, u2.id, u3.id, u4.id, u4.id])
+        self.assertTrue(u1.id in res)
+        self.assertTrue(u2.id in res)
+        self.assertTrue(u3.id in res)
+        self.assertTrue(u4.id in res)
+        self.assertTrue(len(res), 4)
         event.save()
 
     def test_rsvp_helper(self):

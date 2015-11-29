@@ -25,6 +25,11 @@ class EventMethodTests(TestCase):
         User.objects._create_user(username=U2, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
         User.objects._create_user(username=U3, password=PWD, email=EMAIL, is_staff=False, is_superuser=False)
 
+    def test_event___str__(self):
+        event = Event.objects.create(display_name="test event")
+        event.save()
+        self.assertEqual(str(event), "test event")
+
     def test_event_get_hosts(self):
         event = Event.objects.create(display_name="test event")
         event.save()  # Cannot use ManyToMany relation until all pks saved
@@ -161,7 +166,8 @@ class EventMethodTests(TestCase):
                 "id": User.objects.get_by_natural_key(U2).id
             }
         ]
-        self.assertEqual(event.get_contributions(), expected_contributions)
+        for con in expected_contributions:
+            self.assertTrue(con in event.get_contributions())
         # Add more complex but expected items and test again
         i4 = ShoppingListItem.objects.create(display_name="meat", supplier=User.objects.get_by_natural_key(U1),
                                              cost="2.22", quantity="1.00")
@@ -235,7 +241,8 @@ class EventMethodTests(TestCase):
                 "id": User.objects.get_by_natural_key(U2).id
             }
         ]
-        self.assertEqual(event.get_contributions(), expected_contributions_2)
+        for con in expected_contributions_2:
+            self.assertTrue(con in event.get_contributions())
 
     def test_event_cancel_functions(self):
         uid1 = User.objects.get_by_natural_key(U1).id

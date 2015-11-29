@@ -75,7 +75,7 @@ def event_list(request):
             # Delete newly created Event because shouldn't be used without ShoppingList
             event = Event.objects.get(pk=ser1.data["id"])
             event.delete()
-            return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(ser2.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def rsvp(event=None, replies=None):
@@ -349,7 +349,7 @@ def event_cancel(request, pk):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])
@@ -371,7 +371,7 @@ def event_changed_remove(request, pk):
     if "changed" not in request.data:
         return Response({"error": "'changed' must be provided as list of user IDs"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Error if trying to remove non-existent user from changed list
+    # Error if trying to remove non-existent user from changed list, or if request data is not list
     try:
         [User.objects.get(pk=uid) for uid in request.data["changed"]]
     except:
@@ -387,10 +387,7 @@ def event_changed_remove(request, pk):
 
     # Prepare data with updated changed list
     data = {}
-    try:
-        new_changed = [uid for uid in old_changed if uid not in request.data["changed"]]
-    except:
-        return Response({"error": "'changed' must be provided as list of user IDs"}, status=status.HTTP_404_NOT_FOUND)
+    new_changed = [uid for uid in old_changed if uid not in request.data["changed"]]
     data.update({"changed": new_changed})
 
     # Django REST requires a display_name
@@ -401,7 +398,7 @@ def event_changed_remove(request, pk):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])
@@ -421,7 +418,7 @@ def event_hosts_remove(request, pk):
     if "hosts" not in request.data:
         return Response({"error": "'hosts' must be provided as list of user IDs"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Error if trying to remove non-existent user from changed list
+    # Error if trying to remove non-existent user from changed list, or if request.data is not list
     try:
         [User.objects.get(pk=uid) for uid in request.data["hosts"]]
     except:
@@ -447,7 +444,7 @@ def event_hosts_remove(request, pk):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def old_and_new_hosts_no_duplicates(event=None, newhosts=None):
@@ -503,4 +500,4 @@ def event_invites_remove(request, pk):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
