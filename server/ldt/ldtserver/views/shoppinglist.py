@@ -54,6 +54,11 @@ def shoppinglist_put(request, pk):
         event = Event.objects.get(pk=pk)
     except Event.DoesNotExist:
         return Response({"error": "No Event matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+    # error if request data not a list
+    try:
+        request.data[0]
+    except:
+        return Response({"error": "data must be list of ShoppingListItem to update"}, status=status.HTTP_400_BAD_REQUEST)
     try:
         items = [ShoppingListItem.objects.get(pk=item["id"]) for item in request.data]
     except ShoppingListItem.DoesNotExist:
@@ -92,7 +97,11 @@ def shoppinglist_put(request, pk):
             if supplier_id:
                 # Hacky because Django REST framework doesn't support writable nested entities
                 updated_item = ShoppingListItem.objects.get(pk=item_id)
-                updated_item.supplier = User.objects.get(pk=supplier_id)
+                # error is supplier is nonexistent user
+                try:
+                    updated_item.supplier = User.objects.get(pk=supplier_id)
+                except:
+                    return Response({"error": "no comment author matching that user id"}, status=status.HTTP_400_BAD_REQUEST)
                 updated_item.save()
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -138,6 +147,11 @@ def shoppinglist_delete(request, pk):
         event = Event.objects.get(pk=pk)
     except Event.DoesNotExist:
         return Response({"error": "No Event matching primary key"}, status=status.HTTP_404_NOT_FOUND)
+    # error if request data not a list
+    try:
+        request.data[0]
+    except:
+        return Response({"error": "data must be list of ShoppingListItem to update"}, status=status.HTTP_400_BAD_REQUEST)
     try:
         items = [ShoppingListItem.objects.get(pk=item_id) for item_id in request.data]
     except ShoppingListItem.DoesNotExist:
