@@ -1,21 +1,20 @@
 
 $.getScript("js/global.js", function () {
+  initializeScripts(loadProfile);
+});
+function loadProfile(){
   $(document).ready( function(){
 	// Temp code!
 	// When clicking on someone's profile, their user ID will be locally stored
-	var someUserId = 13;
-	localStorage.setItem("profileId", JSON.stringify({"id":someUserId}));
+	//var someUserId = 13;
+	//localStorage.setItem("profileId", JSON.stringify({"id":someUserId}));
 
 	// We then retrieve this stored ID and load the profile of this user
 	var profileId = JSON.parse( localStorage.getItem("profileId") ).id;
 	var userId = LetsDoThis.Session.getInstance().getUserId();
 
-	// if on profile page, display the profile appropriately
-	if (window.location.pathname == "/www/profile.html" || window.location.pathname == "/android_asset/www/profile.html") {
-        profileToDisplay(profileId, userId);
-    } else if (window.location.pathname == "/www/editProfile.html") {
-        loadCurrentData();
-    }
+    profileToDisplay(profileId, userId);
+
 
 	// Button logic
 
@@ -25,17 +24,6 @@ $.getScript("js/global.js", function () {
 
 	$("#editButton").click(function(){
 		window.location="editProfile.html";
-	})
-
-	$("#backButton").click(function(){
-		window.location="profile.html";
-	})
-
-	$("#saveButton").click(function(){
-		var editedUsername = $("#editUsername").val();
-		var editedEmail = $("#editEmail").val();
-		var editedPhone = $("#editPhone").val();
-		editUserData(editedUsername, editedEmail, editedPhone);
 	})
 
 	$("#friendButton").click(function(){
@@ -52,8 +40,8 @@ $.getScript("js/global.js", function () {
 		})
 	})
   })
-})
 
+}
 function profileToDisplay(profileId, userId) {
 
 	// check if profile belongs to logged in user
@@ -117,17 +105,3 @@ function clearProfile() {
 	$("#mainContent").html("");
 }
 
-function loadCurrentData(){
-	var userData = LetsDoThis.Session.getInstance().getUserInfo();
-	$("#editUsername").val(userData.username);
-	$("#editEmail").val(userData.email);
-	$("#editPhone").val(userData.phone);
-}
-
-function editUserData(editedUsername, editedEmail, editedPhone) {
-	var userId = LetsDoThis.Session.getInstance().getUserId();
-	console.log("about to update user info");
-	updateUserInfo(userId, editedUsername, editedEmail, editedPhone, function(resp){
-		window.location="profile.html";
-	})
-}

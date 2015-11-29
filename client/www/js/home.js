@@ -139,6 +139,8 @@ function globalCallback(){
 		});
 
 		$("#profileButton").click(function(){
+			var userId = LetsDoThis.Session.getInstance().getUserId();
+			localStorage.setItem("profileId", JSON.stringify({"id":userId}));
 			window.location="profile.html";
 		});
 

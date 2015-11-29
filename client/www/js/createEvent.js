@@ -1,4 +1,8 @@
 $.getScript("js/global.js", function() {
+	initializeScripts(loadCreateEvent);
+})
+
+function loadCreateEvent(){
 $(document).ready(function() {
 	var module;
 	var eventId = localStorage.getItem("editEvent");
@@ -29,7 +33,7 @@ $(document).ready(function() {
 		module.handleSaveButton();
 	});
 });
-});
+}
 
 var LocationModule = {
 	//This function is used by the location button to call back on
