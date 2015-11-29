@@ -31,7 +31,7 @@ def poll_list(request, pk):
     try:
         event = Event.objects.get(pk=pk)
     except Event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "no event matching pk"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         all_polls = Poll.objects.all()
@@ -40,6 +40,17 @@ def poll_list(request, pk):
         return Response(ser1.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
+
+        # error if 'question' or 'poll_choices' not provided
+        if 'question' not in request.data or 'poll_choices' not in request.data:
+            return Response({"error": "must provide 'question' and 'poll_choices'"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # error if 'poll_choices' not list of string
+        try:
+            request.data["poll_choices"][0]
+        except:
+            return Response({"error": "'poll_choices' must be list of string"}, status=status.HTTP_400_BAD_REQUEST)
+
         # Automatically add event ID, which is pk provided
         data_with_event = request.data
         data_with_event.update({"event": pk})

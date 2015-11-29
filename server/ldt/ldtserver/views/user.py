@@ -43,23 +43,29 @@ def user_new(request):
         "phone": "6045554321",
         "email": "back@future.com"
     }
-
-    Note: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
-    shown. They will NOT have a phone or email.
     """
     # First create new User object
     # !!! refactor to use USER_FIELDS
     if not ("username" in request.data and "password" in request.data):
         return Response("KeyError: username and password required.", status=status.HTTP_400_BAD_REQUEST)
+    pword = request.data["password"]
     data1 = {
         "username": request.data["username"],
-        "password": request.data["password"],
     }
     ser1 = UserSerializer(data=data1)
     if ser1.is_valid():
         ser1.save()
     else:
         return Response(ser1.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = User.objects.get(pk=ser1.data["id"])
+    except User.DoesNotExist:
+        return Response("error: Could not retrieve new user", status=status.HTTP_400_BAD_REQUEST)
+
+    # Manually set password because serializer doesn't handle
+    user.set_password(pword)
+    user.save()
 
     # Then create new LdtUser associated with new User
     data2 = {"user": ser1.data["id"]}
@@ -82,6 +88,9 @@ def user_new(request):
             "friends": ser2.data["friends"]
         }
     else:
+        # Delete newly created user because shouldn't be used without ldtuser profile
+        user = User.objects.get(pk=ser1.data["id"])
+        user.delete()
         return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
@@ -162,7 +171,7 @@ def user_list(request):
             userdict = {
                 "id": user.id,
                 "username": user.username,
-                "password": user.password,
+                # "password": user.password,
                 "phone": profile.phone,
                 "email": profile.email,
                 "friends": friends
@@ -214,6 +223,8 @@ def user_search(request):
     POST request data must be formatted as follows.
     { "username": "testyuser" }
     """
+    if "username" not in request.data:
+        return Response("Please provide a 'username' string value", status=status.HTTP_400_BAD_REQUEST)
     users = User.objects.all()
     userid = None
     for user in users:
@@ -240,6 +251,8 @@ def user_detail(request, pk):
         "friends": [123, 789]
     }
 
+    Note1: This ADDS friends to a user's list of friends. To remove friends, see user_friends_remove
+
     For GETs and after successful PUTs, "friends" is returned as a list of dictionaries/objects of user details
     (each formatted as below) instead of lists of IDs (shown above):
     {
@@ -249,7 +262,7 @@ def user_detail(request, pk):
         "email": "back@future.com"
     }
 
-    Note: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
+    Note2: If a friend has no LdtUser profile (e.g. admin staff/superuser), only the friend's id and username will be
     shown. They will NOT have a phone or email.
     """
     try:
@@ -268,7 +281,7 @@ def user_detail(request, pk):
             res = {
                 "id": user.id,
                 "username": user.username,
-                "password": user.password,
+                # "password": user.password,
                 "phone": profile.phone,
                 "email": profile.email,
                 "friends": friends
@@ -278,7 +291,7 @@ def user_detail(request, pk):
             res = {
                 "id": user.id,
                 "username": user.username,
-                "password": user.password,
+                # "password": user.password,
             }
         # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
         if "friends" in res:
@@ -428,10 +441,16 @@ def user_friends_remove(request, pk):
     except Exception:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    if "friends" not in request.data:
+        return Response({"error": "must provide list of user ids as 'friends'"}, status=status.HTTP_400_BAD_REQUEST)
+
     data = {"user": user.id}
 
-    newfriends = [f for f in friends if f not in request.data["friends"]]
-    data.update({"friends": newfriends})
+    try:
+        newfriends = [f for f in friends if f not in request.data["friends"]]
+        data.update({"friends": newfriends})
+    except:
+        return Response({"error": "must provide list of user ids as 'friends'"}, status=status.HTTP_400_BAD_REQUEST)
 
     serializer = LdtUserSerializer(ldtuser, data=data)
     if serializer.is_valid():
@@ -465,13 +484,12 @@ def user_friends_remove(request, pk):
                     }
                 detailed_ulist.append(udict)
             res["friends"] = detailed_ulist
-        return Response(res, status=status.HTTP_200_OK)                # friends as list of detailed udicts
-        # return Response(serializer.data, status=status.HTTP_200_OK)  # original - friends as list of user ID
+        return Response(res, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET'])
 def user_events(request, pk):
     """
     Get all event IDs associated with given user: all that are hosted/invited/attending/declined
@@ -521,91 +539,4 @@ def user_events(request, pk):
 
         return Response(user_events, status=status.HTTP_200_OK)
 
-    elif request.method == 'PUT':
-
-        # !!! need to implement - do we actually need this function?
-
-        return Response({"test": "abc123"}, status=status.HTTP_200_OK)
-
-
-# # BELOW are four alternative calls to replace user_events
-#
-# @api_view(['GET'])
-# def user_hosting(request, pk):
-#     """
-#     Get all events where specific user is host
-#     """
-#     try:
-#         user = User.objects.get(pk=pk)
-#     except User.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     all_events = Event.objects.all()
-#     hosting_events = []
-#     for event in all_events:
-#         if event.hosts.all():
-#             for host in event.hosts.all():
-#                 if host.id == user.id:
-#                     hosting_events.append(event.id)
-#     return Response(hosting_events, status=status.HTTP_200_OK)
-#
-#
-# @api_view(['GET'])
-# def user_invited(request, pk):
-#     """
-#     Get all events where specific user is invited
-#     """
-#     try:
-#         user = User.objects.get(pk=pk)
-#     except User.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     all_events = Event.objects.all()
-#     invited_events = []
-#     for event in all_events:
-#         if event.invites.all():
-#             for inv in event.invites.all():
-#                 if inv.id == user.id:
-#                     invited_events.append(event.id)
-#     return Response(invited_events, status=status.HTTP_200_OK)
-#
-#
-# @api_view(['GET'])
-# def user_attending(request, pk):
-#     """
-#     Get all events where specific user is attending
-#     """
-#     try:
-#         user = User.objects.get(pk=pk)
-#     except User.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     all_events = Event.objects.all()
-#     accepted_events = []
-#     for event in all_events:
-#         if event.accepts.all():
-#             for acc in event.accepts.all():
-#                 if acc.id == user.id:
-#                     accepted_events.append(event.id)
-#     return Response(accepted_events, status=status.HTTP_200_OK)
-#
-#
-# @api_view(['GET'])
-# def user_declined(request, pk):
-#     """
-#     Get all events where specific user is declined
-#     """
-#     try:
-#         user = User.objects.get(pk=pk)
-#     except User.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     all_events = Event.objects.all()
-#     decline_events = []
-#     for event in all_events:
-#         if event.declines.all():
-#             for dec in event.declines.all():
-#                 if dec.id == user.id:
-#                     decline_events.append(event.id)
-#     return Response(decline_events, status=status.HTTP_200_OK)
-
+    # Django REST framework handles PUT/POST/DELETE not allowed
