@@ -1,5 +1,6 @@
 var notManager;
 var isCordovaApp = !!window.cordova;
+var id = 1;
 
 document.addEventListener("deviceready", function(){
 	notManager = cordova.plugins.notification.local;
@@ -33,7 +34,7 @@ function notifyOfNewFriend(friendsName){
 // 	message: Additional lines displayed in the notification
 function makeNotification(title, message){
 	notManager.schedule({
-		id: 1,
+		id: id++,
 		title: title,
 		text: message,
 				// data: null
