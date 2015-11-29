@@ -9,21 +9,10 @@ $.getScript("js/global.js", function() {
 
 document.addEventListener("deviceready", function(){
 	//Both notifications and the calendar are dependant on this deviceready being called
-	loadFriends();
-	checkForNewFriends();
 
-	getChangedEvents(function(notifs) {
-		if (notifs.length > 0) {
-			notificationBoxes = formatNotificationBoxes(notifs);
-			displayBoxes(notificationBoxes, $("#mainContent"));
-		} else {
-			getEvents(function(e) {
-				eventBoxes = formatEventBoxes(e);
-				displayBoxes(eventBoxes, $("#mainContent"));
-			});
-		}
-	});
+
 }, false);
+
 
 function formatEventBoxes(events) {
 	var formattedEvents = [];
@@ -111,6 +100,7 @@ function checkForNewFriends(){
 }
 
 function globalCallback(){
+	console.log("Global scripts loaded, here is the callback");
 	$(document).ready(function() {
 		//These scripts all need to be loaded here because they are reliant on the deviceready event, which is fired in the cordova script
 
@@ -146,7 +136,7 @@ function globalCallback(){
 			localStorage.setItem("profileId", JSON.stringify({"id":userId}));
 			window.location="profile.html";
 		});
-		
+
 		$("#friendsButton").click(function(){
 			loadFriends();
 		})
@@ -158,5 +148,21 @@ function globalCallback(){
 				openEvent(eventId);
 			}
 		});
+
+		//Look for changed events
+		getChangedEvents(function(notifs) {
+			if (notifs.length > 0) {
+				notificationBoxes = formatNotificationBoxes(notifs);
+				displayBoxes(notificationBoxes, $("#mainContent"));
+			} else {
+				getEvents(function(e) {
+					eventBoxes = formatEventBoxes(e);
+					displayBoxes(eventBoxes, $("#mainContent"));
+				});
+			}
+		});
+
+		loadFriends();
+		checkForNewFriends();
 	});
 }
