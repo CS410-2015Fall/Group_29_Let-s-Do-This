@@ -20,7 +20,8 @@ if __name__ == "__main__":
     if is_testing:
         import coverage
         # see http://coverage.readthedocs.org/en/latest/cmd.html
-        cov = coverage.coverage(source=['ldtserver'], branch=['true'], omit=['*/migrations/*', '*/tests/*'])
+        cov = coverage.coverage(source=['ldtserver'], branch=['true'],
+                                omit=['*/__init__.py', '*/migrations/*', '*/tests/*'])
         cov.erase()
         cov.start()
         execute_from_command_line(sys.argv)
