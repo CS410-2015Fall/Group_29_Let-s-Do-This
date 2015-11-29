@@ -52,28 +52,24 @@ function loadEvent(){
 			//Polls
 			PollModule.init(eventData,$("#polls"));
 			$("#newPollButton").click(function() {
+				var pollName = document.getElementById('newPollName');
 				var choices = document.getElementById('newPollAnswers').getElementsByTagName('input');
 				var choiceStrings = [];
 				$.each(choices, function(i,v) {
 					choiceStrings.push(v.value);
 				});
-				PollModule.createPoll(document.getElementById('newPollName').value,choiceStrings);
+				PollModule.createPoll(pollName.value,choiceStrings);
+
+				pollName.value = "";
+				$("#newPollAnswers").html(PollModule.newChoice(0));
+				$("#newPollAnswers").append(PollModule.newChoice(1));
+				$("#newPollAnswers").trigger('create');
 			});
 			$("#moreAnswersButton").click(function() {
 				var choicesDiv = document.getElementById('newPollAnswers');
 				var choices = choicesDiv.getElementsByTagName('input');
-				var newChoice = $("<div>",{
-					'data-role':'fieldcontain'
-				});
-				newChoice.append($("<label>", {
-					for:"name"
-				}));
-				newChoice.append($("<input>", {
-					type:"text",
-					id: "newChoice_" + choices.length
-				}));
 
-				$("#newPollAnswers").append(newChoice);
+				$("#newPollAnswers").append(PollModule.newChoice(choices.length));
 				$("#newPollAnswers").trigger('create');
 			});
 
@@ -429,9 +425,6 @@ var PollModule = {
 					'data-role':'controlgroup'
 				})
 			});
-			newPoll.append($("<legend>", {
-				html: "<h3>" + v.question + "</h3>"
-			}));
 
 			$.each(v.poll_choices,function(index, value) {
 				var pollInput = $("<input>", {
@@ -452,11 +445,15 @@ var PollModule = {
 					html:value.choice_text + " (" + value.votes + " votes)"
 				}));
 
-				newPoll.append(pollInput);
-				newPoll.append(pollLabel);
+				newPoll.prepend(pollInput);
+				newPoll.prepend(pollLabel);
 
 				inputs.push(pollInput);
 			});
+
+			newPoll.prepend($("<legend>", {
+				html: "<h3>" + v.question + "</h3>"
+			}));
 
 			var voteButton = $("<button>", {
 				id: "pollButton_" + v.id,
@@ -481,7 +478,7 @@ var PollModule = {
 				html: voteButton
 			}));
 
-			d.append(newPoll);
+			d.prepend(newPoll);
 		});
 
 	this.pollDiv.trigger('create');
@@ -509,4 +506,18 @@ var PollModule = {
 			PollModule.updateUI();
 		});
 	},
+
+	newChoice: function(i) {
+		var newChoice = $("<div>",{
+			'data-role':'fieldcontain'
+		});
+		newChoice.append($("<label>", {
+			for:"name"
+		}));
+		newChoice.append($("<input>", {
+			type:"text",
+			id: "newChoice_" + i
+		}));
+		return newChoice;
+	}
 };
