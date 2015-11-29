@@ -84,6 +84,11 @@ function loadEvent(){
 
 			$("#viewMap").click(function(){
 				// Save the location, and name, into the session storage so the map script can pull it up
+				var mapInfo = {
+					'location': eventData.location,
+					'name': eventData.display_name
+				}
+				sessionStorage.setItem("mapInfo", JSON.stringify(mapInfo));
 				window.location="map.html";
 			});
 

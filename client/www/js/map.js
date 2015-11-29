@@ -34,11 +34,13 @@ function prepEventMarker(){
 //Loads the current event from localStorage
 //Returns an array where the first element is the latLong and the second is the ane,
 function getEventData(){
-	var eventData = JSON.parse( localStorage.getItem("eventObj") );
+	var mapInfo = JSON.parse(sessionStorage.getItem("mapInfo"));
+	console.log("mapInfo:");
+	console.log(mapInfo)
 	// console.log("Maps eventData:");
 	// console.log(eventData);
-	var location = eventData.location;
-	var eventName = eventData.display_name;
+	var location = mapInfo.location;
+	var eventName = mapInfo.name;
 
 	return [location, eventName];
 }
