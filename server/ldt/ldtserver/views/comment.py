@@ -32,6 +32,16 @@ def comment_list(request, pk):
     }
 
     Note: DateTime is UTC and in format YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]
+
+    Returned, if successful, is the new comment as:
+    {
+        "post_date": "2015-01-01T00:00Z",
+        "author": {
+            "id": 15,
+            "username": "JohnnyTest"
+        },
+        "content": "This string makes up my comment, by user of ID 15."
+    }
     """
     try:
         event = Event.objects.get(pk=pk)
@@ -45,6 +55,11 @@ def comment_list(request, pk):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
+
+        # error if comment fields not provided
+        if not all(field in request.data for field in COMMENT_FIELDS):
+            return Response({"error": "requires 'author' id, 'content', and 'post_date'"}, status=status.HTTP_400_BAD_REQUEST)
+
         # Automatically add event ID, which is pk provided
         data_with_event = request.data
         data_with_event.update({"event": [pk]})
@@ -55,7 +70,11 @@ def comment_list(request, pk):
             serializer.save()
             # Hacky because Django REST framework doesn't support writable nested entities
             new_comment = Comment.objects.get(pk=serializer.data["id"])
-            new_comment.author = User.objects.get(pk=author_id)
+            # Error if no user matches id
+            try:
+                new_comment.author = User.objects.get(pk=author_id)
+            except:
+                return Response({"error": "no comment author matching that user id"}, status=status.HTTP_400_BAD_REQUEST)
             new_comment.save()
             # Return flat JSON response of new comment with author user fields
             # !!! refactor: flexible instead of hardcoded
@@ -69,8 +88,7 @@ def comment_list(request, pk):
                 "content": serializer.data["content"],
                 "event": serializer.data["event"]
             }
-            return Response(res, status=status.HTTP_201_CREATED)     # new
-            # return Response(serializer.data, status=status.HTTP_201_CREATED)   # original
+            return Response(res, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -128,7 +146,11 @@ def comment_detail(request, pk, comment_id):
             serializer.save()
             # Hacky because Django REST framework doesn't support writable nested entities
             updated_comment = Comment.objects.get(pk=comment_id)
-            updated_comment.author = User.objects.get(pk=author_id)
+            # Error if no user matches id
+            try:
+                updated_comment.author = User.objects.get(pk=author_id)
+            except:
+                return Response({"error": "no comment author matching that user id"}, status=status.HTTP_400_BAD_REQUEST)
             updated_comment.save()
             # Return flat JSON response of new comment with author user fields
             # !!! refactor: flexible instead of hardcoded

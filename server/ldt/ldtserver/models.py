@@ -31,6 +31,8 @@ class LdtUser(models.Model):
     """
     LdtUser, a profile associated with Django built-in user.
     Note: This is only accessible to admin. Not directly accessible through API.
+
+    At this point it is possible for a user to have themselves as a friend.
     """
     # Required
     user = models.OneToOneField(User, related_name="userlink", on_delete=models.CASCADE)
@@ -73,25 +75,6 @@ class Comment(models.Model):
         return str(self.id)
 
 
-class ShoppingListItem(models.Model):
-    """
-    ShoppingListItem with fields for display_name, quantity, cost, supplier (User)
-
-    Acts as a checklist + what was already bought
-    """
-    # Required
-    display_name = models.CharField(max_length=50)
-    # Optional
-    quantity = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    # For now, if user it Null then there is nobody assigned
-    supplier = models.ForeignKey(User, related_name="supplier", null=True, blank=True)
-    ready = models.NullBooleanField(blank=True)
-
-    def __str__(self):
-        return self.display_name
-
-
 class Event(models.Model):
     """
     Event with fields for display_name, dates, hosts, invitees, accepts, declines.
@@ -103,19 +86,36 @@ class Event(models.Model):
     start_date = models.DateTimeField('start date', blank=True, null=True)
     end_date = models.DateTimeField('end date', blank=True, null=True)
     budget = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    location = models.CharField('location', max_length=100, blank=True)
+    location = models.CharField('location', max_length=100, blank=True, null=True)
     hosts = models.ManyToManyField(User, related_name="hosts", blank=True)
-    invites = models.ManyToManyField(User, related_name="invitees", blank=True)
+    invites = models.ManyToManyField(User, related_name="invites", blank=True)
     accepts = models.ManyToManyField(User, related_name="accepts", blank=True)
     declines = models.ManyToManyField(User, related_name="declines", blank=True)
     changed = models.ManyToManyField(User, related_name="changed", blank=True)
     comments = models.ManyToManyField(Comment, related_name="event", blank=True)
+    cancelled = models.NullBooleanField(blank=True, null=True)
 
     def __str__(self):
         """
         e.g. Event.objects.all() == display_name
         """
         return self.display_name
+
+    def is_cancelled(self):
+        """ Return true if Event cancelled, false otherwise """
+        if self.cancelled:
+            return True
+        return False
+
+    def cancel(self):
+        """ Set Event's cancelled status to True, returns self.cancelled """
+        self.cancelled = True
+        return self.cancelled
+
+    def uncancel(self):
+        """ Set Event's cancelled status to False, returns self.cancelled """
+        self.cancelled = False
+        return self.cancelled
 
     def get_hosts(self):
         """ Return list of User IDs of Event's hosts """
@@ -145,6 +145,10 @@ class Event(models.Model):
         """ Return list of Event's Polls """
         return [p for p in self.event_polls.all()]
 
+    def get_polls_choices(self):
+        """ Return list of lists of Event's Polls choices """
+        return [p.get_choices() for p in self.event_polls.all()]
+
     def has_shoppinglist(self):
         """ Return True ShoppingList if exists, else False """
         try:
@@ -159,7 +163,25 @@ class Event(models.Model):
 
     def get_contributions(self):
         """
-        Return list of "contributions" objects: current shopping_list as list of users
+        Return list of "contributions" objects: current shopping_list as list of users. Example:
+
+        [
+        {
+            "username": "mcgrandlej",
+            "items": [
+                {
+                    "ready": false,
+                    "cost": "200.00",
+                    "display_name": "rain coats",
+                    "id": 2,
+                    "quantity": "4.00"
+                }
+            ],
+            "total": "200.0",
+            "id": 1
+        },
+        ...
+        ]
         """
         contributions = []
         # This is to avoid interruption of new Event cascade via API or bugs
@@ -199,6 +221,25 @@ class Event(models.Model):
         return contributions
 
 
+class ShoppingListItem(models.Model):
+    """
+    ShoppingListItem with fields for display_name, quantity, cost, supplier (User)
+
+    Acts as a checklist + what was already bought
+    """
+    # Required
+    display_name = models.CharField(max_length=50)
+    # Optional
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    # For now, if user it Null then there is nobody assigned
+    supplier = models.ForeignKey(User, related_name="supplier", null=True, blank=True)
+    ready = models.NullBooleanField(blank=True)
+
+    def __str__(self):
+        return self.display_name
+
+
 class ShoppingList(models.Model):
     """
     ShoppingList of ShoppingListItems
@@ -231,6 +272,10 @@ class Poll(models.Model):
     def __str__(self):
         return self.question
 
+    def get_choices(self):
+        """ Returns list of poll's choices """
+        return [c for c in self.poll_choices.all()]
+
 
 class PollChoice(models.Model):
     """
@@ -254,9 +299,9 @@ class PollChoice(models.Model):
         """
         try:
             if not isinstance(n, int):
-                raise Exception("n must be an integer")
-        except Exception as e:
-            return Exception
+                raise TypeError("n must be an integer")
+        except TypeError as e:
+            return e
         self.votes += n
         self.save()
         return self.votes

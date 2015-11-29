@@ -3,7 +3,7 @@ All url mappings for ldtserver (within /api subdir)
 e.g. http://.../api/...
 """
 from django.conf.urls import url, include
-from views.event import event_detail, event_list, event_hosts_remove, event_changed_remove, event_invites_remove
+from views.event import event_detail, event_list, event_hosts_remove, event_changed_remove, event_invites_remove, event_cancel
 from views.poll import poll_list, poll_detail, poll_choice_vote
 from views.shoppinglistitem import shoppinglistitem_detail, shoppinglistitem_list
 from views.shoppinglist import shoppinglist_put, shoppinglist_delete
@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^events/(?P<pk>[0-9]+)/comments/$', comment_list, name='comment_list'),
     url(r'^events/(?P<pk>[0-9]+)/comments/(?P<comment_id>[0-9]+)/$', comment_detail, name='comment_detail'),
 
+    url(r'^events/(?P<pk>[0-9]+)/cancel/$', event_cancel, name='event_cancel'),
     url(r'^events/(?P<pk>[0-9]+)/hosts/remove/$', event_hosts_remove, name='event_hosts_remove'),
     url(r'^events/(?P<pk>[0-9]+)/changed/remove/$', event_changed_remove, name='event_changed_remove'),
     url(r'^events/(?P<pk>[0-9]+)/invites/remove/$', event_invites_remove, name='event_invites_remove'),

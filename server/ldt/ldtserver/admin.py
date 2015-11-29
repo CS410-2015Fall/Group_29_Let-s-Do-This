@@ -17,7 +17,8 @@ class LdtUserAdmin(admin.ModelAdmin):
 
 
 class EventAdmin(admin.ModelAdmin):
-    fields = ['display_name', 'start_date', 'end_date', 'participants', 'hosts']
+    fields = ['display_name', 'start_date', 'end_date', 'participants', 'hosts', 'invites', 'accepts', 'declines',
+              'cancelled', 'changed', 'comments', 'cancelled']
 
 
 class CommentAdmin(admin.ModelAdmin):

@@ -1,9 +1,5 @@
 """
 All Event views for ldtserver (for RESTful API)
-
-:TODO:
-- test below with cURL/httpie
-- different timezones? leave to client side to convert from UTC
 """
 import copy
 from rest_framework import status
@@ -16,9 +12,9 @@ from ..serializers import EventSerializer, ShoppingListSerializer
 
 
 OPTIONAL_EVENT_FIELDS = ["start_date", "end_date", "budget", "location", "hosts", "comments", "changed"]
-ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + ["display_name"] + ["id"]
 EVENT_RSVP_FIELDS = ["invites", "accepts", "declines"]
 USERLIST_FIELDS = ["hosts", "invites", "accepts", "declines"]
+ALL_FIELDS_BUT_SHOPLIST = OPTIONAL_EVENT_FIELDS + USERLIST_FIELDS + ["display_name"] + ["id"] + ["cancelled"]
 
 
 @api_view(['GET', 'POST'])
@@ -52,7 +48,7 @@ def event_list(request):
     if request.method == 'GET':
         events = Event.objects.all()
         serializer = EventSerializer(events, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
         # First create new Event
@@ -167,7 +163,6 @@ def rsvp(event=None, replies=None):
         new_iad[dest_list].sort(key=int)
 
     return new_iad
-    # return replies    # stub; original functionality
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -247,7 +242,6 @@ def event_detail(request, pk):
                     udict = {
                         "id": user.id,
                         "username": user.username,
-                        # "password": user.password,
                         "phone": profile.phone,
                         "email": profile.email,
                     }
@@ -256,7 +250,6 @@ def event_detail(request, pk):
                     udict = {
                         "id": user.id,
                         "username": user.username,
-                        # "password": user.password,
                     }
                 detailed_ulist.append(udict)
             res[f] = detailed_ulist
@@ -274,7 +267,7 @@ def event_detail(request, pk):
             if key in request.data:
                 # Add host(s) to current list instead of overwriting list
                 if key == "hosts":
-                    data.update({key: insert_hosts(event=event, newhosts=request.data[key])})
+                    data.update({key: old_and_new_hosts_no_duplicates(event=event, newhosts=request.data[key])})
                 else:
                     data.update({key: request.data[key]})
 
@@ -301,6 +294,65 @@ def event_detail(request, pk):
 
 
 @api_view(['POST'])
+def event_cancel(request, pk):
+    """
+    Cancels a given event, puts all users on 'changed' list, and returns event.
+
+    Data needs to be: {"cancelled": true} or {"cancelled": false}
+    """
+    try:
+        event = Event.objects.get(pk=pk)
+        already_on_changed = Event.get_changed(event)
+    except Event.DoesNotExist:
+        return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
+
+    # # Error if event already cancelled
+    # if event.is_cancelled():
+    #     return Response({"error": "Event has already been cancelled"}, status=status.HTTP_400_BAD_REQUEST)
+
+    if "cancelled" not in request.data:
+        return Response({"error": "'cancelled' must be provided as true or false"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Cancel or uncancel, depending on input data
+    if request.data["cancelled"] is True:
+        try:
+            event.cancel()
+        except Exception as e:
+            return Response({"error": "Could not cancel event. " + e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    elif request.data["cancelled"] is False:
+        try:
+            event.uncancel()
+        except Exception as e:
+            return Response({"error": "Could not uncancel event. " + e.message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return Response({"error": "'cancelled' must be provided as true or false"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Prepare data with updated changed list
+    data = {}
+    try:
+        hosts = event.get_hosts()
+        invites = event.get_invites()
+        accepts = event.get_accepts()
+        declines = event.get_declines()
+        all_unique_hiad_uids = list(set(hosts + invites + accepts + declines))
+        new_changed = list(set(all_unique_hiad_uids + already_on_changed))
+    except Exception as e:
+        return Response({"error": "Could not update 'changed' list of event. " + e.message},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    data.update({"changed": new_changed})
+
+    # Django REST requires a display_name
+    data.update({"display_name": event.display_name})
+
+    serializer = EventSerializer(event, data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
 def event_changed_remove(request, pk):
     """
     Remove user(s) from the 'changed' list of an event
@@ -317,7 +369,21 @@ def event_changed_remove(request, pk):
         return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
 
     if "changed" not in request.data:
-        return Response({"error": "'changed' must be provided as list of user IDs"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "'changed' must be provided as list of user IDs"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove non-existent user from changed list
+    try:
+        [User.objects.get(pk=uid) for uid in request.data["changed"]]
+    except:
+        return Response({"error": "no user exists for one or more IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove user who isn't already on changed list
+    try:
+        for uid in request.data["changed"]:
+            if uid not in old_changed:
+                raise Exception
+    except:
+        return Response({"error": "user(s) is not on 'changed' list and cannot be removed"}, status=status.HTTP_400_BAD_REQUEST)
 
     # Prepare data with updated changed list
     data = {}
@@ -352,6 +418,24 @@ def event_hosts_remove(request, pk):
     except Event.DoesNotExist:
         return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
 
+    if "hosts" not in request.data:
+        return Response({"error": "'hosts' must be provided as list of user IDs"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove non-existent user from changed list
+    try:
+        [User.objects.get(pk=uid) for uid in request.data["hosts"]]
+    except:
+        return Response({"error": "no user exists for one or more IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove user who isn't already on changed list
+    try:
+        for uid in request.data["hosts"]:
+            if uid not in hosts:
+                raise Exception
+    except:
+        return Response({"error": "user(s) is not on 'hosts' list and cannot be removed"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # "display_name" is mandatory for any Event serializer updates
     data = {}
     data.update({"display_name": event.display_name})
 
@@ -366,8 +450,8 @@ def event_hosts_remove(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def insert_hosts(event=None, newhosts=None):
-    """ Return list of hosts (User Ids): event's hosts with newhosts inserted """
+def old_and_new_hosts_no_duplicates(event=None, newhosts=None):
+    """ Return list of new hosts (User Ids): only the newhosts to be inserted """
     hosts = []
     hosts.extend(event.get_hosts())
     for n in newhosts:
@@ -390,6 +474,24 @@ def event_invites_remove(request, pk):
     except Event.DoesNotExist:
         return Response({"error": "No event for that id"}, status=status.HTTP_404_NOT_FOUND)
 
+    if "invites" not in request.data:
+        return Response({"error": "'hosts' must be provided as list of user IDs"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove non-existent user from changed list
+    try:
+        [User.objects.get(pk=uid) for uid in request.data["invites"]]
+    except:
+        return Response({"error": "no user exists for one or more IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Error if trying to remove user who isn't already on changed list
+    try:
+        for uid in request.data["invites"]:
+            if uid not in invites:
+                raise Exception
+    except:
+        return Response({"error": "user(s) is not on 'invites' list and cannot be removed"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # "display_name" is mandatory for any Event serializer updates
     data = {}
     data.update({"display_name": event.display_name})
 

@@ -77,7 +77,7 @@ class EventSerializer(serializers.ModelSerializer):
     # useful for Event details, but not helpful for POSTs - see views/comment for that logic
     comments = CommentSerializer(many=True, read_only=True)
     shopping_list = ShoppingListSerializer(read_only=True)
-    event_polls =PollSerializer(many=True, read_only=True)
+    event_polls = PollSerializer(many=True, read_only=True)
     contributions = serializers.SerializerMethodField("get_event_contributions")
 
     def get_event_contributions(self, event):
@@ -86,4 +86,5 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'display_name', 'start_date', 'end_date', 'budget', 'location', 'hosts', 'invites',
-                  'accepts', 'declines', 'changed', 'comments', 'shopping_list', 'contributions', 'event_polls')
+                  'accepts', 'declines', 'changed', 'comments', 'shopping_list', 'contributions', 'event_polls',
+                  'cancelled')
