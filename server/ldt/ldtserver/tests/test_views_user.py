@@ -186,13 +186,19 @@ class UserViewTests(TestCase):
             "phone": response.data["phone"],
             "email": response.data["email"]
         }
+        u5 = User.objects.create_superuser(username=U5, password=PWD, email=EMAIL)
+        uid5 = u5.id
+        uobj5 = {
+            "id": uid5,
+            "username": u5.username
+        }
         url = reverse('user_new')
         data = {
             "username": U2,
             "password": PWD,
             "email": EMAIL,
             "phone": PHONE,
-            "friends": [uid1]
+            "friends": [uid1, uid5]
         }
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         uid2 = response.data["id"]
@@ -201,13 +207,14 @@ class UserViewTests(TestCase):
             "username": response.data["username"],
             "phone": response.data["phone"],
             "email": response.data["email"],
-            "friends": [uobj1nf]
+            "friends": [uobj1nf, uobj5]
         }
         # GET all
         url = reverse('user_list')
         response = self.client.get(url, content_type='application/json')
         self.assertTrue(uobj1 in response.data)
         self.assertTrue(uobj2 in response.data)
+        self.assertTrue(uobj5 in response.data)
 
     def test_user_search(self):
         # Set up
@@ -251,13 +258,19 @@ class UserViewTests(TestCase):
             "phone": response.data["phone"],
             "email": response.data["email"]
         }
+        u5 = User.objects.create_superuser(username=U5, password=PWD, email=EMAIL)
+        uid5 = u5.id
+        uobj5 = {
+            "id": uid5,
+            "username": u5.username
+        }
         url = reverse('user_new')
         data = {
             "username": U2,
             "password": PWD,
             "email": EMAIL,
             "phone": PHONE,
-            "friends": [uid1]
+            "friends": [uid1, uid5]
         }
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         uid2 = response.data["id"]
@@ -266,7 +279,7 @@ class UserViewTests(TestCase):
             "username": response.data["username"],
             "phone": response.data["phone"],
             "email": response.data["email"],
-            "friends": [uobj1nf]
+            "friends": [uobj1nf, uobj5]
         }
         superuser = User.objects._create_user(username=U3, password=PWD, email=EMAIL, is_staff=True, is_superuser=True)
         suid = superuser.id
@@ -275,7 +288,7 @@ class UserViewTests(TestCase):
             "username": superuser.username
         }
         usercount = len(User.objects.all())
-        self.assertEqual(usercount, 3)
+        self.assertEqual(usercount, 4)
         # GET regular user that exists
         url = reverse('user_detail', kwargs={"pk": uid2})
         response = self.client.get(url, content_type='application/json')
@@ -295,6 +308,12 @@ class UserViewTests(TestCase):
         self.assertEqual(response.data["id"], uid2)
         self.assertEqual(response.data["username"], "skippy")
         # self.assertEqual(User.objects.get(pk=uid2).password, PWD2)  # cannot test; password is hashed
+        url = reverse('user_detail', kwargs={"pk": uid2})
+        data = {"email": "abc@hotmail.com"}
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.data["id"], uid2)
+        self.assertEqual(response.data["username"], "skippy")
+        self.assertEqual(response.data["email"], "abc@hotmail.com")
         # PUT existing user with valid fields (LdtUser fields)
         url = reverse('user_detail', kwargs={"pk": uid2})
         data = {"email": "abc@xyz.com", "phone": "7783334444", "friends": [suid]}
@@ -343,7 +362,7 @@ class UserViewTests(TestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         usercount = len(User.objects.all())
-        self.assertEqual(usercount, 2)
+        self.assertEqual(usercount, 3)
         # DELETE user that does not exist
         url = reverse('user_detail', kwargs={"pk": 9999})
         response = self.client.delete(url)
@@ -503,3 +522,7 @@ class UserViewTests(TestCase):
         self.assertEqual(response.data["invited"], [e2.id])
         self.assertEqual(response.data["attending"], [e3.id])
         self.assertEqual(response.data["declined"], [e4.id])
+        # GET nonexistent user
+        url = reverse('user_events', kwargs={"pk": 9999})
+        response = self.client.get(url, content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

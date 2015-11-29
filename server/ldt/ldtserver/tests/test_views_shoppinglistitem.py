@@ -66,6 +66,16 @@ class ShoppingListItemTest(TestCase):
         url = reverse('shoppinglistitem_list', kwargs={"pk": 9999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # POST not as list (invalid)
+        url = reverse('shoppinglistitem_list', kwargs={"pk": eid1})
+        data = {
+            "quantity": 9001,
+            "cost": 12345678.90,
+            "supplier": uid1,
+            "ready": False
+        }
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # POST without display_name (invalid)
         url = reverse('shoppinglistitem_list', kwargs={"pk": eid1})
         data = [

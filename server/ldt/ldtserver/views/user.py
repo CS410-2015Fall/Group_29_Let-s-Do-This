@@ -56,12 +56,12 @@ def user_new(request):
     if ser1.is_valid():
         ser1.save()
     else:
-        return Response(ser1.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(ser1.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         user = User.objects.get(pk=ser1.data["id"])
     except User.DoesNotExist:
-        return Response("error: Could not retrieve new user", status=status.HTTP_400_BAD_REQUEST)
+        return Response("error: Could not retrieve new user", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # Manually set password because serializer doesn't handle
     user.set_password(pword)
@@ -93,40 +93,33 @@ def user_new(request):
         user.delete()
         return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
-    if "friends" in res:
-        ulist = res["friends"]
-        detailed_ulist = []
-        for uid in ulist:
-            user = User.objects.get(pk=uid)
-            # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
-            # !!! refactor: flexible instead of hardcoded
-            #     See also user.py
-            try:
-                profile_id = user.userlink.id
-                profile = LdtUser.objects.get(pk=profile_id)
-                udict = {
-                    "id": user.id,
-                    "username": user.username,
-                    # "password": user.password,
-                    "phone": profile.phone,
-                    "email": profile.email,
-                }
-            except:
-                # User has no profile, e.g. superuser or staff
-                udict = {
-                    "id": user.id,
-                    "username": user.username,
-                    # "password": user.password,
-                }
-            detailed_ulist.append(udict)
-        res["friends"] = detailed_ulist
-        return Response(res, status=status.HTTP_201_CREATED)
-    else:
-        # Delete newly created user because shouldn't be used without ldtuser profile
-        user = User.objects.get(pk=ser1.data["id"])
-        user.delete()
-        return Response(ser2.errors, status=status.HTTP_400_BAD_REQUEST)
+    ulist = res["friends"]
+    detailed_ulist = []
+    for uid in ulist:
+        user = User.objects.get(pk=uid)
+        # Setup flat JSON response of new user with ldtuser profile fields, WITHOUT friends
+        # !!! refactor: flexible instead of hardcoded
+        #     See also user.py
+        try:
+            profile_id = user.userlink.id
+            profile = LdtUser.objects.get(pk=profile_id)
+            udict = {
+                "id": user.id,
+                "username": user.username,
+                # "password": user.password,
+                "phone": profile.phone,
+                "email": profile.email,
+            }
+        except:
+            # User has no profile, e.g. superuser or staff
+            udict = {
+                "id": user.id,
+                "username": user.username,
+                # "password": user.password,
+            }
+        detailed_ulist.append(udict)
+    res["friends"] = detailed_ulist
+    return Response(res, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET'])
@@ -181,7 +174,7 @@ def user_list(request):
             userdict = {
                 "id": user.id,
                 "username": user.username,
-                "password": user.password,
+                # "password": user.password,
             }
         # If resulting user info dict has friends, display as list of detailed dicts instead of IDs
         if "friends" in userdict:
@@ -340,7 +333,7 @@ def user_detail(request, pk):
             if ser1.is_valid():
                 ser1.save()
             else:
-                return Response(ser1.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(ser1.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Then update LdtUser associated with User if needed
         data2 = {}

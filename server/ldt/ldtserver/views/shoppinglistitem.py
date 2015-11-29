@@ -50,7 +50,7 @@ def shoppinglistitem_list(request, pk):
     try:
         shopping_list = event.shopping_list    # old events on server may not have one
     except:
-        return Response({"error": "This event has no ShoppingList!"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "This event has no ShoppingList!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     if request.method == 'GET':
         res = [ShoppingListItemSerializer(i).data for i in Event.get_shoppinglistitems(event)]
@@ -59,7 +59,9 @@ def shoppinglistitem_list(request, pk):
     elif request.method == 'POST':
         # Request data should be a list of dicts
         list_of_data = request.data
-        if not isinstance(list_of_data, list):
+        try:
+            request.data[0]
+        except:
             return Response({"error": "Request must be list of ShoppingListItem dicts/objects"},
                             status=status.HTTP_400_BAD_REQUEST)
         # Perform serializations on each in list_of_data
