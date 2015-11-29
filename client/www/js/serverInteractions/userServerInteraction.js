@@ -173,7 +173,7 @@ function removeFriend(userId, friendId, callback) {
 	});
 }
 
-function deleteUser(userId) {
+function deleteUser(userId, callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
     var userUrl = "http://159.203.12.88/api/users/"+userId+"/";
     
@@ -184,8 +184,9 @@ function deleteUser(userId) {
 		beforeSend: function(xhr) {
 				xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
-		success: function () {
+		success: function (resp) {
 			console.log("Deleted user");
+			callback(resp);
 		},
 		error: function(e) {
 			console.log(e);

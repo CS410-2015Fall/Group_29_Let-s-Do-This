@@ -164,7 +164,7 @@ function inviteToEvent(eventId, userList, callback) {
 	});
 }
 
-function removeFromInvite(eventId, inviteIds) {
+function removeFromInvite(eventId, inviteIds, callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	// inviteIds is a list of userIds of users
 
@@ -185,7 +185,7 @@ function removeFromInvite(eventId, inviteIds) {
 		dataType: 'json',
 		success: function (resp) {
 			console.log("removed invited users");
-			// callback(resp);
+			callback(resp);
 		},
 		error: function(e) {
 			console.log(e);
@@ -231,33 +231,34 @@ function rsvpToEvent(eventId, rsvpStatus, callback){
 	});
 }
 
-function removeHost(eventId, hostId) {
-	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-	// console.log('Auth tok' + authToken);
-	var postData = {
-		"hosts" : hostId,
-	};
-
-	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/hosts/remove/";
-
-	$.ajax({
-		type: 'POST',
-		url: eventUrl,
-		beforeSend: function(xhr) {
-			xhr.setRequestHeader("Authorization", "JWT " + authToken);
-		},
-		data: JSON.stringify(postData),
-		contentType: 'application/json',
-		dataType: 'json',
-		success: function (resp) {
-			console.log("removed host of event");
-			// callback(resp);
-		},
-		error: function(e) {
-			console.log(e);
-		}
-	});
-}
+// This doesn't appear to be used - let's comment it out and see if anything breaks!
+//function removeHost(eventId, hostId) {
+//	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+//	// console.log('Auth tok' + authToken);
+//	var postData = {
+//		"hosts" : hostId,
+//	};
+//
+//	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/hosts/remove/";
+//
+//	$.ajax({
+//		type: 'POST',
+//		url: eventUrl,
+//		beforeSend: function(xhr) {
+//			xhr.setRequestHeader("Authorization", "JWT " + authToken);
+//		},
+//		data: JSON.stringify(postData),
+//		contentType: 'application/json',
+//		dataType: 'json',
+//		success: function (resp) {
+//			console.log("removed host of event");
+//			// callback(resp);
+//		},
+//		error: function(e) {
+//			console.log(e);
+//		}
+//	});
+//}
 
 function editEvent(eventId, display_name, start_date, end_date, budget, location, callback){
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
@@ -291,26 +292,27 @@ function editEvent(eventId, display_name, start_date, end_date, budget, location
 	});
 }
 
-function deleteEvent(eventId,callback) {
-	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
-	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/";
-
-	$.ajax({
-		type: 'DELETE',
-		url: eventUrl,
-		dataType: 'json',
-		beforeSend: function(xhr) {
-			xhr.setRequestHeader("Authorization", "JWT " + authToken);
-		},
-		success: function (resp) {
-			console.log("Deleted event");
-			callback(resp);
-		},
-		error: function(e) {
-			console.log(e);
-		}
-	});
-}
+// This doesn't appear to be used - let's comment it out and see if anything breaks!
+//function deleteEvent(eventId,callback) {
+//	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+//	var eventUrl = "http://159.203.12.88/api/events/"+eventId+"/";
+//
+//	$.ajax({
+//		type: 'DELETE',
+//		url: eventUrl,
+//		dataType: 'json',
+//		beforeSend: function(xhr) {
+//			xhr.setRequestHeader("Authorization", "JWT " + authToken);
+//		},
+//		success: function (resp) {
+//			console.log("Deleted event");
+//			callback(resp);
+//		},
+//		error: function(e) {
+//			console.log(e);
+//		}
+//	});
+//}
 
 function cancelEvent(eventId,callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
@@ -350,7 +352,7 @@ function checkForChange(events){
 			//Lets notify them of the change
 			notifyOfChange(events[i].display_name);
 			//We have dealt with the changed event, now remove this user from it
-			removeFromChanged(events[i].id);
+			removeFromChanged(events[i].id, userID, function(resp){});
 
 			changed.push(events[i]);
 		}
@@ -359,7 +361,7 @@ function checkForChange(events){
 }
 
 //Remove the current user from the 'changed' list on the given event
-function removeFromChanged(eventID){
+function removeFromChanged(eventID, userID, callback){
 	console.log('Prepping to remove self from changed on event: ' + eventID);
 
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
@@ -384,7 +386,7 @@ function removeFromChanged(eventID){
 		dataType: 'json',
 		success: function (resp) {
 			console.log("Changed 'change' status");
-			// callback();
+			callback(resp);
 		},
 		error: function(e) {
 			console.log("Failed to change 'change' status");

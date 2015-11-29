@@ -132,7 +132,7 @@ var CommentModule = {
 
 	updateServer: function(comment) {
 		// post new comment to server
-		addComment(this.eventId, LetsDoThis.Session.getInstance().getUserId(), comment.post_date, comment.content);
+		addComment(this.eventId, LetsDoThis.Session.getInstance().getUserId(), comment.post_date, comment.content, function(resp){});
 	}
 };
 
@@ -224,7 +224,7 @@ var GuestListModule = {
 		yourself.status = 0;
 
 		rsvpToEvent(this.eventId, true, function(){}); // update server
-		removeFromInvite(this.eventId,[this.userId]);
+		removeFromInvite(this.eventId,[this.userId], function(){});
 
 		rsvpButtonDiv.attr('disabled', 'true');
 		rsvpPopupDiv.popup( "open" )
@@ -339,7 +339,7 @@ var ShoppingListModule = {
 		this.shoppingList[itemId].supplier = LetsDoThis.Session.getInstance().getUserInfo();
 		this.updateUI();
 		var item = this.shoppingList[itemId];
-		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready); // update server
+		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready, function(resp){}); // update server
 	},
 
 	calculateBalance: function(userId,guestCount,popupDiv) {

@@ -12,18 +12,22 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine-jquery','jasmine'],
 
     // list of files / patterns to load in the browser
     files: [
       'client/www/js/jquery/*.js',
       'client/www/js/serverInteractions/*.js',
+      'client/www/js/osInteractions/*.js',
       'client/www/js/user/*.js',
-      'client/www/js/yelpScripts/*.js',
       'client/www/js/*.js',
+      'test/javascripts/helpers/jasmine-jquery.js',
+      'test/javascripts/fixtures/*.html',
+      'test/javascripts/helpers/preloadFixtures.js',
       'test/javascripts/helpers/mock-ajax.js',
       'test/test_responses/*.js',
       'test/*.js'
+
     ],
 
 
@@ -35,13 +39,24 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      '**.*.html': [],
+      'client/www/js/*.js': ['coverage'],
+      'client/www/js/serverInteractions/*.js': ['coverage'],
+      'client/www/js/user/login-controller.js': ['coverage']
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['html', 'coverage'],
+    
+    coverageReporter: {
+      type: 'html',
+      dir : 'coverage/',
+      subdir : 'report/'
+      //file : 'coverage.txt'
+    },
 
 
     // web server port
@@ -63,7 +78,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Firefox'],
+    browsers: ['PhantomJS'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

@@ -1,10 +1,8 @@
 // The following parameters must follow the specified formatting:
 // post_date: YYYY-MM-DDThh:mm
-//
-// TODO:
-// TEST!!!
 
-function addComment(eventId, author, post_date, content) {
+
+function addComment(eventId, author, post_date, content, callback) {
     var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	var commentUrl = "http://159.203.12.88/api/events/"+eventId+"/comments/";
 	
@@ -25,6 +23,7 @@ function addComment(eventId, author, post_date, content) {
         data: JSON.stringify(postData),
 		success: function (resp) {
 			console.log("comment added");
+            callback(resp);
 		},
 		error: function(e) {
 			console.log(e);
@@ -54,7 +53,7 @@ function getAllComments(eventId, callback) {
 	});
 }
 
-function getComment(eventId, commentId) {
+function getComment(eventId, commentId, callback) {
    	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 
     var commentUrl = "http://159.203.12.88/api/events/"+eventId+"/comments/"+commentId+"/";
@@ -78,7 +77,7 @@ function getComment(eventId, commentId) {
 
 
 
-function updateComment(eventId, author, post_date, content, commentId) {
+function updateComment(eventId, author, post_date, content, commentId, callback) {
    	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 
     var commentUrl = "http://159.203.12.88/api/events/"+eventId+"/comments/"+commentId+"/";
@@ -108,7 +107,7 @@ function updateComment(eventId, author, post_date, content, commentId) {
 	});
 }
 
-function deleteComment(eventId, commentId) {
+function deleteComment(eventId, commentId, callback) {
    	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 
     var commentUrl = "http://159.203.12.88/api/events/"+eventId+"/comments/"+commentId+"/";
