@@ -51,7 +51,31 @@ function loadEvent(){
 
 			//Polls
 			PollModule.init(eventData,$("#polls"));
+			$("#newPollButton").click(function() {
+				var choices = document.getElementById('newPollAnswers').getElementsByTagName('input');
+				var choiceStrings = [];
+				$.each(choices, function(i,v) {
+					choiceStrings.push(v.value);
+				});
+				PollModule.createPoll(document.getElementById('newPollName').value,choiceStrings);
+			});
+			$("#moreAnswersButton").click(function() {
+				var choicesDiv = document.getElementById('newPollAnswers');
+				var choices = choicesDiv.getElementsByTagName('input');
+				var newChoice = $("<div>",{
+					'data-role':'fieldcontain'
+				});
+				newChoice.append($("<label>", {
+					for:"name"
+				}));
+				newChoice.append($("<input>", {
+					type:"text",
+					id: "newChoice_" + choices.length
+				}));
 
+				$("#newPollAnswers").append(newChoice);
+				$("#newPollAnswers").trigger('create');
+			});
 
 			// Other
 			$("#homeButton").click(function(){
@@ -87,9 +111,8 @@ function loadEvent(){
 				$("#commentsModule").detach();
 				$("#pollsModule").detach();
 			});
-
 		});
-});
+	});
 };
 
 var CommentModule = {
@@ -132,7 +155,7 @@ var CommentModule = {
 
 	updateServer: function(comment) {
 		// post new comment to server
-		addComment(this.eventId, LetsDoThis.Session.getInstance().getUserId(), comment.post_date, comment.content, function(resp){});
+		addComment(this.eventId, LetsDoThis.Session.getInstance().getUserId(), comment.post_date, comment.content,function(resp){});
 	}
 };
 
@@ -224,7 +247,7 @@ var GuestListModule = {
 		yourself.status = 0;
 
 		rsvpToEvent(this.eventId, true, function(){}); // update server
-		removeFromInvite(this.eventId,[this.userId], function(){});
+		removeFromInvite(this.eventId,[this.userId],function(){});
 
 		rsvpButtonDiv.attr('disabled', 'true');
 		rsvpPopupDiv.popup( "open" )
@@ -339,7 +362,7 @@ var ShoppingListModule = {
 		this.shoppingList[itemId].supplier = LetsDoThis.Session.getInstance().getUserInfo();
 		this.updateUI();
 		var item = this.shoppingList[itemId];
-		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready, function(resp){}); // update server
+		editShoppingListItem(this.eventId, item.id, item.display_name, 1, item.cost, item.supplier.id, item.ready,function(resp){}); // update server
 	},
 
 	calculateBalance: function(userId,guestCount,popupDiv) {
@@ -400,7 +423,8 @@ var PollModule = {
 				totalVotes += val.votes;
 			})
 
-			var newPoll = $("<form>", {
+			var newPoll = $("<div>", {
+				class:"ui-field-contain",
 				html: $("fieldset", {
 					'data-role':'controlgroup'
 				})
@@ -460,30 +484,29 @@ var PollModule = {
 			d.append(newPoll);
 		});
 
-this.pollDiv.trigger('create');
-},
+	this.pollDiv.trigger('create');
+	},
 
-vote: function(pollId,choiceId) {
-	$.each(PollModule.polls,function(i,v){
-		if (v.id == pollId) {
-			$.each(v.poll_choices,function(ind, val){
-				if (val.id == choiceId) {
-					val.votes++;
-					PollModule.updateUI();
-					return;
-				}
-			})
-			return;
-		}
-	});
-	voteEventPoll(PollModule.eventId,pollId,parseInt(choiceId),function(r){});
-},
+	vote: function(pollId,choiceId) {
+		$.each(PollModule.polls,function(i,v){
+			if (v.id == pollId) {
+				$.each(v.poll_choices,function(ind, val){
+					if (val.id == choiceId) {
+						val.votes++;
+						PollModule.updateUI();
+						return;
+					}
+				})
+				return;
+			}
+		});
+		voteEventPoll(PollModule.eventId,pollId,parseInt(choiceId),function(r){});
+	},
 
-createPoll: function() {
-
-},
-
-votePoll: function(pollId,vote) {
-
-}
+	createPoll: function(question,choices) {
+		addEventPoll(this.eventId, question, choices, function(resp) {
+			PollModule.polls.push(resp);
+			PollModule.updateUI();
+		});
+	},
 };
