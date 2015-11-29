@@ -2,9 +2,17 @@ var notManager;
 var isCordovaApp = !!window.cordova;
 var id = 1;
 
+var titleQueue = [];
+var messageQueue = [];
+
 document.addEventListener("deviceready", function(){
 	notManager = cordova.plugins.notification.local;
 	console.log("Notification plugin defined");
+
+	//Check if the queue is empty, and run everything if it is not
+	for(var i = 0; i<titleQueue.length; i++){
+		makeNotification(titleQueue[i], messageQueue[i]);
+	}
 }, false);
 
 function notifyOfChange(eventName){
@@ -13,7 +21,15 @@ function notifyOfChange(eventName){
 	}
 	var title = 'A Lets Do This event has changed!';
 	var message = 'Be sure to check ' + eventName + ' to stay up to date!';
-	makeNotification(title, message);
+
+	if(notManager){
+		makeNotification(title, message);
+	} else {
+		//Notification manager hasn't been created yet. Queue it all up
+		titleQueue.push(title);
+		messageQueue.push(message);
+	}
+
 }
 
 function notifyOfNewFriend(friendsName){
@@ -22,7 +38,15 @@ function notifyOfNewFriend(friendsName){
 	}
 	var title = 'New Lets Do This friend!';
 	var message = friendsName + ' added you as a friend on Lets Do This';
-	makeNotification(title, message);
+
+
+	if(notManager){
+		makeNotification(title, message);
+	} else {
+		//Notification manager hasn't been created yet. Queue it all up
+		titleQueue.push(title);
+		messageQueue.push(message);
+	}
 }
 
 
@@ -37,6 +61,6 @@ function makeNotification(title, message){
 		id: id++,
 		title: title,
 		text: message,
-				// data: null
+		// data: null
 	});
 }
