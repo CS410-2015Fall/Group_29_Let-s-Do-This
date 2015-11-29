@@ -28,6 +28,7 @@ if __name__ == "__main__":
         cov.stop()
         cov.save()
         cov.report()
+        cov.html_report(directory='ldtserver/tests/coverage_report')
 
     else:
         execute_from_command_line(sys.argv)
