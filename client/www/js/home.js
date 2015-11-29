@@ -45,6 +45,7 @@ function formatNotificationBoxes(events) {
 
 function loadFriends() {
 	var friends = LetsDoThis.Session.getInstance().getUserFriends();
+	console.log(friends);
 	$("#friends").html();
 	$.each( friends, function( index, value ){
 		var friend = $('<li><a href="#">'
@@ -143,6 +144,10 @@ function globalCallback(){
 			localStorage.setItem("profileId", JSON.stringify({"id":userId}));
 			window.location="profile.html";
 		});
+		
+		$("#friendsButton").click(function(){
+			loadFriends();
+		})
 
 		// makes notification and event boxes act as links to their event page
 		$(document).on("click", '#mainContent div', function(e) {
