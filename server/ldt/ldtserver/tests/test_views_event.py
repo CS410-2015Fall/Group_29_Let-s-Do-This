@@ -358,7 +358,9 @@ class EventViewTests(TestCase):
         response = self.client.put(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], eid1)
-        self.assertEqual(response.data['hosts'], [u1.id, u2.id, u3.id])
+        self.assertTrue(u1.id in response.data['hosts'])
+        self.assertTrue(u2.id in response.data['hosts'])
+        self.assertTrue(u3.id in response.data['hosts'])
         # POST to remove one from 'hosts'
         url = reverse('event_hosts_remove', kwargs={"pk": eid1})
         data = {"hosts": [u2.id]}
