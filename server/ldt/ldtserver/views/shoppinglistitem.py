@@ -77,7 +77,11 @@ def shoppinglistitem_list(request, pk):
                 if supplier_id:
                     # Hacky because Django REST framework doesn't support writable nested entities
                     new_item = ShoppingListItem.objects.get(pk=serializer.data["id"])
-                    new_item.supplier = User.objects.get(pk=supplier_id)
+                    # error is supplier is nonexistent user
+                    try:
+                        new_item.supplier = User.objects.get(pk=supplier_id)
+                    except:
+                        return Response({"error": "no comment author matching that user id"}, status=status.HTTP_400_BAD_REQUEST)
                     new_item.save()
                     # Also update serializer data to return with supplier's id
                     new_item_dict = serializer.data
@@ -158,7 +162,11 @@ def shoppinglistitem_detail(request, pk, item_id):
             serializer.save()
             # Hacky because Django REST framework doesn't support writable nested entities
             updated_item = ShoppingListItem.objects.get(pk=item_id)
-            updated_item.supplier = User.objects.get(pk=supplier_id)
+            # error is supplier is nonexistent user
+            try:
+                updated_item.supplier = User.objects.get(pk=supplier_id)
+            except:
+                return Response({"error": "no comment author matching that user id"}, status=status.HTTP_400_BAD_REQUEST)
             updated_item.save()
             # Also update serializer data to return with supplier's id
             new_item_dict = serializer.data
