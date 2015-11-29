@@ -163,6 +163,6 @@ function globalCallback(){
 		});
 
 		loadFriends();
-		checkForNewFriends();
+		// checkForNewFriends();
 	});
 }
