@@ -5,6 +5,7 @@ function initializeScripts(callback){
 		$.getScript("js/serverInteractions/eventServerInteraction.js"),
 		$.getScript("js/serverInteractions/commentServerInteraction.js"),
 		$.getScript("js/serverInteractions/userServerInteraction.js"),
+		$.getScript("js/serverInteractions/pollsServerInteraction.js"),
 		$.getScript("js/serverInteractions/shoppinglistServerInteraction.js"),
 		//Get the script to handle the native calendar
 		$.getScript("js/osInteractions/calendarInteractions.js"),

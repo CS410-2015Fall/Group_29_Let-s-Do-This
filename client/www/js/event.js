@@ -1,93 +1,94 @@
 $.getScript("js/global.js", function() {
 	initializeScripts(loadEvent);
 });
+
 function loadEvent(){
-$(document).ready(function() {
-getEvent(JSON.parse(localStorage.getItem("eventId")), function(resp) {
-	var eventData = resp;
-	console.log(eventData);
+	$(document).ready(function() {
+		getEvent(JSON.parse(localStorage.getItem("eventId")), function(resp) {
+			var eventData = resp;
+			console.log(eventData);
 
-	$("#eventName").html("<strong>" + eventData.display_name + "</strong>");
-	$("#dateTime").html(convertDate(eventData.start_date,eventData.end_date));
-	$("#location").html("Location: " + eventData.location);
+			$("#eventName").html("<strong>" + eventData.display_name + "</strong>");
+			$("#dateTime").html(convertDate(eventData.start_date,eventData.end_date));
+			$("#location").html("Location: " + eventData.location);
 
-	// Guest list
-	GuestListModule.init(eventData,$("fieldset#friendsPopup"));
-	$("#inviteButton").click(function(){
-		GuestListModule.handleInviteButton($("#friendsPopup"));
-	});
-	$("#rsvpButton").click(function(){
-		GuestListModule.handleRsvpButton($("#rsvpButton"),$("#rsvpPopup"));
-	});
-	if (GuestListModule.guestList[GuestListModule.userId].status == 0) {
-		// disable RSVP button if you're already attending
-		$("#rsvpButton").attr('disabled','true');
-	}
+			// Guest list
+			GuestListModule.init(eventData,$("fieldset#friendsPopup"));
+			$("#inviteButton").click(function(){
+				GuestListModule.handleInviteButton($("#friendsPopup"));
+			});
+			$("#rsvpButton").click(function(){
+				GuestListModule.handleRsvpButton($("#rsvpButton"),$("#rsvpPopup"));
+			});
+			if (GuestListModule.guestList[GuestListModule.userId].status == 0) {
+				// disable RSVP button if you're already attending
+				$("#rsvpButton").attr('disabled','true');
+			}
 
-	// Comments
-	CommentModule.init(eventData,$('#comments'));
-	$("#commentForm").submit(function(event) {
-		event.preventDefault(); // do not redirect
-		CommentModule.postComment($('textarea#commentTextArea'));
-	});
+			// Comments
+			CommentModule.init(eventData,$('#comments'));
+			$("#commentForm").submit(function(event) {
+				event.preventDefault(); // do not redirect
+				CommentModule.postComment($('textarea#commentTextArea'));
+			});
 
-	// Shopping list
-	ShoppingListModule.init(eventData,$("#shoppingList"));
-	$("#newClaimedItemButton").click(function() {
-		ShoppingListModule.newItem(true,$('#newItemName'),$('#newItemCost'));
-	});
-	$("#newUnclaimedItemButton").click(function() {
-		ShoppingListModule.newItem(false,$('#newItemName'),$('#newItemCost'));
-	});
-	$(document).on("click",'#shoppingList button',function(e) {
-		var itemId = $(this).attr("id");
-		ShoppingListModule.claimItem(itemId,$('input#' + itemId));
-	});
-	$("#getBalanceButton").click(function() {
-		var guestCount = eventData.accepts.length + eventData.hosts.length;
-		ShoppingListModule.calculateBalance(GuestListModule.userId,guestCount,$("#balancePopup"));
-	})
+			// Shopping list
+			ShoppingListModule.init(eventData,$("#shoppingList"));
+			$("#newClaimedItemButton").click(function() {
+				ShoppingListModule.newItem(true,$('#newItemName'),$('#newItemCost'));
+			});
+			$("#newUnclaimedItemButton").click(function() {
+				ShoppingListModule.newItem(false,$('#newItemName'),$('#newItemCost'));
+			});
+			$(document).on("click",'#shoppingList button',function(e) {
+				var itemId = $(this).attr("id");
+				ShoppingListModule.claimItem(itemId,$('input#' + itemId));
+			});
+			$("#getBalanceButton").click(function() {
+				var guestCount = eventData.accepts.length + eventData.hosts.length;
+				ShoppingListModule.calculateBalance(GuestListModule.userId,guestCount,$("#balancePopup"));
+			})
 
-	//Polls
-	PollModule.init(eventData,$("#polls"));
+			//Polls
+			PollModule.init(eventData,$("#polls"));
 
 
-	// Other
-	$("#homeButton").click(function(){
-		window.location="home.html";
-	});
-	$("#editButton").click(function(){
-	    localStorage.setItem("editEvent", eventData.id);
-		window.location="createEvent.html";
-	});
+			// Other
+			$("#homeButton").click(function(){
+				window.location="home.html";
+			});
+			$("#editButton").click(function(){
+				localStorage.setItem("editEvent", eventData.id);
+				window.location="createEvent.html";
+			});
 
-	$("#viewMap").click(function(){
-		// TODO Save the location, and name, into the session storage so the map script can pull it up
-		window.location="map.html";
-	});
+			$("#viewMap").click(function(){
+				// Save the location, and name, into the session storage so the map script can pull it up
+				window.location="map.html";
+			});
 
-	//Modules
-	var detachedSLM = $("#shoppingListModule").detach();
-	var detachedPM = $("#pollsModule").detach();
-	var detachedCM = $("#commentsModule").detach();
-	$("#modules").append(detachedCM);
-	$("#commentsModuleButton").click(function(){
-		$("#modules").append(detachedCM);
-		$("#shoppingListModule").detach();
-		$("#pollsModule").detach();
-	});
-	$("#pollsModuleButton").click(function(){
-		$("#modules").append(detachedPM);
-		$("#shoppingListModule").detach();
-		$("#commentsModule").detach();
-	});
-	$("#shoppingListModuleButton").click(function(){
-		$("#modules").append(detachedSLM);
-		$("#commentsModule").detach();
-		$("#pollsModule").detach();
-	});
+			//Modules
+			var detachedSLM = $("#shoppingListModule").detach();
+			var detachedPM = $("#pollsModule").detach();
+			var detachedCM = $("#commentsModule").detach();
+			$("#modules").append(detachedCM);
+			$("#commentsModuleButton").click(function(){
+				$("#modules").append(detachedCM);
+				$("#shoppingListModule").detach();
+				$("#pollsModule").detach();
+			});
+			$("#pollsModuleButton").click(function(){
+				$("#modules").append(detachedPM);
+				$("#shoppingListModule").detach();
+				$("#commentsModule").detach();
+			});
+			$("#shoppingListModuleButton").click(function(){
+				$("#modules").append(detachedSLM);
+				$("#commentsModule").detach();
+				$("#pollsModule").detach();
+			});
 
-});
+		});
 });
 };
 
@@ -371,19 +372,118 @@ var ShoppingListModule = {
 };
 
 var PollModule = {
-	init: function(e, pollDiv) {
+	// id: 1
+	// question: What is love?
+	// event: 42
+	// poll_choices: [{id: 3,poll: 1,choice_text: No more,votes: 1}]
+	polls: [],
+	pollDiv: {},
+	eventId: -1,
 
+	init: function(e, pollDiv) {
+		this.polls = e.event_polls;
+		this.pollDiv = pollDiv;
+		this.eventId = e.id;
+
+		this.updateUI();
 	},
 
 	updateUI: function() {
+		var d = this.pollDiv;
+		var vote = this.vote;
 
-	},
+		d.html("");
+		$.each(this.polls, function(i,v) {
+			var totalVotes = 0;
+			var inputs = [];
+			$.each(v.poll_choices,function(ind,val){
+				totalVotes += val.votes;
+			})
 
-	createPoll: function() {
+			var newPoll = $("<form>", {
+				html: $("fieldset", {
+					'data-role':'controlgroup'
+				})
+			});
+			newPoll.append($("<legend>", {
+				html: "<h3>" + v.question + "</h3>"
+			}));
 
-	},
+			$.each(v.poll_choices,function(index, value) {
+				var pollInput = $("<input>", {
+					type:"radio",
+					name:"poll_" + v.id,
+					id:"poll_" + v.id + "_" + value.id
+				});
+				var pollLabel = $("<label>", {
+					style:"padding:0px;",
+					for:"poll_" + v.id + "_" + value.id
+				});
 
-	votePoll: function(pollId,vote) {
+				pollLabel.append($("<div>", {
+					style:"width:" + (100 * (value.votes/totalVotes)) + "%;height:100%;position:absolute;background-color:#CCCCFF;"
+				}));
+				pollLabel.append($("<div>",{
+					style:"margin-left:40px;position:relative;padding-top:8px;padding-bottom:8px;",
+					html:value.choice_text + " (" + value.votes + " votes)"
+				}));
 
-	}
+				newPoll.append(pollInput);
+				newPoll.append(pollLabel);
+
+				inputs.push(pollInput);
+			});
+
+			var voteButton = $("<button>", {
+				id: "someButton",
+				'data-inline':"true",
+				text:"Vote"
+			});
+
+			voteButton.click(function(event){
+				event.preventDefault(); // do not redirect
+				voteButton.attr("disabled",true);
+				$.each(inputs,function(i,v){
+					if (v[0].checked) {
+						var pollId = v[0].id.split('_')[1];
+						var choiceId = v[0].id.split('_')[2];
+						vote(pollId,choiceId);
+					}
+				});
+			});
+
+			newPoll.append($("<div>", {
+				align:"right",
+				html: voteButton
+			}));
+
+			d.append(newPoll);
+		});
+
+this.pollDiv.trigger('create');
+},
+
+vote: function(pollId,choiceId) {
+	$.each(PollModule.polls,function(i,v){
+		if (v.id == pollId) {
+			$.each(v.poll_choices,function(ind, val){
+				if (val.id == choiceId) {
+					val.votes++;
+					PollModule.updateUI();
+					return;
+				}
+			})
+			return;
+		}
+	});
+	voteEventPoll(PollModule.eventId,pollId,parseInt(choiceId),function(r){});
+},
+
+createPoll: function() {
+
+},
+
+votePoll: function(pollId,vote) {
+
+}
 };

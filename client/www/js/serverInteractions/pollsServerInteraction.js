@@ -105,7 +105,7 @@ function voteEventPoll(eventId, pollId, vote, callback) {
     
 	$.ajax({
 		type: 'POST',
-		url: pollsUrl,
+		url: voteUrl,
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},

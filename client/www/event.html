@@ -40,49 +40,50 @@
 
 <div data-role="popup" id="balancePopup"></div>
 
-	<div id="commentsModule">
-		<div id="comments">
-		</div>
-		<div class="ui-field-contain" id="newComment">
-			<form id="commentForm">
-				<textarea id="commentTextArea"></textarea>
-				<input type="submit" data-inline="true" value="Comment">
-			</form>
-		</div>
+<div id="commentsModule">
+	<div id="comments">
 	</div>
+	<div class="ui-field-contain" id="newComment">
+		<form id="commentForm">
+			<textarea id="commentTextArea"></textarea>
+			<input type="submit" data-inline="true" value="Comment">
+		</form>
+	</div>
+</div>
 
-	<div id="shoppingListModule">
-		<fieldset class="ui-grid-a">
-			<div class="ui-block-a"><h2>Shopping List</h2></div>
-			<div class="ui-block-b"><button id="getBalanceButton" data-inline="true" type="submit">Get Balance</button></div>
-		</fieldset>
-		<div id="shoppingList" data-role="collapsibleset" data-collapsed-icon="check" data-expanded-icon="check">
-		</div>
-		<div data-role="collapsibleset" data-theme="a" data-content-theme="a">
-			<div data-role="collapsible" data-collapsed-icon="edit" data-expanded-icon="edit">
-				<h3>New Item</h3>
-				<div data-role="fieldcontain">
-					<label for="name">Name:</label>
-					<input type="text" id="newItemName" value=""  />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="name">Cost:</label>
-					<input type="number" id="newItemCost" value=""  />
-				</div>
-
-				<fieldset class="ui-grid-a">
-					<div class="ui-block-a"><button type="submit" data-theme="d" id="newClaimedItemButton">I got this</button></div>
-					<div class="ui-block-b"><button type="submit" data-theme="a" id="newUnclaimedItemButton">Someone else got this...</button></div>
-				</fieldset>
-
+<div id="shoppingListModule">
+	<fieldset class="ui-grid-a">
+		<div class="ui-block-a"><h2>Shopping List</h2></div>
+		<div class="ui-block-b"><button id="getBalanceButton" data-inline="true" type="submit">Get Balance</button></div>
+	</fieldset>
+	<div id="shoppingList" data-role="collapsibleset" data-collapsed-icon="check" data-expanded-icon="check">
+	</div>
+	<div data-role="collapsibleset" data-theme="a" data-content-theme="a">
+		<div data-role="collapsible" data-collapsed-icon="edit" data-expanded-icon="edit">
+			<h3>New Item</h3>
+			<div data-role="fieldcontain">
+				<label for="name">Name:</label>
+				<input type="text" id="newItemName" value=""  />
 			</div>
-		</div>
-	</div>
+			<div data-role="fieldcontain">
+				<label for="name">Cost:</label>
+				<input type="number" id="newItemCost" value=""  />
+			</div>
 
-	<div id="pollsModule">
-		<div id="polls">
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a"><button type="submit" data-theme="d" id="newClaimedItemButton">I got this</button></div>
+				<div class="ui-block-b"><button type="submit" data-theme="a" id="newUnclaimedItemButton">Someone else got this...</button></div>
+			</fieldset>
+
 		</div>
 	</div>
+</div>
+
+<div id="pollsModule">
+	<div id="polls">
+
+	</div>
+</div>
 
 <div data-role="header" id="header">
 	<fieldset class="ui-grid-a">
