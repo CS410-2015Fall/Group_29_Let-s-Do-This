@@ -28,8 +28,10 @@ document.addEventListener("deviceready", function(){
 function formatEventBoxes(events) {
 	var formattedEvents = [];
 	$.each( events, function(i, val) {
-		var boxObject = new Box(val.display_name, convertDate(val.start_date,val.end_date), val.id);
-		formattedEvents.push(boxObject);
+		if (!val.cancelled) {
+			var boxObject = new Box(val.display_name, convertDate(val.start_date,val.end_date), val.id);
+			formattedEvents.push(boxObject);
+		}
 	});
 	return formattedEvents;
 }
