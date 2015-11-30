@@ -87,7 +87,7 @@ function utcToJSDate(utc){
 
 	var year = utcDate.split("-")[0];
 	var month = utcDate.split("-")[1] - 1; //JS Date function is zero based. Thus january is month 0.
-	var day = utcDate.split("-")[2];
+	var day = utcDate.split("-")[2] - 1;
 
 	var hour = utcTime.split(":")[0];
 	var minute = utcTime.split(":")[1];
