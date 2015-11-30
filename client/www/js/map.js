@@ -9,6 +9,7 @@ $(document).ready(function() {
 
 
 	$("#backButton").click(function(){
+			closeMap();
 			window.history.back();
 	});
 });
