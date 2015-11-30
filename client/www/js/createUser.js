@@ -7,6 +7,8 @@ $(document).ready(function(){
         var phone = $('#phone').val();
         addUser(username, password, email, phone);
     });
+    
+    console.log("Create user has loaded");
 });
 
 function addUser(username, password, email, phone) {

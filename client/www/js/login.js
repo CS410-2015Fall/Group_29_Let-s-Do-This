@@ -19,6 +19,10 @@ $(document).ready(function(){
 
     logInController.init();
 
+    $("#createUserButton").click(function(){
+      window.location = "createUser.html";
+    });
+    
     // trigger onLogInCommand when login Submit button pressed
     logInController.$btnSubmit.off("tap").on("tap",function() {
         console.log("logging in user");
