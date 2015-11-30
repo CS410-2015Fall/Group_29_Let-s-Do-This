@@ -117,9 +117,9 @@ var EditEventModule = {
 		document.getElementById(nameField).value = e.display_name;
 		var start = e.start_date.split("T");
 		document.getElementById(dateField).value = start[0];
-		document.getElementById(startTimeField).value = start[1];
+		document.getElementById(startTimeField).value = start[1].split('Z')[0];
 		var end = e.end_date.split("T");
-		document.getElementById(endTimeField).value = end[1];
+		document.getElementById(endTimeField).value = end[1].split('Z')[0];
 		document.getElementById(locationField).value = e.location;
 
 		this.initCancelButton(cancelButtonDiv);
