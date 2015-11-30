@@ -4,6 +4,9 @@
 var ldtIdentifier = "Lets Do This event"
 var cal;
 var isCordova = false;
+
+//Makes a queue for when we try to add events before Cordova is ready
+var eventQueue = [];
 $(document).ready(function() {
 	console.log('calendarIntercation loaded');
 });
@@ -12,6 +15,11 @@ document.addEventListener("deviceready", function(){
 	isCordova = true;
 	cal = window.plugins.calendar;
 	console.log("Calender plugin defined");
+
+	if(eventQueue.length!=0){
+		console.log("Events are queued for the calendar");
+		addEventsToCalendar(eventQueue);
+	}
 }, false);
 
 
@@ -21,6 +29,12 @@ function addEventsToCalendar(events){
 	if(!isCordova){ //Check to see if we are on a cordova device or just a browser
 		return;
 	}
+
+	if(!cal){
+		console.log("queueing events for calendar");
+		eventQueue = eventQueue.concat(events);
+	}
+
 	deleteAllLDTEvents();
 	//First check to see if theres any events to deal with
 	if(events.length == 0){
