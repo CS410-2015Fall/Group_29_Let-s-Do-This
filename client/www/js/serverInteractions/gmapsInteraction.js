@@ -69,3 +69,10 @@ function initEventData(title, loc){
   eventTitle = title;
   eventLocation = loc;
 }
+
+function closeMap(){
+  if(map){
+    console.log("Closing map");
+    map.remove();
+  }
+}
