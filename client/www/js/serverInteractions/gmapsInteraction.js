@@ -12,6 +12,12 @@ document.addEventListener("deviceready", function(){
   map = plugin.google.maps.Map.getMap();
   // You have to wait the MAP_READY event.
   map.on(plugin.google.maps.event.MAP_READY, onMapInit);
+
+  //close the map when back button is clicked
+  document.addEventListener("backbutton", function(){
+    closeMap();
+    window.history.back();
+  }, false)
 }, false);
 
 function onMapInit(map) {
