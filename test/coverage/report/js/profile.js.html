@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js\profile.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">js/</a> profile.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">24.56% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>14/57</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/6</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">12.5% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>2/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">24.56% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>14/57</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&nbsp;
+$.getScript("js/global.js", <span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >  initializeScripts(loadProfile);</span>
+});
+<span class="fstat-no" title="function not covered" >function loadProfile(){</span>
+<span class="cstat-no" title="statement not covered" >  $(document).ready( <span class="fstat-no" title="function not covered" >function(){</span></span>
+	// Temp code!
+	// When clicking on someone's profile, their user ID will be locally stored
+	//var someUserId = 13;
+	//localStorage.setItem("profileId", JSON.stringify({"id":someUserId}));
+&nbsp;
+	// Retrieve stored ID and load the profile of this user
+<span class="cstat-no" title="statement not covered" >	var profileId = JSON.parse( localStorage.getItem("profileId") ).id;</span>
+<span class="cstat-no" title="statement not covered" >	var userId = LetsDoThis.Session.getInstance().getUserId();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    profileToDisplay(profileId, userId);</span>
+&nbsp;
+&nbsp;
+	// Button logic
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	$("#homeButton").click(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >		window.location="home.html";</span>
+	});
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	$("#editButton").click(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >		window.location="editProfile.html";</span>
+	})
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	$("#friendButton").click(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >		addFriend(userId, profileId, <span class="fstat-no" title="function not covered" >function(resp){</span></span>
+<span class="cstat-no" title="statement not covered" >			clearProfile();</span>
+<span class="cstat-no" title="statement not covered" >			profileToDisplay(profileId);</span>
+		})
+	})
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	$("#unfriendButton").click(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >		removeFriend(userId, profileId, <span class="fstat-no" title="function not covered" >function(resp){</span></span>
+<span class="cstat-no" title="statement not covered" >			clearProfile();</span>
+<span class="cstat-no" title="statement not covered" >			profileToDisplay(profileId);</span>
+		})
+	})
+  })
+&nbsp;
+}
+<span class="fstat-no" title="function not covered" >function profileToDisplay(profileId, userId) {</span>
+&nbsp;
+	// check if profile belongs to logged in user
+<span class="cstat-no" title="statement not covered" >	if (profileId == userId) {</span>
+<span class="cstat-no" title="statement not covered" >		var userData = LetsDoThis.Session.getInstance().getUserInfo();</span>
+<span class="cstat-no" title="statement not covered" >		console.log("current user");</span>
+<span class="cstat-no" title="statement not covered" >		loadLoggedInData(userData);</span>
+    } else {
+		// check if profile belongs to logged in user's friend
+<span class="cstat-no" title="statement not covered" >		var userFriends = LetsDoThis.Session.getInstance().getUserFriends();</span>
+<span class="cstat-no" title="statement not covered" >		var isFriend = false;</span>
+<span class="cstat-no" title="statement not covered" >		var friendData = {};</span>
+<span class="cstat-no" title="statement not covered" >		$.each(userFriends, <span class="fstat-no" title="function not covered" >function(index, friend){</span></span>
+<span class="cstat-no" title="statement not covered" >			if (friend.id == profileId) {</span>
+<span class="cstat-no" title="statement not covered" >				isFriend = true;</span>
+<span class="cstat-no" title="statement not covered" >				friendData = friend;</span>
+			}
+		});
+<span class="cstat-no" title="statement not covered" >		if (isFriend) {</span>
+<span class="cstat-no" title="statement not covered" >			console.log("friend");</span>
+<span class="cstat-no" title="statement not covered" >            loadFriendData(friendData);</span>
+        }
+		// if neither, this is a stranger's profile
+		else {
+<span class="cstat-no" title="statement not covered" >			getUser(profileId, <span class="fstat-no" title="function not covered" >function(resp){</span></span>
+<span class="cstat-no" title="statement not covered" >				console.log("stranger danger!");</span>
+<span class="cstat-no" title="statement not covered" >				loadStrangerData(resp.username);</span>
+			})
+		}
+&nbsp;
+    }
+&nbsp;
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function loadLoggedInData(userData) {</span>
+<span class="cstat-no" title="statement not covered" >	$("#editButton").show();</span>
+<span class="cstat-no" title="statement not covered" >	$("#mainContent").append('&lt;div class="ui-field-contain" id="username"&gt;&lt;strong&gt;' + userData.username + '&lt;/strong&gt;&lt;/div&gt;');</span>
+<span class="cstat-no" title="statement not covered" >	$("#mainContent").append('&lt;div class="ui-field-contain" id="email"&gt;Email: '+ userData.email + '&lt;/div&gt;');</span>
+<span class="cstat-no" title="statement not covered" >	$("#mainContent").append('&lt;div class="ui-field-contain" id="phone"&gt;Phone: ' + userData.phone + '&lt;/div&gt;');</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function loadFriendData(friendData) {</span>
+<span class="cstat-no" title="statement not covered" >	$("#unfriendButton").show();</span>
+<span class="cstat-no" title="statement not covered" >	$("#mainContent").append('&lt;div class="ui-field-contain" id="username"&gt;&lt;strong&gt;' + friendData.username + '&lt;/strong&gt;&lt;/div&gt;');</span>
+<span class="cstat-no" title="statement not covered" >	$("#mainContent").append('&lt;div class="ui-field-contain" id="email"&gt;Email: '+ friendData.email + '&lt;/div&gt;');</span>
+<span class="cstat-no" title="statement not covered" >	$("#mainContent").append('&lt;div class="ui-field-contain" id="phone"&gt;Phone: ' + friendData.phone + '&lt;/div&gt;');</span>
+<span class="cstat-no" title="statement not covered" >	$("#mainContent").append('&lt;br&gt;'+friendData.username +" is your friend!");</span>
+&nbsp;
+}
+&nbsp;
+function loadStrangerData(username) {
+	$("#friendButton").show();
+	$("#mainContent").append('&lt;div class="ui-field-contain" id="username"&gt;&lt;strong&gt;' + username + '&lt;/strong&gt;&lt;/div&gt;');
+	$("#mainContent").append('&lt;br&gt;You and '+username+ " are not friends :( ");
+}
+&nbsp;
+function clearProfile() {
+	$("#editButton").hide();
+	$("#friendButton").hide();
+	$("#unfriendButton").hide();
+	$("#mainContent").html("");
+}
+&nbsp;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Nov 29 2015 23:50:25 GMT-0800 (Pacific Standard Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js\user\login-controller.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/user/</a> login-controller.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">82.54% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>52/63</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>2/8</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">81.25% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>13/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">82.54% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>52/63</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&nbsp;
+var LetsDoThis = LetsDoThis || {};
+&nbsp;
+LetsDoThis.LogInController = function () {
+&nbsp;
+    this.$logInPage = null;
+    this.$btnSubmit = null;
+    this.$username = null;
+    this.$password = null;
+    this.homePageId = null;
+&nbsp;
+};
+&nbsp;
+LetsDoThis.LogInController.prototype.init = function() {
+    this.$logInPage = $(".page-login");
+    this.homePageId = "home.html";
+    this.$btnSubmit = $("#btn-submit", this.$logInPage);
+    this.$username = $("#username", this.$logInPage);
+    this.$password = $("#password", this.$logInPage);
+};
+&nbsp;
+LetsDoThis.LogInController.prototype.resetLogInForm = <span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >    console.log("resetting login form");</span>
+<span class="cstat-no" title="statement not covered" >    this.$username.val("");</span>
+<span class="cstat-no" title="statement not covered" >    this.$password.val("");</span>
+};
+&nbsp;
+LetsDoThis.LogInController.prototype.redirectToHome = <span class="fstat-no" title="function not covered" >function(resp) {</span>
+    
+<span class="cstat-no" title="statement not covered" >    window.location = "home.html";</span>
+}
+&nbsp;
+LetsDoThis.LogInController.prototype.getUserInfo = function(id, callback) {
+&nbsp;
+    var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+&nbsp;
+    var urlWithId = "http://159.203.12.88/api/users/"+id+"/";
+&nbsp;
+    $.ajax({
+        type: "GET",
+        url: urlWithId,
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", "JWT " + authToken)
+        },
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (resp) {
+            console.log("User info retrieved!");
+            LetsDoThis.Session.getInstance().setUserInfo({
+                "id": id,
+                "username": resp.username,
+                "email": resp.email,
+                "phone": resp.phone
+            });
+            LetsDoThis.Session.getInstance().setUserFriends({
+                "friends":resp.friends
+            });
+            console.log("Woohoo!");
+            callback(resp);
+        },
+        error: function(e) {
+            console.log(e.message);
+        }
+    })
+}
+&nbsp;
+LetsDoThis.LogInController.prototype.getUserId = function(username, callback, callbackToRedirect) {
+&nbsp;
+    console.log("call to getUserId was successful");
+&nbsp;
+    var authToken = LetsDoThis.Session.getInstance().getAuthToken();
+&nbsp;
+    var postData = {
+        "username": username
+    }
+&nbsp;
+    $.ajax({
+        type: 'POST',
+        url: "http://159.203.12.88/api/users/search/",
+        data: JSON.stringify( postData),
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", "JWT " + authToken)
+        },
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (resp) {
+            console.log("User ID retrieved!");
+            LetsDoThis.Session.getInstance().setUserId({
+                userId: resp.id
+            });
+            console.log("User ID is "+resp.id);
+            callback(resp.id, callbackToRedirect);
+&nbsp;
+        },
+        error: function(e) {
+            console.log(e.message);
+            console.log("User ID was not retrieved");
+        }
+    })
+}
+&nbsp;
+LetsDoThis.LogInController.prototype.onLogInCommand = <span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >    var me = this,</span>
+        username = me.$username.val().trim(),
+        password = me.$password.val().trim(),
+        invalidInput = false;
+&nbsp;
+&nbsp;
+    // Flag each invalid field.
+<span class="cstat-no" title="statement not covered" >    if (username.length === 0){</span>
+<span class="cstat-no" title="statement not covered" >        invalidInput = true;</span>
+    }
+<span class="cstat-no" title="statement not covered" >    if (password.length === 0) {</span>
+<span class="cstat-no" title="statement not covered" >        invalidInput = true;</span>
+    }
+&nbsp;
+    // Make sure that all the required fields have values.
+<span class="cstat-no" title="statement not covered" >    if (!invalidInput) {</span>
+<span class="cstat-no" title="statement not covered" >        this.logIn(username, password, this.getUserId);</span>
+    }
+&nbsp;
+    
+};
+&nbsp;
+// console.log("login-controller has finished running");
+// console.log(LetsDoThis);
+LetsDoThis.LogInController.prototype.logIn = function(username, password, callback) {
+    var postData = {
+        "username": username,
+        "password": password
+    }
+    var callbackToInfo = this.getUserInfo;
+    var callbackToRedirect = this.redirectToHome;
+    console.log(this);
+&nbsp;
+    $.ajax({
+        type: 'POST',
+        url: "http://159.203.12.88/login/",
+        data: JSON.stringify( postData),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (resp) {
+            console.log("Request successful!");
+            LetsDoThis.Session.getInstance().setAuthToken({
+                authToken: resp.token
+            });
+            console.log("auth token returned: "+resp.token);
+            console.log("try to get user ID now");
+            callback(username, callbackToInfo, callbackToRedirect);
+        },
+        error: function(e) {
+            console.log(e.message);
+            console.log("user not authenticated");
+&nbsp;
+        }
+    });
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Nov 29 2015 23:50:25 GMT-0800 (Pacific Standard Time)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

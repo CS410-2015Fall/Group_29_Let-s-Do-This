@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js\global.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">js/</a> global.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">22.5% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>9/40</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/6</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">22.5% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>9/40</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >function initializeScripts(callback){</span>
+<span class="cstat-no" title="statement not covered" >	$.when(</span>
+		$.getScript("js/user/login-controller.js"),
+		$.getScript("js/user/session.js"),
+		$.getScript("js/serverInteractions/eventServerInteraction.js"),
+		$.getScript("js/serverInteractions/commentServerInteraction.js"),
+		$.getScript("js/serverInteractions/userServerInteraction.js"),
+		$.getScript("js/serverInteractions/pollsServerInteraction.js"),
+		$.getScript("js/serverInteractions/shoppinglistServerInteraction.js"),
+		//Get the script to handle the native calendar
+		$.getScript("js/osInteractions/calendarInteractions.js"),
+		//Get the script to handle notifications
+		$.getScript("js/osInteractions/notificationInteractions.js", <span class="fstat-no" title="function not covered" >function(){</span>
+<span class="cstat-no" title="statement not covered" >			console.log("notificationInteractions done");</span>
+		})
+	).done(<span class="fstat-no" title="function not covered" >function(){</span>
+<span class="cstat-no" title="statement not covered" >		console.log("Global scripts loaded, going callback");</span>
+<span class="cstat-no" title="statement not covered" >		callback();</span>
+	});
+}
+&nbsp;
+//UI
+<span class="fstat-no" title="function not covered" >function Box(head, body, id) {</span>
+<span class="cstat-no" title="statement not covered" >	this.head = head;</span>
+<span class="cstat-no" title="statement not covered" >	this.body = body;</span>
+<span class="cstat-no" title="statement not covered" >	this.boxId = id;</span>
+};
+&nbsp;
+Box.prototype.toHtml = <span class="fstat-no" title="function not covered" >function toHtml() {</span>
+<span class="cstat-no" title="statement not covered" >	return '&lt;div id="box" boxId="'</span>
+	+ this.boxId
+	+ '"&gt;&lt;p&gt;&lt;strong&gt;'
+	+ this.head
+	+ '&lt;/strong&gt;&lt;br&gt;'
+	+ this.body
+	+ '&lt;/p&gt;&lt;/div&gt;';
+};
+&nbsp;
+<span class="fstat-no" title="function not covered" >function displayBoxes(boxes, target) {</span>
+<span class="cstat-no" title="statement not covered" >	var boxHtml = "";</span>
+<span class="cstat-no" title="statement not covered" >	$.each( boxes, <span class="fstat-no" title="function not covered" >function (i, val) {</span></span>
+<span class="cstat-no" title="statement not covered" >		boxHtml += val.toHtml();</span>
+	})
+<span class="cstat-no" title="statement not covered" >	target.html(boxHtml);</span>
+}
+&nbsp;
+//navigation
+<span class="fstat-no" title="function not covered" >function openEvent(destinationEvent) {</span>
+<span class="cstat-no" title="statement not covered" >	localStorage.setItem("eventId", JSON.stringify(destinationEvent));</span>
+<span class="cstat-no" title="statement not covered" >	window.location="event.html";</span>
+}
+&nbsp;
+// conversion
+<span class="fstat-no" title="function not covered" >function convertDate(dateString1,dateString2) {</span>
+	// takes two DateTime strings, "YYYY-MM-DDTHH:MM:SSZ"
+	// returns a string which reads more nicely
+<span class="cstat-no" title="statement not covered" >	var start = new Date(dateString1);</span>
+<span class="cstat-no" title="statement not covered" >	var end = new Date(dateString2);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	if (typeof end === 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >		return convertDate(dateString1);</span>
+	}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	if (start.getDate() == end.getDate()) {</span>
+<span class="cstat-no" title="statement not covered" >		return "On " + start.toDateString() + " from " + convertTime(start) + " until " + convertTime(end);</span>
+	} else {
+<span class="cstat-no" title="statement not covered" >		return "From " + start.toDateString() + " at " + convertTime(start) + " until " + end.toDateString() + " at " + convertTime(end);</span>
+	}
+&nbsp;
+	// var now = currentDate();
+	// if (now.getFullYear() != dateObject.getFullYear()) {
+&nbsp;
+	// } else {
+&nbsp;
+	// }
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function convertDate(dateString) {</span>
+<span class="cstat-no" title="statement not covered" >	var dateObject = new Date(dateString);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	var time = convertTime(dateObject)</span>
+<span class="cstat-no" title="statement not covered" >	var date = dateObject.toDateString();</span>
+<span class="cstat-no" title="statement not covered" >	return date + " at " + time;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function convertTime(dateObject) {</span>
+<span class="cstat-no" title="statement not covered" >	var hour = dateObject.getHours();</span>
+<span class="cstat-no" title="statement not covered" >	var minute = dateObject.getMinutes();</span>
+<span class="cstat-no" title="statement not covered" >	if (minute &lt; 10) {</span>
+<span class="cstat-no" title="statement not covered" >		minute = "0" + minute;</span>
+	}
+<span class="cstat-no" title="statement not covered" >	return "" + hour + ":" + minute;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function currentDate() {</span>
+<span class="cstat-no" title="statement not covered" >	return new Date($.now());</span>
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Nov 29 2015 23:50:25 GMT-0800 (Pacific Standard Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

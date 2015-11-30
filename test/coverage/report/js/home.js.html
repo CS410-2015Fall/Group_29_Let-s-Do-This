@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js\home.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">js/</a> home.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10.34% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>9/87</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/21</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10.34% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>9/87</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var notificationBoxes = [];
+var eventBoxes = [];
+&nbsp;
+//Once we have the global script we need to initialize all scripts in it by
+//calling initializeScripts which itself has a callback when all scripts are loaded
+$.getScript("js/global.js", <span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >	initializeScripts(globalCallback);</span>
+});
+&nbsp;
+document.addEventListener("deviceready", <span class="fstat-no" title="function not covered" >function(){</span>
+	//Both notifications and the calendar are dependant on this deviceready being called
+&nbsp;
+&nbsp;
+}, false);
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >function formatEventBoxes(events) {</span>
+<span class="cstat-no" title="statement not covered" >	var formattedEvents = [];</span>
+<span class="cstat-no" title="statement not covered" >	$.each( events, <span class="fstat-no" title="function not covered" >function(i, val) {</span></span>
+<span class="cstat-no" title="statement not covered" >		if (!val.cancelled) {</span>
+<span class="cstat-no" title="statement not covered" >			var boxObject = new Box(val.display_name, convertDate(val.start_date,val.end_date), val.id);</span>
+<span class="cstat-no" title="statement not covered" >			formattedEvents.push(boxObject);</span>
+		}
+	});
+<span class="cstat-no" title="statement not covered" >	return formattedEvents;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function formatNotificationBoxes(events) {</span>
+<span class="cstat-no" title="statement not covered" >	var formattedNotifications = [];</span>
+<span class="cstat-no" title="statement not covered" >	$.each( events, <span class="fstat-no" title="function not covered" >function(i, val) {</span></span>
+<span class="cstat-no" title="statement not covered" >		var boxObject = new Box(val.display_name,"This event has been modified!",val.id);</span>
+<span class="cstat-no" title="statement not covered" >		formattedNotifications.push(boxObject);</span>
+	});
+<span class="cstat-no" title="statement not covered" >	return formattedNotifications;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function loadFriends() {</span>
+<span class="cstat-no" title="statement not covered" >	var friends = LetsDoThis.Session.getInstance().getUserFriends();</span>
+<span class="cstat-no" title="statement not covered" >	console.log(friends);</span>
+<span class="cstat-no" title="statement not covered" >	$("#friends").html();</span>
+<span class="cstat-no" title="statement not covered" >	$.each( friends, <span class="fstat-no" title="function not covered" >function( index, value ){</span></span>
+<span class="cstat-no" title="statement not covered" >		var friend = $('&lt;li&gt;&lt;a href="#"&gt;'</span>
+		+ value.username
+		+'&lt;/a&gt;&lt;/li&gt;');
+<span class="cstat-no" title="statement not covered" >		friend.click(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >			localStorage.setItem("profileId", JSON.stringify({"id":value.id}));</span>
+<span class="cstat-no" title="statement not covered" >			window.location="profile.html";</span>
+		});
+<span class="cstat-no" title="statement not covered" >		$("#friendList").append(friend);</span>
+	});
+<span class="cstat-no" title="statement not covered" >	$("#friendList").listview("refresh");</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function checkForNewFriends(){</span>
+<span class="cstat-no" title="statement not covered" >	console.log("Checking for new friends");</span>
+<span class="cstat-no" title="statement not covered" >	var userID = LetsDoThis.Session.getInstance().getUserId();</span>
+	//Get our current friends
+<span class="cstat-no" title="statement not covered" >	var currentFriends = LetsDoThis.Session.getInstance().getUserFriends();</span>
+&nbsp;
+	//Load the friends we had last time we checked
+<span class="cstat-no" title="statement not covered" >	var oldFriends = JSON.parse(window.localStorage.getItem('previousFriends' + userID));</span>
+&nbsp;
+	//Check if we even had friends previously
+<span class="cstat-no" title="statement not covered" >	if(oldFriends==null){</span>
+		//Save the friends we have now so we have friends next time we look
+<span class="cstat-no" title="statement not covered" >		window.localStorage.setItem('previousFriends' + userID, JSON.stringify(currentFriends));</span>
+<span class="cstat-no" title="statement not covered" >		return;</span>
+	}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	console.log("old:");</span>
+<span class="cstat-no" title="statement not covered" >	console.log(oldFriends);</span>
+<span class="cstat-no" title="statement not covered" >	console.log("new:");</span>
+<span class="cstat-no" title="statement not covered" >	console.log(currentFriends);</span>
+	//Loop through each of our current friends to check if they existed previously
+<span class="cstat-no" title="statement not covered" >	for(var i = 0; i&lt;currentFriends.length; i++){</span>
+		//Get the friends id
+<span class="cstat-no" title="statement not covered" >		var friendsID = currentFriends[i].id;</span>
+&nbsp;
+		//Set a flag if they existed previously;
+<span class="cstat-no" title="statement not covered" >		var existedPreviously = 0; </span>//Typical boolean values
+&nbsp;
+		//Loop through the old friends and look for this id
+<span class="cstat-no" title="statement not covered" >		for(var i = 0; i&lt;oldFriends.length; i++){</span>
+			//Get the friends id
+<span class="cstat-no" title="statement not covered" >			var oldFriendsID = oldFriends[i].id;</span>
+<span class="cstat-no" title="statement not covered" >			if(oldFriendsID==friendsID){</span>
+<span class="cstat-no" title="statement not covered" >				existedPreviously = 1;</span>
+			}
+		}
+&nbsp;
+		//Notify if this is a new friend
+<span class="cstat-no" title="statement not covered" >		if(!existedPreviously){</span>
+<span class="cstat-no" title="statement not covered" >			console.log(currentFriends[i].username + " is a new friend!");</span>
+<span class="cstat-no" title="statement not covered" >			notifyOfNewFriend(currentFriends[i].username);</span>
+		}
+	}
+&nbsp;
+	//Now save these current friends so we can check next time
+<span class="cstat-no" title="statement not covered" >	window.localStorage.setItem('previousFriends' + userID, JSON.stringify(currentFriends));</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function globalCallback(){</span>
+<span class="cstat-no" title="statement not covered" >	console.log("Global scripts loaded, here is the callback");</span>
+<span class="cstat-no" title="statement not covered" >	$(document).ready(<span class="fstat-no" title="function not covered" >function() {</span></span>
+		//These scripts all need to be loaded here because they are reliant on the deviceready event, which is fired in the cordova script
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		console.log("Loading home page script");</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		$("#notificationsButton").click(<span class="fstat-no" title="function not covered" >function() {</span></span>
+<span class="cstat-no" title="statement not covered" >			if (notificationBoxes.length == 0) {</span>
+<span class="cstat-no" title="statement not covered" >				$("#mainContent").html("&lt;h2&gt;No new notifications!&lt;/h2&gt;");</span>
+			} else {
+<span class="cstat-no" title="statement not covered" >				displayBoxes(notificationBoxes, $("#mainContent"));</span>
+			}
+		});
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		$("#eventsButton").click(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >			if (eventBoxes.length == 0) {</span>
+<span class="cstat-no" title="statement not covered" >				getEvents(<span class="fstat-no" title="function not covered" >function(resp) {</span></span>
+					// TODO don't display cancelled events
+<span class="cstat-no" title="statement not covered" >					eventBoxes = formatEventBoxes(resp);</span>
+<span class="cstat-no" title="statement not covered" >					displayBoxes(eventBoxes, $("#mainContent"));</span>
+				});
+			} else {
+<span class="cstat-no" title="statement not covered" >				displayBoxes(eventBoxes, $("#mainContent"));</span>
+			}
+		});
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		$("#createEventButton").click(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >			localStorage.setItem("editEvent", 0);</span>
+<span class="cstat-no" title="statement not covered" >			window.location="createEvent.html";</span>
+		});
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		$("#profileButton").click(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >			var userId = LetsDoThis.Session.getInstance().getUserId();</span>
+<span class="cstat-no" title="statement not covered" >			localStorage.setItem("profileId", JSON.stringify({"id":userId}));</span>
+<span class="cstat-no" title="statement not covered" >			window.location="profile.html";</span>
+		});
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		$("#friendsButton").click(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >			loadFriends();</span>
+		})
+&nbsp;
+		// makes notification and event boxes act as links to their event page
+<span class="cstat-no" title="statement not covered" >		$(document).on("click", '#mainContent div', <span class="fstat-no" title="function not covered" >function(e) {</span></span>
+<span class="cstat-no" title="statement not covered" >			if ($(this).attr("id") == "box") {</span>
+<span class="cstat-no" title="statement not covered" >				var eventId = $(this).attr("boxId");</span>
+<span class="cstat-no" title="statement not covered" >				openEvent(eventId);</span>
+			}
+		});
+&nbsp;
+		//Look for changed events
+<span class="cstat-no" title="statement not covered" >		getChangedEvents(<span class="fstat-no" title="function not covered" >function(notifs) {</span></span>
+<span class="cstat-no" title="statement not covered" >			if (notifs.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >				notificationBoxes = formatNotificationBoxes(notifs);</span>
+<span class="cstat-no" title="statement not covered" >				displayBoxes(notificationBoxes, $("#mainContent"));</span>
+			} else {
+<span class="cstat-no" title="statement not covered" >				getEvents(<span class="fstat-no" title="function not covered" >function(e) {</span></span>
+<span class="cstat-no" title="statement not covered" >					eventBoxes = formatEventBoxes(e);</span>
+<span class="cstat-no" title="statement not covered" >					displayBoxes(eventBoxes, $("#mainContent"));</span>
+				});
+			}
+		});
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		loadFriends();</span>
+		// checkForNewFriends();
+	});
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Nov 29 2015 23:50:25 GMT-0800 (Pacific Standard Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
