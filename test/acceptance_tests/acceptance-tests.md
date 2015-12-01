@@ -103,6 +103,13 @@
 * If invited to event:
   * RSVP button for user to indicate if they accept or decline invitation
 
+### Comments
+* All comments for an event are loaded
+* Each comment shows the text, username of person who posted, and date it was posted
+* Users involved in the event are able to post comments
+* Users can post multiple comments
+
+
 ### Shopping List/Budget
 * only one shopping list loads for each event
 * users can see all unclaimed (and claimed) items

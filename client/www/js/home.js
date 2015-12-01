@@ -43,7 +43,8 @@ function loadFriends() {
 		+ value.username
 		+'</a></li>');
 		friend.click(function(){
-			localStorage.setItem("profileId", JSON.stringify({"id":value.id}));
+			//localStorage.setItem("profileId", JSON.stringify({"id":value.id}));
+			LetsDoThis.Session.getInstance().setProfileId({"id":value.id});
 			window.location="profile.html";
 		});
 		$("#friendList").append(friend);
@@ -133,7 +134,8 @@ function globalCallback(){
 
 		$("#profileButton").click(function(){
 			var userId = LetsDoThis.Session.getInstance().getUserId();
-			localStorage.setItem("profileId", JSON.stringify({"id":userId}));
+			//localStorage.setItem("profileId", JSON.stringify({"id":userId}));
+			LetsDoThis.Session.getInstance().setProfileId({"id":userId});
 			window.location="profile.html";
 		});
 

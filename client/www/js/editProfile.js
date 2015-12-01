@@ -16,16 +16,16 @@ function loadEditProfile(){
 
 	  $("#backButton").click(function(){
 		  window.location="profile.html";
-	  })
+	  });
 
 	  $("#saveButton").click(function(){
 		  var editedUsername = $("#editUsername").val();
 		  var editedEmail = $("#editEmail").val();
 		  var editedPhone = $("#editPhone").val();
 		  editUserData(editedUsername, editedEmail, editedPhone);
-	  })
-	})
-}
+	  });
+	});
+};
 
 function loadCurrentData(){
 	var userData = LetsDoThis.Session.getInstance().getUserInfo();
@@ -36,11 +36,10 @@ function loadCurrentData(){
 
 function editUserData(editedUsername, editedEmail, editedPhone) {
 	var userId = LetsDoThis.Session.getInstance().getUserId();
-	console.log("about to update user info");
 	updateUserInfo(userId, editedUsername, editedEmail, editedPhone, function(resp){
 		window.location="profile.html";
-	})
-}
+	});
+};
 
 function clearProfile() {
 	$("#editButton").hide();

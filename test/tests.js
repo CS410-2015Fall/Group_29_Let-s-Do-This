@@ -27,7 +27,65 @@ describe("Check date and time formatting", function() {
     
 });
 
-// Testing user profile, editing user profile
+// ********************************************************
+// Testing create user
+
+describe("Creating user", function(){
+    var createUserInfo;
+    var spyEvent;
+    beforeEach(function() {
+        loadCreateUser();
+        createUserInfo = CreateUserInfo;
+        setFixtures(sandbox());
+        $('#sandbox').append(readFixtures("createuserfixture.html"));
+        spyOn(createUserInfo, "addUser");
+        spyEvent = spyOnEvent('#btn-submit', 'click');
+
+        createUserInfo.buttonLogic();
+    });
+    
+    it("should call addUser on button click", function(){
+        $('#btn-submit').click();
+        expect(spyEvent).toHaveBeenTriggered();
+        expect(createUserInfo.addUser).toHaveBeenCalled();
+    });
+})
+
+// ********************************************************
+// Testing user profile
+
+describe("Button logic for profile view", function() {
+    var profileInfo;
+    var userId, profileId;
+    var addFriend;
+    beforeEach(function() {
+        profileInfo = new ProfileInfo();
+        setFixtures(sandbox());
+        $('#sandbox').append(readFixtures("profilefixture.html"));
+        LetsDoThis.Session.getInstance().setUserId(2);
+        LetsDoThis.Session.getInstance().setProfileId(7);
+        loadProfile();
+    });
+    
+    // clicking the homeButton and editButton cause page redirects,
+    // which makes Karma sad :(
+    
+    it("should call addFriend on friend button click", function() {
+        var spyEvent = spyOnEvent('#friendButton', 'click');
+        spyOn(window, 'addFriend');
+        $('#friendButton').click();
+        expect(spyEvent).toHaveBeenTriggered();
+        expect(window.addFriend).toHaveBeenCalled();
+    });
+    
+    it("should call removeFriend on unfriend button click", function() {
+        var spyEvent = spyOnEvent('#unfriendButton', 'click');
+        spyOn(window, 'removeFriend');
+        $('#unfriendButton').click();
+        expect(spyEvent).toHaveBeenTriggered();
+        expect(window.removeFriend).toHaveBeenCalled();
+    })
+});
 
 describe("Determine profile to view", function() {
     var profileInfo;
@@ -37,24 +95,31 @@ describe("Determine profile to view", function() {
         
         // Create profileInfo object
         profileInfo = new ProfileInfo();
-        
+
     });
     
     it("should call loadLoggedInData when profile id and user id are the same", function() {
         profileId = 3;
         userId = 3;
         spyOn(profileInfo, "loadLoggedInData");
+        spyOn(profileInfo, "loadFriendData");
+        spyOn(profileInfo, "loadStrangerData");
         profileInfo.profileToDisplay(profileId, userId);
         expect(profileInfo.loadLoggedInData).toHaveBeenCalled();
+        expect(profileInfo.loadFriendData).not.toHaveBeenCalled();
+        expect(profileInfo.loadStrangerData).not.toHaveBeenCalled();
     });
     
     it("should call loadFriendData when profile id is one of user's friends", function() {
+        LetsDoThis.Session.getInstance().setUserFriends([{id:15},{id:20}]);
         profileId = 20;
         userId = 6;
         spyOn(profileInfo, "loadLoggedInData");
+        spyOn(profileInfo, "loadFriendData");
         spyOn(profileInfo, "loadStrangerData");
         profileInfo.profileToDisplay(profileId, userId);
         expect(profileInfo.loadLoggedInData).not.toHaveBeenCalled();
+        expect(profileInfo.loadFriendData).toHaveBeenCalled();
         expect(profileInfo.loadStrangerData).not.toHaveBeenCalled();
     });
     
@@ -67,7 +132,10 @@ describe("Determine profile to view", function() {
         expect(profileInfo.loadLoggedInData).not.toHaveBeenCalled();
         expect(profileInfo.loadFriendData).not.toHaveBeenCalled();
     });
-
+    
+    afterEach(function(){
+        LetsDoThis.Session.getInstance().setUserFriends([]);
+    });
 })
 
 describe("User profile view", function() {
@@ -221,6 +289,9 @@ describe("Stranger profile view", function() {
         
         profileInfo = new ProfileInfo();
         
+        setFixtures(sandbox());
+        $('#sandbox').append(readFixtures("profilefixture.html"));
+        
         it("should have things that exist", function() {
             expect($('#editButton')).toExist();
         });
@@ -235,8 +306,7 @@ describe("Stranger profile view", function() {
             expect($('#mainContent')).toBeEmpty();
         });
         
-        setFixtures(sandbox());
-        $('#sandbox').append(readFixtures("profilefixture.html"));
+
     
         var username = "MrPeanutbutter";
         profileInfo.loadStrangerData(username);
@@ -269,4 +339,105 @@ describe("Stranger profile view", function() {
             expect($('#mainContent')).toBeEmpty();
         });
     }); 
+});
+
+
+// ***********************************************************
+// Testing editing user profile
+
+describe("Edit User Profile", function(){
+    var userId, uname, mail, phonenum;
+    beforeEach(function(){
+        userId = 6;
+        uname = "shaybeau";
+        mail = "shayshay@email.com";
+        phonenum = "1234567890";
+        setFixtures(sandbox());
+        $('#sandbox').append(readFixtures("editprofilefixture.html"));
+        LetsDoThis.Session.getInstance().setUserId(userId);
+        LetsDoThis.Session.getInstance().setUserInfo({id:userId, username:uname, email:mail, phone:phonenum});
+    });
+    
+    // Home and back have page redirects, so can't be tested
+    
+    it("loads current data correctly", function(){
+        loadCurrentData();
+        expect($('#editUsername')).toHaveValue(uname);
+        expect($('#editEmail')).toHaveValue(mail);
+        expect($('#editPhone')).toHaveValue(phonenum);
+    });
+    
+    it("clears profile properly", function() {
+        clearProfile();
+        
+        it("should not have any buttons in view anymore", function() {
+            expect($('#editButton')).toBeHidden();
+            expect($('#friendButton')).toBeHidden();
+            expect($('#unfriendButton')).toBeHidden();
+        });
+        
+        it("should not have anything anymore in mainContent", function() {
+            expect($('#mainContent')).toBeEmpty();
+        });
+    });
+    
+    it("can make a call to send edit profile requests to server", function() {
+        spyOn(window, "updateUserInfo");
+        var editedUsername = "sheabo";
+        var editedEmail = "email@shayshay.com";
+        var editedPhone = "9080706050";
+        editUserData(editedUsername, editedEmail, editedPhone);
+        expect(window.updateUserInfo).toHaveBeenCalled();
+    });
+    
+    it("will call editUserData when save button is pressed", function() {
+        spyOn(window, "editUserData");
+        loadEditProfile();
+        $("#saveButton").click();
+        expect(window.editUserData).toHaveBeenCalled();
+    });
+});
+
+
+// Login related tests
+
+describe("Non-Ajax login tests", function(){
+    var logInController;
+    beforeEach(function(){
+        setFixtures(sandbox());
+        $('#sandbox').append(readFixtures("loginfixture.html"));
+        logInController = new LetsDoThis.LogInController();
+        logInController.init();
+        spyOn(logInController, "logIn");
+    });
+    
+    it("can reset field values", function(){
+        $("#username").val("something");
+        $("#password").val("woooo");
+        logInController.resetLogInForm();
+        expect($('#username')).toHaveValue("");
+        expect($('#password')).toHaveValue("");
+    });
+    
+    describe("will check for invalid input", function(){
+
+        it("no username and password given", function(){
+            $("#username").val("");
+            $("#password").val("");
+            logInController.onLogInCommand();
+            expect(logInController.logIn).not.toHaveBeenCalled();
+        });
+        it("no password given", function(){
+            $("#username").val("something");
+            $("#password").val("");
+            logInController.onLogInCommand();
+            expect(logInController.logIn).not.toHaveBeenCalled();
+        });
+        it("username and password given", function(){
+            $("#username").val("something");
+            $("#password").val("blah");
+            logInController.onLogInCommand();
+            expect(logInController.logIn).toHaveBeenCalled();
+        });
+    });
 });

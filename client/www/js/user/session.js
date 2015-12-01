@@ -11,6 +11,7 @@ LetsDoThis.Session = (function () {
     var userIdKey = "letsdothis-userID";
     var userInfoKey = "letsdothis-userInfo";
     var userFriendsKey = "letsdothis-userFriends";
+    var profileIdKey = "letsdothis-profileID";
 
     return {
       // Public methods and variables.
@@ -85,11 +86,28 @@ LetsDoThis.Session = (function () {
 
         return result;
       },
+      
+      // user ID
+      // getUserId returns <id>
+      setProfileId: function (sessionData) {
+        window.localStorage.setItem(profileIdKey, JSON.stringify(sessionData));
+      },
 
+      getProfileId: function () {
+        var result = null;
+
+        try {
+          var storedData = JSON.parse(window.localStorage.getItem(profileIdKey));
+          result = storedData.id;
+        } catch(e){}
+
+        return result;
+      },
+      
       //Is this session being run as a local app? (As opposed to a mobile or desktop browser)
       getIsCordova: function(){
         return document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1; //This isn't foolproof, but is near the best at the moment
-      },
+      }
     };
   };
 
@@ -103,5 +121,5 @@ LetsDoThis.Session = (function () {
   };
 }());
 
-// console.log("Session has finished running. Final LDT:");
-// console.log(LetsDoThis);
+//console.log("Session has finished running. Final LDT:");
+//console.log(LetsDoThis);

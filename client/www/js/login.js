@@ -8,14 +8,8 @@
 var LetsDoThis = LetsDoThis || {};
 
 $(document).ready(function(){
-  console.log("Initial LetsDoThis: ");
-    console.log(LetsDoThis);
 
     var logInController = new LetsDoThis.LogInController();
-
-    // console.log("My login controller looks like this: ");
-    // console.log(logInController);
-    // console.log("isCordova: " + LetsDoThis.Session.getInstance().getIsCordova());
 
     logInController.init();
 
@@ -25,22 +19,13 @@ $(document).ready(function(){
     
     // trigger onLogInCommand when login Submit button pressed
     logInController.$btnSubmit.off("tap").on("tap",function() {
-        console.log("logging in user");
         logInController.onLogInCommand();
     });
 
     // Reset login form
     $(document).on("pagecontainerbeforeshow", function (event,ui) {
-        if (typeof ui.toPage == "object") {
-            switch (ui.toPage.attr("class")) {
-                case "page-login":
+        if ((typeof ui.toPage == "object") && (ui.toPage.attr("class") == "page-login")) {
                     logInController.resetLogInForm();
-                    break;
-                default:
-                    break;
-            }
-        }
+            };
     });
-
-
-})
+});

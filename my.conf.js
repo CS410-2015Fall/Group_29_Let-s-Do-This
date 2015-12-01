@@ -17,9 +17,10 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'client/www/js/jquery/*.js',
+      'test/javascripts/helpers/mockSession.js',
       'client/www/js/serverInteractions/*.js',
       'client/www/js/osInteractions/*.js',
-      'client/www/js/user/*.js',
+      'client/www/js/user/login-controller.js',
       'client/www/js/*.js',
       'test/javascripts/helpers/jasmine-jquery.js',
       'test/javascripts/fixtures/*.html',
@@ -27,7 +28,6 @@ module.exports = function(config) {
       'test/javascripts/helpers/mock-ajax.js',
       'test/test_responses/*.js',
       'test/*.js'
-
     ],
 
 

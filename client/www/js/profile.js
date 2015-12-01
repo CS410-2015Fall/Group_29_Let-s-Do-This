@@ -8,37 +8,34 @@ function loadProfile(){
   $(document).ready( function(){
 	
 	// Retrieve stored ID and load the profile of this user
-	var profileId = JSON.parse( localStorage.getItem("profileId") ).id;
+	var profileId = LetsDoThis.Session.getInstance().getProfileId();
 	var userId = LetsDoThis.Session.getInstance().getUserId();
 	
 	var profileInfo = new ProfileInfo();
     profileInfo.profileToDisplay(profileId, userId);
-
-
-	// Button logic
-
+	
 	$("#homeButton").click(function(){
 		window.location="home.html";
 	});
 
 	$("#editButton").click(function(){
 		window.location="editProfile.html";
-	})
+	});
 
 	$("#friendButton").click(function(){
 		addFriend(userId, profileId, function(resp){
 			profileInfo.clearProfile();
 			profileInfo.profileToDisplay(profileId);
-		})
-	})
+		});
+	});
 
 	$("#unfriendButton").click(function(){
 		removeFriend(userId, profileId, function(resp){
 			profileInfo.clearProfile();
 			profileInfo.profileToDisplay(profileId);
-		})
-	})
-  })
+		});
+	});
+  });
 
 };
 

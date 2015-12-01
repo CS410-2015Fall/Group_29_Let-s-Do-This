@@ -20,7 +20,6 @@ LetsDoThis.LogInController.prototype.init = function() {
 };
 
 LetsDoThis.LogInController.prototype.resetLogInForm = function() {
-    console.log("resetting login form");
     this.$username.val("");
     this.$password.val("");
 };
