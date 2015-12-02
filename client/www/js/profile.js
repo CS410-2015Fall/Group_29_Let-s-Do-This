@@ -14,6 +14,7 @@ function loadProfile(){
 	var profileInfo = new ProfileInfo();
     profileInfo.profileToDisplay(profileId, userId);
 	
+	
 	$("#homeButton").click(function(){
 		window.location="home.html";
 	});
@@ -23,16 +24,20 @@ function loadProfile(){
 	});
 
 	$("#friendButton").click(function(){
-		addFriend(userId, profileId, function(resp){
+		addFriend(userId, profileId, function(resp1){
+		  addFriend(profileId, userId, function(resp2){
 			profileInfo.clearProfile();
-			profileInfo.profileToDisplay(profileId);
+			profileInfo.loadFriendData(resp2);
+		  });
 		});
 	});
 
 	$("#unfriendButton").click(function(){
-		removeFriend(userId, profileId, function(resp){
+		removeFriend(userId, profileId, function(resp1){
+		  removeFriend(profileId, userId, function(resp2){
 			profileInfo.clearProfile();
-			profileInfo.profileToDisplay(profileId);
+			profileInfo.profileToDisplay(profileId, userId);
+		  });
 		});
 	});
   });
@@ -42,7 +47,10 @@ function loadProfile(){
 var ProfileInfo = function() {};
 
 ProfileInfo.prototype.profileToDisplay = function(profileId, userId) {
-  
+	  
+	  var profileInfo = new ProfileInfo();
+	  var aStranger = profileInfo.loadStrangerData;
+	  
 	  // check if profile belongs to logged in user
 	  if (profileId == userId) {
 		  var userData = LetsDoThis.Session.getInstance().getUserInfo();
@@ -67,7 +75,7 @@ ProfileInfo.prototype.profileToDisplay = function(profileId, userId) {
 		  else {
 			  getUser(profileId, function(resp){
 				  console.log("stranger danger!");
-				  this.loadStrangerData(resp.username);
+				  aStranger(resp.username);
 			  })
 		  }
   

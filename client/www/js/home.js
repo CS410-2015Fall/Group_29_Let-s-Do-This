@@ -37,7 +37,7 @@ function formatNotificationBoxes(events) {
 function loadFriends() {
 	var friends = LetsDoThis.Session.getInstance().getUserFriends();
 	console.log(friends);
-	$("#friends").html();
+	$("#friendList").empty();
 	$.each( friends, function( index, value ){
 		var friend = $('<li><a href="#">'
 		+ value.username
@@ -50,6 +50,22 @@ function loadFriends() {
 		$("#friendList").append(friend);
 	});
 	$("#friendList").listview("refresh");
+}
+
+function loadUsers(users) {
+	$("#usersList").empty();
+	$.each( users, function( index, value ){
+		var user = $('<li><a href="#">'
+		+ value.username
+		+'</a></li>');
+		user.click(function(){
+			//localStorage.setItem("profileId", JSON.stringify({"id":value.id}));
+			LetsDoThis.Session.getInstance().setProfileId({"id":value.id});
+			window.location="profile.html";
+		});
+		$("#usersList").append(user);
+	});
+	$("#usersList").listview("refresh");
 }
 
 function checkForNewFriends(){
@@ -104,7 +120,11 @@ function globalCallback(){
 	console.log("Global scripts loaded, here is the callback");
 	$(document).ready(function() {
 		//These scripts all need to be loaded here because they are reliant on the deviceready event, which is fired in the cordova script
-
+		var allUsers = [];
+		getAllUsers(function(resp){
+			console.log(resp);
+			allUsers = resp;
+		});
 		console.log("Loading home page script");
 
 		$("#notificationsButton").click(function() {
@@ -141,7 +161,11 @@ function globalCallback(){
 
 		$("#friendsButton").click(function(){
 			loadFriends();
-		})
+		});
+		
+		$("#usersButton").click(function(){
+			loadUsers(allUsers);
+		});
 
 		// makes notification and event boxes act as links to their event page
 		$(document).on("click", '#mainContent div', function(e) {
@@ -164,7 +188,8 @@ function globalCallback(){
 			}
 		});
 
-		loadFriends();
+		// loadFriends();
+		
 		// checkForNewFriends();
 	});
 }

@@ -24,6 +24,8 @@ function getUser(userId, callback){
 	});
 }
 
+
+
 function getAllUsers(callback){
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
 	
@@ -35,6 +37,7 @@ function getAllUsers(callback){
 			xhr.setRequestHeader("Authorization", "JWT " + authToken);
 		},
 		success: function(resp) {
+			console.log("Retrieved all users");
 			callback(resp);
 		},
 		error: function(e) {
@@ -129,9 +132,12 @@ function addFriend(userId, friendId, callback) {
         data: JSON.stringify(putData),
 		success: function (resp) {
 			console.log("Added as friend");
-			LetsDoThis.Session.getInstance().setUserFriends({
-                "friends":resp.friends
-            });
+			// update local storage if logged in user made the call
+			if (LetsDoThis.Session.getInstance().getUserId() == userId) {
+				LetsDoThis.Session.getInstance().setUserFriends({
+					"friends":resp.friends
+				});
+			};
 			callback(resp);
 		},
 		error: function(e) {
@@ -139,6 +145,7 @@ function addFriend(userId, friendId, callback) {
 		}
 	});
 }
+
 
 function removeFriend(userId, friendId, callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
@@ -162,9 +169,13 @@ function removeFriend(userId, friendId, callback) {
         data: JSON.stringify(postData),
 		success: function (resp) {
 			console.log("friend removed");
-			LetsDoThis.Session.getInstance().setUserFriends({
-                "friends":resp.friends
-            });
+			console.log(resp);
+			// update local storage if logged in user made the call
+			if (LetsDoThis.Session.getInstance().getUserId() == userId) {
+				LetsDoThis.Session.getInstance().setUserFriends({
+					"friends":resp.friends
+				});
+			};
 			callback(resp);
 		},
 		error: function(e) {
@@ -172,6 +183,7 @@ function removeFriend(userId, friendId, callback) {
 		}
 	});
 }
+
 
 function deleteUser(userId, callback) {
 	var authToken = LetsDoThis.Session.getInstance().getAuthToken();
