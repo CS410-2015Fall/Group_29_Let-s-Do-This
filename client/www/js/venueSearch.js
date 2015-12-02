@@ -17,8 +17,8 @@ $(document).ready(function() {
       sort = 2;
     }
 
-//Make the yelp call
-searchYelp(city, radius, term, sort, function(results){
+    //Make the yelp call
+    searchYelp(city, radius, term, sort, function(results){
       //Search yelp runs async so we want to give it the function to run on success
       console.log("results = " + results);
       var formattedResults = parseAndPrint(results);
@@ -28,7 +28,7 @@ searchYelp(city, radius, term, sort, function(results){
       //And put the new ones in
       $("#results").append(formattedResults);
     });
-});
+  });
 
   $("#backButton").click(function(){
     localStorage.setItem("arrivingFromYelp", -1);
@@ -44,4 +44,10 @@ function returnToCreateEvent(name, address, city){
   localStorage.setItem("yelpLocationAddress", address + ", " + city);
   localStorage.setItem("arrivingFromYelp", 1);
   window.location = "createEvent.html";
+}
+
+function demoFillYelp(){
+  $("#searchTerm").val("Tim Hortons");
+  $("#city").val("UBC, BC");
+  $("#radius").val("1000");
 }

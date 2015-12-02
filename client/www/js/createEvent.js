@@ -3,36 +3,36 @@ $.getScript("js/global.js", function() {
 })
 
 function loadCreateEvent(){
-$(document).ready(function() {
-	var module;
-	var eventId = localStorage.getItem("editEvent");
-	if(eventId == 0){
-		module = CreateEventModule;
-	} else {
-		module = EditEventModule;
-		getEvent(eventId, function(resp) {
-			module.init(resp,'nameField', 'dateField', 'startTimeField', 'endTimeField', 'locationField',$("#cancelButton"));
+	$(document).ready(function() {
+		var module;
+		var eventId = localStorage.getItem("editEvent");
+		if(eventId == 0){
+			module = CreateEventModule;
+		} else {
+			module = EditEventModule;
+			getEvent(eventId, function(resp) {
+				module.init(resp,'nameField', 'dateField', 'startTimeField', 'endTimeField', 'locationField',$("#cancelButton"));
+			});
+		}
+
+		if (localStorage.getItem("arrivingFromYelp") != 0) {
+			LocationModule.loadValuesFromStorage();
+			localStorage.setItem("arrivingFromYelp", 0);
+		}
+
+		$("#backButton").click(function(){
+			module.handleBackButton();
 		});
-	}
 
-	if (localStorage.getItem("arrivingFromYelp") != 0) {
-		LocationModule.loadValuesFromStorage();
-		localStorage.setItem("arrivingFromYelp", 0);
-	}
+		$("#findLocationButton").click(function(){
+			LocationModule.saveValuesToStorage();
+			window.location ="venueSearch.html";
+		});
 
-	$("#backButton").click(function(){
-		module.handleBackButton();
+		$("#saveButton").click(function(){
+			module.handleSaveButton();
+		});
 	});
-
-	$("#findLocationButton").click(function(){
-		LocationModule.saveValuesToStorage();
-		window.location ="venueSearch.html";
-	});
-
-	$("#saveButton").click(function(){
-		module.handleSaveButton();
-	});
-});
 }
 
 var LocationModule = {
@@ -182,4 +182,11 @@ function BuildEventObj() {
 	}
 	this.start_date = formatTime(date, startTime);
 	this.end_date = formatTime(date, endTime);
-};
+}
+
+function demoFillCE(){
+	$("#nameField").val("Whistler!");
+	$("#dateField").val("2015-12-12");
+	$("#startTimeField").val("06:00");
+	$("#endTimeField").val("18:00");
+}
