@@ -58,8 +58,8 @@ function addEventToCalendar(event){
 	var title = event.display_name + ": " + ldtIdentifier;
 	var location = event.location;
 	var notes = 'Lets Do This event';
-	var start = utcToJSDate(event.start_date);
-	var end = utcToJSDate(event.end_date);
+	var start = new Date(event.start_date);//utcToJSDate(event.start_date);
+	var end = new Date(event.end_date);//utcToJSDate(event.end_date);
 
 	console.log('This event goes from ' + start + " to " + end);
 	cal.createEvent(title, location, notes, start, end);
@@ -98,13 +98,14 @@ function deleteAllLDTEvents(){
 function utcToJSDate(utc){
 	var utcDate = utc.split("T")[0];// "1993-10-03"
 	var utcTime = utc.split("T")[1];// "22:20:00Z"
-
+	console.log(utcDate + " - " + utcTime);
 	var year = utcDate.split("-")[0];
 	var month = utcDate.split("-")[1] - 1; //JS Date function is zero based. Thus january is month 0.
 	var day = utcDate.split("-")[2] - 1;
-
+	console.log(year + "-" + month + "-" + day);
 	var hour = utcTime.split(":")[0];
 	var minute = utcTime.split(":")[1];
+	console.log(hour + "-" + minute);
 	//Anyone who bothers to put seconds deserves a solid slap
 
 	// console.log(year + " - " + month + " - " + day);
