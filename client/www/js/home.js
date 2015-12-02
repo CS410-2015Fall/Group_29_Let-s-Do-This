@@ -122,7 +122,6 @@ function globalCallback(){
 		//These scripts all need to be loaded here because they are reliant on the deviceready event, which is fired in the cordova script
 		var allUsers = [];
 		getAllUsers(function(resp){
-			console.log(resp);
 			allUsers = resp;
 		});
 		console.log("Loading home page script");

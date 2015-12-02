@@ -14,6 +14,7 @@ function loadProfile(){
 	var profileInfo = new ProfileInfo();
     profileInfo.profileToDisplay(profileId, userId);
 	
+	// Button Logic
 	
 	$("#homeButton").click(function(){
 		window.location="home.html";
@@ -39,6 +40,11 @@ function loadProfile(){
 			profileInfo.profileToDisplay(profileId, userId);
 		  });
 		});
+	});
+	
+	$("#logoutButton").click(function(){
+		LetsDoThis.Session.getInstance().logOut();
+		window.location="login.html";
 	});
   });
 
@@ -85,6 +91,7 @@ ProfileInfo.prototype.profileToDisplay = function(profileId, userId) {
   
 ProfileInfo.prototype.loadLoggedInData = function(userData) {
 		$("#editButton").show();
+		$("#logoutButton").show();
 		$("#mainContent").append('<div class="ui-field-contain" id="username"><strong>' + userData.username + '</strong></div>');
 		$("#mainContent").append('<div class="ui-field-contain" id="email">Email: '+ userData.email + '</div>');
 		$("#mainContent").append('<div class="ui-field-contain" id="phone">Phone: ' + userData.phone + '</div>');

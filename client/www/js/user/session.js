@@ -107,6 +107,14 @@ LetsDoThis.Session = (function () {
       //Is this session being run as a local app? (As opposed to a mobile or desktop browser)
       getIsCordova: function(){
         return document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1; //This isn't foolproof, but is near the best at the moment
+      },
+      
+      logOut: function() {
+        window.localStorage.removeItem(sessionIdKey);
+        window.localStorage.removeItem(userIdKey);
+        window.localStorage.removeItem(userInfoKey);
+        window.localStorage.removeItem(userFriendsKey);
+        window.localStorage.removeItem(profileIdKey);
       }
     };
   };
